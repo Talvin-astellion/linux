@@ -97,12 +97,15 @@ UML-сборка и запуск `all_tests.config`. Результаты: `work
 
 ## 5. Ресурсы
 
-| Сценарий | CPU | RAM | Диск | Время |
+| Сценарий | JOBS | RAM | Диск (факт) | Время (факт) |
 |---|---|---|---|---|
-| defconfig | 12 | 5.6 ГБ | ~2–4 ГБ | 10–30 мин |
-| allmodconfig | 2–4 | 5.6 ГБ + swap | 20–35 ГБ | 1–3 ч |
-| sparse (defconfig) | 4 | 5.6 ГБ | 4–6 ГБ | 30–60 мин |
-| KUnit (UML) | 4 | 4 ГБ | 2–4 ГБ | 10–30 мин |
+| defconfig | 4 | 5.6 ГБ | 966 МБ | 559 с (~9 мин) |
+| allmodconfig | 3 | 5.6 ГБ + swap | 12 ГБ | 9467 с (~2ч38м) |
+| KUnit (UML) | 4 | 5.6 ГБ | 260 МБ | 303 с (~5 мин) |
+| sparse (defconfig) | 4 | 5.6 ГБ | — | не выполнен: нет `sparse` |
+
+Фактические замеры baseline (2026-10-31): defconfig rc=0, allmodconfig rc=0,
+KUnit 8599 passed / 39 skipped / 0 failed, checkpatch 0 errors / 1 warning.
 
 Ограничители в скриптах:
 

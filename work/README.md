@@ -61,5 +61,7 @@ make -C work ci-install
 ## Статус
 
 - Спецификация: draft 1.
-- CI: готов к установке, требует первого прогона на GitHub.
-- Baseline-тег: ещё не создан (Фаза 0).
+- Baseline: тег `baseline-20261031` (`541c433`).
+- Локально пройдены: defconfig, allmodconfig, KUnit, checkpatch — см. `plans/status.md`.
+- CI: workflows установлены в `.github/workflows/`, нужен push и первый прогон.
+- `sparse`: заблокирован отсутствием пакета (нужен sudo).

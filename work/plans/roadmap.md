@@ -82,3 +82,15 @@ work/pipelines/install.sh
 
 Первый прогон `allmodconfig` и `kunit` считать измерением baseline: зафиксировать
 время, размер, список падений.
+
+## Фактические результаты (2026-10-31)
+
+| Фаза | Статус | Факт |
+|---|---|---|
+| 0 | выполнена | baseline-тег, политика веток, toolchain проверен |
+| 1 | выполнена | defconfig 559 с / 966 МБ; allmodconfig 9467 с / 12 ГБ |
+| 2 | частично | workflows установлены, push и первый прогон на GitHub pending |
+| 3 | частично | KUnit 8599 passed; checkpatch 0 errors; sparse не запущен |
+| 4 | не начата | QEMU smoke, матрица clang, релизы |
+
+Подробности: `work/plans/status.md`.

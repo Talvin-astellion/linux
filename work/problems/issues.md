@@ -7,11 +7,11 @@
 
 | ID | Приоритет | Проблема | Статус |
 |---|---|---|---|
-| ISSUE-01 | P0 | Нет воспроизводимой сборки и baseline | open |
-| ISSUE-02 | P0 | Ресурсный дефицит (RAM/диск) для allmodconfig | open |
-| ISSUE-03 | P1 | Нет CI и автоматических проверок | open |
+| ISSUE-01 | P0 | Нет воспроизводимой сборки и baseline | closed |
+| ISSUE-02 | P0 | Ресурсный дефицит (RAM/диск) для allmodconfig | mitigated |
+| ISSUE-03 | P1 | Нет CI и автоматических проверок | mitigated |
 | ISSUE-04 | P1 | Расхождение версии Makefile и upstream-тегов | open |
-| ISSUE-05 | P1 | Несогласованная топология веток, нет тегов | open |
+| ISSUE-05 | P1 | Несогласованная топология веток, нет тегов | mitigated |
 | ISSUE-06 | P1 | Дыры в toolchain (sparse, clang, rust, sphinx) | open |
 | ISSUE-07 | P1 | Ограничения GitHub-hosted runner | open |
 | ISSUE-08 | P2 | Тяжёлый `.git` (6.0 ГБ) | open |
