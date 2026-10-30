@@ -1,0 +1,56 @@
+name: build
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  allmodconfig:
+    name: allmodconfig
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Free disk space
+        run: bash work/pipelines/scripts/ci-cleanup.sh
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential bc bison flex libssl-dev libelf-dev \
+            libncurses-dev dwarves cpio kmod ccache
+
+      - name: Restore ccache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ccache
+          key: ccache-allmodconfig-${{ github.sha }}
+          restore-keys: |
+            ccache-allmodconfig-
+
+      - name: Build allmodconfig
+        env:
+          JOBS: "2"
+          MIN_FREE_GB: "8"
+        run: bash work/pipelines/scripts/build.sh
+
+      - name: Upload config
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allmodconfig-config
+          path: work/build/allmodconfig/.config
+          if-no-files-found: ignore
+
+      - name: Upload build log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allmodconfig-log
+          path: work/build/allmodconfig/build.log
+          if-no-files-found: ignore
