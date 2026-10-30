@@ -1,0 +1,130 @@
+# Runbook
+
+Операционные процедуры для проекта.
+
+## 1. Первичная настройка
+
+```bash
+cd /home/talvin/System/linux
+work/pipelines/scripts/deps.sh
+git tag -a "baseline-$(date +%Y%m%d)" -m "baseline before CI work"
+```
+
+Проверка окружения:
+
+```bash
+nproc
+free -h
+df -h .
+for t in gcc make bc flex bison pahole python3 perl; do
+  command -v "$t" >/dev/null && echo "OK $t" || echo "MISSING $t"
+done
+```
+
+## 2. Политика веток и тегов
+
+| Ветка | Роль | Правило |
+|---|---|---|
+| `main` | зеркало upstream | только fast-forward от `origin/master` |
+| `dev` | интеграция | PR, зелёный CI |
+| `feature/*` | задачи | ответвление от `dev` |
+
+- Теги: `baseline-YYYYMMDD` (состояние до работ), `ci-YYYYMMDD.N` (прогоны).
+- Force-push в `main`/`dev` запрещён.
+- `dev` мержится в `main` только после стабилизации.
+
+## 3. Локальная сборка
+
+```bash
+# базовый вариант
+JOBS=3 work/pipelines/scripts/build.sh
+
+# свой каталог и запас диска
+BUILD_DIR=/mnt/fast/build/allmodconfig MIN_FREE_GB=15 \
+  work/pipelines/scripts/build.sh
+```
+
+Если OOM:
+
+1. Уменьшить `JOBS` (например, `JOBS=2`).
+2. Увеличить swap или добавить RAM.
+3. Отключить debug-info (уже в CI-фрагменте).
+
+Если мало диска:
+
+1. `make -C work clean`.
+2. `make O=work/build/allmodconfig mrproper`.
+3. Вынести `BUILD_DIR` на другой диск.
+
+## 4. Проверки
+
+```bash
+# diff против upstream
+BASE=origin/master work/pipelines/scripts/checkpatch.sh
+
+# sparse на defconfig
+JOBS=4 work/pipelines/scripts/sparse.sh
+
+# KUnit
+JOBS=4 KUNIT_TIMEOUT=900 work/pipelines/scripts/kunit.sh
+```
+
+Разбор результатов:
+
+- checkpatch: блокируют только `ERROR:`; `WARNING:` — на ревью.
+- sparse: исторические предупреждения; новые — в отчёт.
+- KUnit: падения смотреть в `work/build/kunit/kunit.json` и логах UML.
+
+## 5. Установка CI
+
+```bash
+work/pipelines/install.sh
+git add .github/workflows work
+git commit -m "ci: add kernel build and checks workflows"
+git push origin dev
+```
+
+После первого прогона:
+
+1. Включить branch protection для `dev` и `main`.
+2. Требовать checks: `checkpatch`, `allmodconfig`.
+3. `sparse` и `kunit` сделать blocking после стабилизации.
+
+## 6. Обновление из upstream
+
+```bash
+git fetch origin
+git checkout main
+git merge --ff-only origin/master
+git checkout dev
+git merge main
+```
+
+Конфликты в `work/` решать вручную; workflows и скрипты не зависят от версии ядра.
+
+## 7. Troubleshooting
+
+| Симптом | Причина | Действие |
+|---|---|---|
+| `Killed` при сборке | OOM | `JOBS=2`, увеличить swap |
+| `No space left on device` | диск | очистка, вынести `BUILD_DIR` |
+| `missing required tool` | нет пакета | `deps.sh` |
+| checkpatch падает на baseline | шум/ложные | сузить `BASE`, добавить allowlist |
+| KUnit timeout | медленный runner | увеличить `KUNIT_TIMEOUT` |
+| sparse не найден | нет пакета | `sudo apt-get install sparse` |
+| workflow не запускается | YAML не в `.github/workflows` | `install.sh` |
+| reusable workflow not found | скопирован только `ci.yml` | скопировать все файлы |
+
+## 8. Очистка
+
+```bash
+make -C work clean
+git clean -xdf work/pipelines   # осторожно: удалит неотслеживаемое
+```
+
+## 9. Контакты и ссылки
+
+- `Documentation/process/coding-assistants.rst` — правила AI-вклада.
+- `Documentation/process/submitting-patches.rst` — формат патчей.
+- `Documentation/dev-tools/testing-overview.rst` — тестирование.
+- `Documentation/admin-guide/quickly-build-trimmed-linux.rst` — быстрая сборка.
