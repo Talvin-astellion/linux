@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# SPDX-License-Identifier: GPL-2.0-only
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
@@ -50,7 +51,8 @@ log "installing base packages"
 if [[ "${1:-}" == "--full" ]]; then
   log "installing full packages"
   "${SUDO[@]}" apt-get install -y --no-install-recommends "${FULL_PACKAGES[@]}"
-  "${SUDO[@]}" apt-get install -y --no-install-recommends bindgen || log "bindgen package unavailable; install manually if CONFIG_RUST is needed"
+  "${SUDO[@]}" apt-get install -y --no-install-recommends bindgen || \
+    log "bindgen unavailable; install manually if CONFIG_RUST is needed"
 fi
 
 log "done"
