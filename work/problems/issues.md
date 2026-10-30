@@ -16,7 +16,7 @@
 | ISSUE-07 | P1 | Ограничения GitHub-hosted runner | open |
 | ISSUE-08 | P2 | Тяжёлый `.git` (6.0 ГБ) | open |
 | ISSUE-09 | P2 | Нет локальной политики AI-вклада | open |
-| ISSUE-10 | P2 | Нет smoke-теста загрузки и хранения артефактов | open |
+| ISSUE-10 | P2 | Нет smoke-теста загрузки и хранения артефактов | mitigated |
 
 ## ISSUE-01 — Нет воспроизводимой сборки и baseline (P0)
 
@@ -221,7 +221,8 @@ allmodconfig job проходит на hosted runner либо обоснован
 **Мера**
 
 Фаза 4: QEMU smoke (x86_64 defconfig), публикация `bzImage`/логов в artifacts
-или release.
+или release. Реализовано: `work/pipelines/scripts/smoke-qemu.sh`, локальный
+прогон успешен (`SMOKE_OK`).
 
 **Критерий закрытия**
 

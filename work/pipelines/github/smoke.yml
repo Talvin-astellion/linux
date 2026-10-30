@@ -1,0 +1,42 @@
+name: smoke
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  qemu:
+    name: qemu-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential bc bison flex libssl-dev libelf-dev \
+            libncurses-dev dwarves cpio kmod gzip qemu-system-x86
+
+      - name: Build defconfig
+        env:
+          JOBS: "4"
+        run: |
+          make O=work/build/defconfig defconfig
+          make O=work/build/defconfig -j"${JOBS}"
+
+      - name: Run QEMU smoke
+        run: bash work/pipelines/scripts/smoke-qemu.sh
+
+      - name: Upload QEMU log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: qemu-smoke-log
+          path: work/build/smoke/qemu.log
+          if-no-files-found: ignore

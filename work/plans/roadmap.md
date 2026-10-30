@@ -91,6 +91,6 @@ work/pipelines/install.sh
 | 1 | выполнена | defconfig 559 с / 966 МБ; allmodconfig 9467 с / 12 ГБ |
 | 2 | частично | workflows установлены, push и первый прогон на GitHub pending |
 | 3 | частично | KUnit 8599 passed; checkpatch 0 errors; sparse не запущен |
-| 4 | не начата | QEMU smoke, матрица clang, релизы |
+| 4 | частично | QEMU smoke пройден; матрица clang и релизы не начаты |
 
 Подробности: `work/plans/status.md`.

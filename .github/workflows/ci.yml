@@ -27,3 +27,7 @@ jobs:
   kunit:
     name: kunit
     uses: ./.github/workflows/kunit.yml
+
+  smoke:
+    name: smoke
+    uses: ./.github/workflows/smoke.yml

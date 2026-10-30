@@ -86,7 +86,17 @@ JOBS=4 work/pipelines/scripts/sparse.sh
 `make defconfig` + `make C=2 CHECK=sparse`. Лог: `work/build/sparse/sparse.log`.
 На старте advisory: многие предупреждения — исторические.
 
-### 4.3 KUnit
+### 4.3 QEMU smoke
+
+```bash
+KERNEL_IMAGE=work/build/defconfig/arch/x86/boot/bzImage \
+  work/pipelines/scripts/smoke-qemu.sh
+```
+
+Собирает минимальный initramfs, загружает ядро в QEMU и ждёт строку
+`SMOKE_OK`. Лог: `work/build/smoke/qemu.log`.
+
+### 4.4 KUnit
 
 ```bash
 JOBS=4 work/pipelines/scripts/kunit.sh
@@ -102,6 +112,7 @@ UML-сборка и запуск `all_tests.config`. Результаты: `work
 | defconfig | 4 | 5.6 ГБ | 966 МБ | 559 с (~9 мин) |
 | allmodconfig | 3 | 5.6 ГБ + swap | 12 ГБ | 9467 с (~2ч38м) |
 | KUnit (UML) | 4 | 5.6 ГБ | 260 МБ | 303 с (~5 мин) |
+| QEMU smoke | — | 512 МБ | ~1 МБ | ~5 с |
 | sparse (defconfig) | 4 | 5.6 ГБ | — | не выполнен: нет `sparse` |
 
 Фактические замеры baseline (2026-10-31): defconfig rc=0, allmodconfig rc=0,
@@ -122,6 +133,7 @@ KUnit 8599 passed / 39 skipped / 0 failed, checkpatch 0 errors / 1 warning.
 | `work/build/sparse/sparse.log` | вывод sparse |
 | `work/build/kunit/kunit.json` | результаты KUnit |
 | `work/build/kunit/*.log` | логи UML |
+| `work/build/smoke/qemu.log` | вывод QEMU smoke |
 
 `vmlinux` и модули в CI не публикуются: слишком большой размер.
 

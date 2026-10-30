@@ -17,6 +17,7 @@
 | allmodconfig | `JOBS=3 work/pipelines/scripts/build.sh` | rc=0, 9467 с, 12 ГБ |
 | KUnit | `JOBS=4 work/pipelines/scripts/kunit.sh` | rc=0, 303 с, 8599 passed / 39 skipped / 0 failed |
 | checkpatch | `BASE=origin/master work/pipelines/scripts/checkpatch.sh` | rc=0, 0 errors, 1 warning (FILE_PATH_CHANGES) |
+| QEMU smoke | `work/pipelines/scripts/smoke-qemu.sh` | rc=0, `SMOKE_OK`, ~5 с |
 
 Артефакты:
 
@@ -25,6 +26,7 @@
 - `work/build/allmodconfig/.config`, `work/build/allmodconfig/build.log`.
 - `work/build/kunit/kunit.json` — 2 109 095 байт.
 - `work/build/checkpatch.log`.
+- `work/build/smoke/qemu.log` — вывод загрузки ядра.
 
 ## Не выполнено / блокеры
 
@@ -47,4 +49,4 @@ work/build      13G
 1. Установить `sparse` и выполнить `work/pipelines/scripts/sparse.sh`.
 2. Запушить `dev` и дождаться первого прогона CI.
 3. Включить branch protection после зелёного прогона.
-4. Перевести `sparse`/`kunit` из advisory в blocking.
+4. Перевести `sparse`/`kunit`/`smoke` из advisory в blocking.

@@ -2,7 +2,7 @@ WORK := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 REPO := $(abspath $(WORK)/..)
 SCRIPTS := $(WORK)pipelines/scripts
 
-.PHONY: help deps build checkpatch sparse kunit ci-install clean
+.PHONY: help deps build checkpatch sparse kunit smoke ci-install clean
 
 help:
 	@echo "Targets:"
@@ -11,6 +11,7 @@ help:
 	@echo "  checkpatch  run checkpatch against BASE (default origin/master)"
 	@echo "  sparse      run sparse on defconfig"
 	@echo "  kunit       run KUnit (UML)"
+	@echo "  smoke       boot defconfig kernel in QEMU"
 	@echo "  ci-install  install GitHub Actions workflows"
 	@echo "  clean       remove $(WORK)build"
 
@@ -28,6 +29,9 @@ sparse:
 
 kunit:
 	$(SCRIPTS)/kunit.sh
+
+smoke:
+	$(SCRIPTS)/smoke-qemu.sh
 
 ci-install:
 	$(WORK)pipelines/install.sh

@@ -130,13 +130,13 @@ Toolchain:
 | Статический анализ | sparse | `make C=2 CHECK=sparse` |
 | Юнит-тесты | KUnit (UML) | `tools/testing/kunit/kunit.py run` |
 | Интеграционные | kselftests | `make -C tools/testing/selftests` (позже) |
-| Smoke загрузки | QEMU | Фаза 4 |
+| Smoke загрузки | QEMU | `work/pipelines/scripts/smoke-qemu.sh` |
 
 ## 7. CI/CD
 
 - Платформа: GitHub Actions.
 - Триггеры: `push` в `dev`/`main`, `pull_request`, `workflow_dispatch`.
-- Jobs: `checkpatch`, `sparse`, `allmodconfig`, `kunit`.
+- Jobs: `checkpatch`, `sparse`, `allmodconfig`, `kunit`, `smoke`.
 - Канонические workflows: `work/pipelines/github/`.
 - Установка: `work/pipelines/install.sh` копирует их в `.github/workflows/`.
 - Ограничения GitHub-hosted runner: ~14 ГБ диска, поэтому allmodconfig

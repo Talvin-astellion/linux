@@ -19,6 +19,7 @@ work/pipelines/scripts/build.sh
 work/pipelines/scripts/checkpatch.sh
 work/pipelines/scripts/sparse.sh
 work/pipelines/scripts/kunit.sh
+work/pipelines/scripts/smoke-qemu.sh
 
 # 4. Установить GitHub Actions
 work/pipelines/install.sh
@@ -33,6 +34,7 @@ make -C work build
 make -C work checkpatch
 make -C work sparse
 make -C work kunit
+make -C work smoke
 make -C work ci-install
 ```
 
@@ -62,6 +64,6 @@ make -C work ci-install
 
 - Спецификация: draft 1.
 - Baseline: тег `baseline-20261031` (`541c433`).
-- Локально пройдены: defconfig, allmodconfig, KUnit, checkpatch — см. `plans/status.md`.
+- Локально пройдены: defconfig, allmodconfig, KUnit, checkpatch, QEMU smoke — см. `plans/status.md`.
 - CI: workflows установлены в `.github/workflows/`, нужен push и первый прогон.
 - `sparse`: заблокирован отсутствием пакета (нужен sudo).

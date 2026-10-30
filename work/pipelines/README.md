@@ -21,6 +21,7 @@ work/pipelines/install.sh
 | `sparse` | `github/checks.yml` | `scripts/sparse.sh` | нет (advisory) |
 | `allmodconfig` | `github/build.yml` | `scripts/build.sh` | да |
 | `kunit` | `github/kunit.yml` | `scripts/kunit.sh` | нет (advisory) |
+| `smoke` | `github/smoke.yml` | `scripts/smoke-qemu.sh` | нет (advisory) |
 
 Оркестратор — `github/ci.yml`, вызывает три reusable workflow.
 
@@ -32,6 +33,7 @@ JOBS=3 work/pipelines/scripts/build.sh
 BASE=origin/master work/pipelines/scripts/checkpatch.sh
 JOBS=4 work/pipelines/scripts/sparse.sh
 JOBS=4 work/pipelines/scripts/kunit.sh
+work/pipelines/scripts/smoke-qemu.sh
 ```
 
 Переменные окружения:
@@ -45,6 +47,8 @@ JOBS=4 work/pipelines/scripts/kunit.sh
 | `BASE` | `origin/master` | база для checkpatch |
 | `KUNITCONFIG` | `all_tests.config` | конфиг KUnit |
 | `KUNIT_TIMEOUT` | 900 | таймаут KUnit, сек |
+| `KERNEL_IMAGE` | `work/build/defconfig/.../bzImage` | образ для QEMU |
+| `SMOKE_TIMEOUT` | 120 | таймаут QEMU, сек |
 
 ## Артефакты
 
@@ -54,6 +58,7 @@ JOBS=4 work/pipelines/scripts/kunit.sh
 | `work/build/allmodconfig/build.log` | build |
 | `work/build/sparse/sparse.log` | sparse |
 | `work/build/kunit/kunit.json` | kunit |
+| `work/build/smoke/qemu.log` | smoke |
 
 ## Ограничения
 
