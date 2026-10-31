@@ -18,10 +18,10 @@ work/pipelines/install.sh
 | Job | Файл | Скрипт | Блокирует |
 |---|---|---|---|
 | `checkpatch` | `github/checks.yml` | `scripts/checkpatch.sh` | да |
-| `sparse` | `github/checks.yml` | `scripts/sparse.sh` | нет (advisory)¹ |
+| `sparse` | `github/checks.yml` | `scripts/sparse.sh` | да (baseline 211/1252)¹ |
 | `allmodconfig` | `github/build.yml` | `scripts/build.sh` | да |
-| `kunit` | `github/kunit.yml` | `scripts/kunit.sh` | нет (advisory) |
-| `smoke` | `github/smoke.yml` | `scripts/smoke-qemu.sh` | нет (advisory) |
+| `kunit` | `github/kunit.yml` | `scripts/kunit.sh` | да |
+| `smoke` | `github/smoke.yml` | `scripts/smoke-qemu.sh` | да |
 
 ¹ CI собирает `sparse` из исходников: пакет Ubuntu 0.6.4 не проходит
 `scripts/checker-valid.sh`. Локально добавьте каталог со `sparse` в `PATH`.
@@ -80,7 +80,7 @@ JOBS=3 work/pipelines/scripts/build-machine.sh
 
 - GitHub-hosted runner: ~14 ГБ диска. `ci-cleanup.sh` освобождает место,
   CI-фрагмент отключает debug-info/BTF.
-- `sparse` и `kunit` помечены `continue-on-error` до стабилизации baseline.
+- `sparse` падает только при превышении baseline (`SPARSE_MAX_ERRORS`/`SPARSE_MAX_WARNINGS`).
 - При нехватке ресурсов используйте self-hosted runner с меткой `self-hosted`
   и замените `runs-on` в workflow.
 

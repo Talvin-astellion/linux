@@ -25,10 +25,22 @@ log "running sparse with -j$JOBS (log: $LOG_FILE)"
 errors=$(grep -c 'error:' "$LOG_FILE" || true)
 warnings=$(grep -c 'warning:' "$LOG_FILE" || true)
 checks=$(grep -c 'CHECK' "$LOG_FILE" || true)
+max_errors="${SPARSE_MAX_ERRORS:-211}"
+max_warnings="${SPARSE_MAX_WARNINGS:-1252}"
+if ! [[ "$max_errors" =~ ^[0-9]+$ && "$max_warnings" =~ ^[0-9]+$ ]]; then
+  log "invalid sparse limits: max_errors=$max_errors max_warnings=$max_warnings"
+  exit 2
+fi
 {
   echo "checks=$checks"
   echo "errors=$errors"
   echo "warnings=$warnings"
+  echo "max_errors=$max_errors"
+  echo "max_warnings=$max_warnings"
 } > "$BUILD_DIR/summary.txt"
 log "sparse summary: $checks checks, $errors errors, $warnings warnings"
+if (( errors > max_errors || warnings > max_warnings )); then
+  log "sparse regression: errors $errors/$max_errors, warnings $warnings/$max_warnings"
+  exit 1
+fi
 log "sparse complete: $LOG_FILE"
