@@ -44,6 +44,41 @@ BUILD_DIR=/mnt/fast/build/allmodconfig MIN_FREE_GB=15 \
   work/pipelines/scripts/build.sh
 ```
 
+### Машинная сборка 7.2.6
+
+```bash
+JOBS=3 work/pipelines/scripts/build-machine.sh
+```
+
+Скрипт не меняет `/home/talvin/linux-7.2.6`: создаёт копию
+`work/build/src-7.2.6`, чистит её через `mrproper` и собирает out-of-tree в
+`work/build/machine-7.2.6`. Артефакты — в `artifacts/`, модули — в `modules/`.
+
+Проверка:
+
+```bash
+make -s -C work/build/src-7.2.6 O=work/build/machine-7.2.6 kernelrelease
+QEMU_CPU=max KERNEL_IMAGE=work/build/machine-7.2.6/artifacts/bzImage-7.2.6-machine \
+  work/pipelines/scripts/smoke-qemu.sh
+```
+
+### Установка машинного ядра (опционально)
+
+Выполнять только после проверки артефактов и с пониманием риска:
+
+```bash
+sudo make -C work/build/src-7.2.6 O=work/build/machine-7.2.6 modules_install
+sudo install -m 644 work/build/machine-7.2.6/artifacts/bzImage-7.2.6-machine /boot/vmlinuz-7.2.6-machine
+sudo install -m 644 work/build/machine-7.2.6/artifacts/System.map-7.2.6-machine /boot/System.map-7.2.6-machine
+sudo install -m 644 work/build/machine-7.2.6/artifacts/config-7.2.6-machine /boot/config-7.2.6-machine
+sudo update-initramfs -c -k 7.2.6-machine
+sudo update-grub
+```
+
+Откат: выбрать предыдущее ядро в GRUB; затем удалить
+`/boot/*7.2.6-machine*` и `/lib/modules/7.2.6-machine`, выполнить
+`sudo update-grub`.
+
 Если OOM:
 
 1. Уменьшить `JOBS` (например, `JOBS=2`).
@@ -112,6 +147,8 @@ git merge main
 | checkpatch падает на baseline | шум/ложные | сузить `BASE`, добавить allowlist |
 | KUnit timeout | медленный runner | увеличить `KUNIT_TIMEOUT` |
 | sparse не найден | нет пакета | `sudo apt-get install sparse` |
+| QEMU smoke не стартует native-ядро | QEMU CPU не поддерживает `-march=native` | `QEMU_CPU=max` |
+| `source tree is not clean` | сборка `O=` из грязного дерева | использовать `work/build/src-*` |
 | workflow не запускается | YAML не в `.github/workflows` | `install.sh` |
 | reusable workflow not found | скопирован только `ci.yml` | скопировать все файлы |
 
@@ -119,6 +156,7 @@ git merge main
 
 ```bash
 make -C work clean
+rm -rf work/build/src-7.2.6 work/build/machine-7.2.6
 git clean -xdf work/pipelines   # осторожно: удалит неотслеживаемое
 ```
 

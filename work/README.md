@@ -15,6 +15,9 @@ work/pipelines/scripts/deps.sh
 # 2. Локальная сборка allmodconfig
 work/pipelines/scripts/build.sh
 
+# 2b. Сборка под текущую машину (7.2.6)
+work/pipelines/scripts/build-machine.sh
+
 # 3. Проверки
 work/pipelines/scripts/checkpatch.sh
 work/pipelines/scripts/sparse.sh
@@ -31,6 +34,7 @@ work/pipelines/install.sh
 make -C work help
 make -C work deps
 make -C work build
+make -C work machine
 make -C work checkpatch
 make -C work sparse
 make -C work kunit
@@ -65,5 +69,6 @@ make -C work ci-install
 - Спецификация: draft 1.
 - Baseline: тег `baseline-20261031` (`541c433`).
 - Локально пройдены: defconfig, allmodconfig, KUnit, checkpatch, QEMU smoke — см. `plans/status.md`.
+- Машинная сборка: `7.2.6-machine`, 213 модулей, QEMU smoke OK.
 - CI: workflows установлены в `.github/workflows/`, нужен push и первый прогон.
 - `sparse`: baseline 211 errors / 1252 warnings (advisory); системный пакет 0.6.4 не подходит, CI собирает sparse из исходников.

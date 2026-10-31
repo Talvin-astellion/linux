@@ -11,7 +11,7 @@
 
 | Шаг | Команда | Результат |
 |---|---|---|
-| CI установлен | `work/pipelines/install.sh` | 4 workflow в `.github/workflows/` |
+| CI установлен | `work/pipelines/install.sh` | 5 workflow в `.github/workflows/` |
 | Baseline-тег | `git tag -a baseline-20261031 541c43310e85` | создан |
 | defconfig | `make O=work/build/defconfig defconfig && make -j4` | rc=0, 559 с, 966 МБ |
 | allmodconfig | `JOBS=3 work/pipelines/scripts/build.sh` | rc=0, 9467 с, 12 ГБ |
@@ -19,6 +19,8 @@
 | checkpatch | `BASE=origin/master work/pipelines/scripts/checkpatch.sh` | rc=0, 0 errors, 1 warning (FILE_PATH_CHANGES) |
 | sparse | `PATH=/tmp/opencode/sparse-src:$PATH JOBS=4 work/pipelines/scripts/sparse.sh` | rc=0, 2957 checks, 211 errors, 1252 warnings (advisory) |
 | QEMU smoke | `work/pipelines/scripts/smoke-qemu.sh` | rc=0, `SMOKE_OK`, ~5 с |
+| machine 7.2.6 | `JOBS=3 work/pipelines/scripts/build-machine.sh` | rc=0, `7.2.6-machine`, 213 модулей, ~35 мин, debug off |
+| QEMU smoke (machine) | `QEMU_CPU=max KERNEL_IMAGE=work/build/machine-7.2.6/artifacts/bzImage-7.2.6-machine work/pipelines/scripts/smoke-qemu.sh` | rc=0, `SMOKE_OK`, ~5 с |
 
 Артефакты:
 
@@ -29,6 +31,9 @@
 - `work/build/checkpatch.log`.
 - `work/build/sparse/sparse.log`, `work/build/sparse/summary.txt` — baseline sparse.
 - `work/build/smoke/qemu.log` — вывод загрузки ядра.
+- `work/build/machine-7.2.6/artifacts/bzImage-7.2.6-machine` — 14 639 616 байт.
+- `work/build/machine-7.2.6/summary.txt`, `config.diff`.
+- `work/build/machine-7.2.6/modules/lib/modules/7.2.6-machine` — staging.
 
 ## Не выполнено / блокеры
 
@@ -42,8 +47,11 @@
 ## Состояние диска после прогонов
 
 ```
-/dev/nvme0n1p4  99G  75G  20G  80% /
-work/build      13G
+/dev/nvme0n1p4  99G  79G  15G  85% /
+work/build      17G
+  allmodconfig  12G
+  src-7.2.6     1.8G
+  machine-7.2.6 1.9G
 ```
 
 ## Следующие шаги
@@ -52,3 +60,5 @@ work/build      13G
 2. Запушить `dev` и дождаться первого прогона CI.
 3. Включить branch protection после зелёного прогона.
 4. Перевести `sparse`/`kunit`/`smoke` из advisory в blocking.
+5. При необходимости установить `7.2.6-machine` в `/boot` по `plans/runbook.md`
+   (сейчас не установлено).

@@ -26,7 +26,9 @@ work/pipelines/install.sh
 ¹ CI собирает `sparse` из исходников: пакет Ubuntu 0.6.4 не проходит
 `scripts/checker-valid.sh`. Локально добавьте каталог со `sparse` в `PATH`.
 
-Оркестратор — `github/ci.yml`, вызывает три reusable workflow.
+Оркестратор — `github/ci.yml`, вызывает четыре reusable workflow. Машинная
+сборка (`scripts/build-machine.sh`) в CI не запускается: она привязана к
+железу и `-march=native`.
 
 ## Локальный запуск
 
@@ -37,6 +39,9 @@ BASE=origin/master work/pipelines/scripts/checkpatch.sh
 JOBS=4 work/pipelines/scripts/sparse.sh
 JOBS=4 work/pipelines/scripts/kunit.sh
 work/pipelines/scripts/smoke-qemu.sh
+
+# машинная сборка 7.2.6 (локально, не в CI)
+JOBS=3 work/pipelines/scripts/build-machine.sh
 ```
 
 Переменные окружения:
@@ -52,6 +57,11 @@ work/pipelines/scripts/smoke-qemu.sh
 | `KUNIT_TIMEOUT` | 900 | таймаут KUnit, сек |
 | `KERNEL_IMAGE` | `work/build/defconfig/.../bzImage` | образ для QEMU |
 | `SMOKE_TIMEOUT` | 120 | таймаут QEMU, сек |
+| `QEMU_CPU` | пусто | `max` для native-ядра в QEMU |
+| `SRC_TREE` | `/home/talvin/linux-7.2.6` | исходники для machine |
+| `SRC_COPY` | `work/build/src-<ver>` | чистая копия исходников |
+| `BASE_CONFIG` | `/boot/config-$(uname -r)` | база для machine |
+| `FRAGMENT` | `configs/machine.config` | машинный фрагмент |
 
 ## Артефакты
 
@@ -62,6 +72,9 @@ work/pipelines/scripts/smoke-qemu.sh
 | `work/build/sparse/sparse.log` | sparse |
 | `work/build/kunit/kunit.json` | kunit |
 | `work/build/smoke/qemu.log` | smoke |
+| `work/build/machine-7.2.6/artifacts/` | machine |
+| `work/build/machine-7.2.6/modules/` | machine |
+| `work/build/machine-7.2.6/summary.txt` | machine |
 
 ## Ограничения
 

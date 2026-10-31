@@ -66,6 +66,32 @@ BUILD_DIR=/mnt/fast/build/allmodconfig work/pipelines/scripts/build.sh
 3. `make O=$BUILD_DIR olddefconfig`;
 4. `make O=$BUILD_DIR -j$JOBS` с логом в `$BUILD_DIR/build.log`.
 
+### 3.1 Сборка под текущую машину
+
+```bash
+JOBS=3 work/pipelines/scripts/build-machine.sh
+# или
+make -C work machine
+```
+
+Скрипт:
+
+1. копирует `/home/talvin/linux-7.2.6` в `work/build/src-7.2.6` и делает
+   `mrproper` только в копии (оригинал не меняется);
+2. берёт `/boot/config-7.2.6`, применяет `machine.config`
+   (`-machine`, `X86_NATIVE_CPU`, без debug/BTF);
+3. собирает out-of-tree в `work/build/machine-7.2.6` с `-j3`;
+4. ставит модули в staging `work/build/machine-7.2.6/modules`;
+5. складывает `bzImage`, `vmlinux`, `System.map`, `config`, `Module.symvers`
+   в `artifacts/`.
+
+Результат baseline: `7.2.6-machine`, 213 модулей, `bzImage` 14 639 616 байт,
+`vmlinux` 70 962 872 байт, ~35 мин при `-j3`, debug-info/BTF отключены.
+QEMU smoke для native-ядра: `QEMU_CPU=max`.
+
+Оригинальное дерево `/home/talvin/linux-7.2.6` и `/lib/modules/7.2.6` не
+затрагиваются; установка в `/boot` не выполняется.
+
 ## 4. Проверки
 
 ### 4.1 checkpatch
@@ -111,6 +137,7 @@ UML-сборка и запуск `all_tests.config`. Результаты: `work
 |---|---|---|---|---|
 | defconfig | 4 | 5.6 ГБ | 966 МБ | 559 с (~9 мин) |
 | allmodconfig | 3 | 5.6 ГБ + swap | 12 ГБ | 9467 с (~2ч38м) |
+| machine 7.2.6 | 3 | 5.6 ГБ | 1.9 ГБ + 1.8 ГБ src | ~35 мин (cold, debug off) |
 | KUnit (UML) | 4 | 5.6 ГБ | 260 МБ | 303 с (~5 мин) |
 | QEMU smoke | — | 512 МБ | ~1 МБ | ~5 с |
 | sparse (defconfig) | 4 | 5.6 ГБ | 967 МБ | 2957 checks, 211 errors, 1252 warnings, ~5 мин (warm) |
@@ -141,6 +168,11 @@ sparse rc=0 (211 errors / 1252 warnings, advisory).
 | `work/build/smoke/qemu.log` | вывод QEMU smoke |
 | `work/build/sparse/sparse.log` | полный лог sparse |
 | `work/build/sparse/summary.txt` | счётчики checks/errors/warnings |
+| `work/build/machine-7.2.6/artifacts/` | bzImage/vmlinux/System.map/config |
+| `work/build/machine-7.2.6/modules/` | staging-модули 7.2.6-machine |
+| `work/build/machine-7.2.6/summary.txt` | итоги машинной сборки |
+| `work/build/machine-7.2.6/config.diff` | отличия от `/boot/config-7.2.6` |
+| `work/build/src-7.2.6/` | чистая копия исходников 7.2.6 |
 
 `vmlinux` и модули в CI не публикуются: слишком большой размер.
 
@@ -152,6 +184,9 @@ sparse rc=0 (211 errors / 1252 warnings, advisory).
 - KUnit `all_tests` может содержать известные падения; список ведётся в
   `problems/issues.md` после первого прогона.
 - `make htmldocs` недоступен без `sphinx`.
+- Машинная сборка (`7.2.6-machine`) — только локально: конфиг привязан к
+  железу и `-march=native`; в CI не запускается.
+- QEMU smoke для native-ядра требует `QEMU_CPU=max` (или `-cpu host` с KVM).
 
 ## 8. Очистка
 
