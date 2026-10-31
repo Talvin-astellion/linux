@@ -57,17 +57,19 @@ JOBS=3 work/pipelines/scripts/build-machine.sh
 Проверка:
 
 ```bash
-make -s -C work/build/src-7.2.6 O=work/build/machine-7.2.6 kernelrelease
+make -s -C work/build/src-7.2.6 O="$PWD/work/build/machine-7.2.6" kernelrelease
 QEMU_CPU=max KERNEL_IMAGE=work/build/machine-7.2.6/artifacts/bzImage-7.2.6-machine \
   work/pipelines/scripts/smoke-qemu.sh
 ```
+
+`O=` должен быть абсолютным: `make -C` меняет текущий каталог.
 
 ### Установка машинного ядра (опционально)
 
 Выполнять только после проверки артефактов и с пониманием риска:
 
 ```bash
-sudo make -C work/build/src-7.2.6 O=work/build/machine-7.2.6 modules_install
+sudo make -C work/build/src-7.2.6 O="$PWD/work/build/machine-7.2.6" modules_install
 sudo install -m 644 work/build/machine-7.2.6/artifacts/bzImage-7.2.6-machine /boot/vmlinuz-7.2.6-machine
 sudo install -m 644 work/build/machine-7.2.6/artifacts/System.map-7.2.6-machine /boot/System.map-7.2.6-machine
 sudo install -m 644 work/build/machine-7.2.6/artifacts/config-7.2.6-machine /boot/config-7.2.6-machine

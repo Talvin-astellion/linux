@@ -59,7 +59,7 @@ JOBS=3 work/pipelines/scripts/build-machine.sh
 | `SMOKE_TIMEOUT` | 120 | таймаут QEMU, сек |
 | `QEMU_CPU` | пусто | `max` для native-ядра в QEMU |
 | `SRC_TREE` | `/home/talvin/linux-7.2.6` | исходники для machine |
-| `SRC_COPY` | `work/build/src-<ver>` | чистая копия исходников |
+| `SRC_COPY` | `$BUILD_ROOT/src-<ver>` | чистая копия исходников |
 | `BASE_CONFIG` | `/boot/config-$(uname -r)` | база для machine |
 | `FRAGMENT` | `configs/machine.config` | машинный фрагмент |
 
