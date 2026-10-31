@@ -10,6 +10,7 @@ KERNEL_IMAGE="${KERNEL_IMAGE:-$BUILD_ROOT/defconfig/arch/x86/boot/bzImage}"
 QEMU="${QEMU:-qemu-system-x86_64}"
 SMOKE_TIMEOUT="${SMOKE_TIMEOUT:-120}"
 SMOKE_MEM="${SMOKE_MEM:-512M}"
+QEMU_CPU="${QEMU_CPU:-}"
 
 require_tool gcc
 require_tool cpio
@@ -42,11 +43,17 @@ gcc -static -O2 -o "$BUILD_DIR/root/init" "$BUILD_DIR/init.c"
 )
 
 log "booting $KERNEL_IMAGE in QEMU (timeout ${SMOKE_TIMEOUT}s)"
-timeout "$SMOKE_TIMEOUT" "$QEMU" \
-  -kernel "$KERNEL_IMAGE" \
-  -initrd "$BUILD_DIR/initramfs.cpio.gz" \
-  -append "console=ttyS0 rdinit=/init panic=-1" \
-  -nographic -no-reboot -m "$SMOKE_MEM" \
+QEMU_ARGS=(
+  -kernel "$KERNEL_IMAGE"
+  -initrd "$BUILD_DIR/initramfs.cpio.gz"
+  -append "console=ttyS0 rdinit=/init panic=-1"
+  -nographic -no-reboot -m "$SMOKE_MEM"
+)
+if [[ -n "$QEMU_CPU" ]]; then
+  QEMU_ARGS+=(-cpu "$QEMU_CPU")
+fi
+
+timeout "$SMOKE_TIMEOUT" "$QEMU" "${QEMU_ARGS[@]}" \
   > "$BUILD_DIR/qemu.log" 2>&1 || true
 
 if ! grep -q 'SMOKE_OK' "$BUILD_DIR/qemu.log"; then

@@ -2,12 +2,13 @@ WORK := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 REPO := $(abspath $(WORK)/..)
 SCRIPTS := $(WORK)pipelines/scripts
 
-.PHONY: help deps build checkpatch sparse kunit smoke ci-install clean
+.PHONY: help deps build machine checkpatch sparse kunit smoke ci-install clean
 
 help:
 	@echo "Targets:"
 	@echo "  deps        install build dependencies"
 	@echo "  build       allmodconfig build"
+	@echo "  machine     build 7.2.6 for this machine"
 	@echo "  checkpatch  run checkpatch against BASE (default origin/master)"
 	@echo "  sparse      run sparse on defconfig"
 	@echo "  kunit       run KUnit (UML)"
@@ -20,6 +21,9 @@ deps:
 
 build:
 	$(SCRIPTS)/build.sh
+
+machine:
+	$(SCRIPTS)/build-machine.sh
 
 checkpatch:
 	$(SCRIPTS)/checkpatch.sh
