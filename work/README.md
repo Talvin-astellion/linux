@@ -62,7 +62,7 @@ make -C work ci-install
 - Логика пайплайнов живёт в `work/pipelines/scripts/`, CI только вызывает её.
 - Сборка всегда out-of-tree (`O=work/build/...`), дерево ядра не засоряется.
 - Ресурсы ограничиваются автоматически: `JOBS` вычисляется по RAM, диск проверяется перед сборкой.
-- Тяжёлые проверки (`sparse`, `kunit`) на старте advisory (`continue-on-error`), после стабилизации становятся blocking.
+- Все проверки в CI blocking; `sparse` ограничен baseline 211 errors / 1252 warnings и падает при превышении.
 
 ## Статус
 
@@ -70,5 +70,6 @@ make -C work ci-install
 - Baseline: тег `baseline-20261031` (`541c433`).
 - Локально пройдены: defconfig, allmodconfig, KUnit, checkpatch, QEMU smoke — см. `plans/status.md`.
 - Машинная сборка: `7.2.6-machine`, 213 модулей, QEMU smoke OK.
-- CI: workflows установлены в `.github/workflows/`, нужен push и первый прогон.
-- `sparse`: baseline 211 errors / 1252 warnings (advisory); системный пакет 0.6.4 не подходит, CI собирает sparse из исходников.
+- AI-политика: `AGENTS.md`; partial clone описан в `plans/runbook.md`.
+- CI: workflows установлены, push выполнен, branch protection для `dev` включён; прогон на GitHub выполняется.
+- `sparse`: baseline 211 errors / 1252 warnings, blocking on increase; системный пакет 0.6.4 не подходит, CI собирает sparse из исходников.

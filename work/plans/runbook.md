@@ -123,9 +123,10 @@ git push origin dev
 
 После первого прогона:
 
-1. Включить branch protection для `dev` и `main`.
-2. Требовать checks: `checkpatch`, `allmodconfig`.
-3. `sparse` и `kunit` сделать blocking после стабилизации.
+1. Включить branch protection для `dev`; required checks — `checks / checkpatch`,
+   `checks / sparse`, `build / allmodconfig`, `kunit / kunit`, `smoke / qemu-smoke`.
+2. `sparse` ограничен baseline 211/1252; `kunit` и `smoke` blocking.
+3. Для `main` protection включать только вместе с политикой sync с upstream.
 
 ## 6. Обновление из upstream
 
@@ -138,6 +139,18 @@ git merge main
 ```
 
 Конфликты в `work/` решать вручную; workflows и скрипты не зависят от версии ядра.
+
+### Partial clone и размер `.git`
+
+`.git` занимает ~6 ГБ. Для быстрого клонирования:
+
+```bash
+git clone --filter=blob:none https://github.com/Talvin-astellion/linux
+git gc --aggressive --prune=now
+```
+
+CI использует `actions/checkout` с минимально нужной глубиной; полный history
+нужен только для `checkpatch` (`fetch-depth: 0`).
 
 ## 7. Troubleshooting
 
@@ -164,6 +177,7 @@ git clean -xdf work/pipelines   # осторожно: удалит неотсл�
 
 ## 9. Контакты и ссылки
 
+- `AGENTS.md` — локальная политика AI-вклада (DCO, раскрытие, review).
 - `Documentation/process/coding-assistants.rst` — правила AI-вклада.
 - `Documentation/process/submitting-patches.rst` — формат патчей.
 - `Documentation/dev-tools/testing-overview.rst` — тестирование.

@@ -10,12 +10,12 @@
 | ISSUE-01 | P0 | Нет воспроизводимой сборки и baseline | closed |
 | ISSUE-02 | P0 | Ресурсный дефицит (RAM/диск) для allmodconfig | mitigated |
 | ISSUE-03 | P1 | Нет CI и автоматических проверок | mitigated |
-| ISSUE-04 | P1 | Расхождение версии Makefile и upstream-тегов | open |
+| ISSUE-04 | P1 | Расхождение версии Makefile и upstream-тегов | closed |
 | ISSUE-05 | P1 | Несогласованная топология веток, нет тегов | mitigated |
 | ISSUE-06 | P1 | Дыры в toolchain (sparse, clang, rust, sphinx) | mitigated |
 | ISSUE-07 | P1 | Ограничения GitHub-hosted runner | open |
-| ISSUE-08 | P2 | Тяжёлый `.git` (6.0 ГБ) | open |
-| ISSUE-09 | P2 | Нет локальной политики AI-вклада | open |
+| ISSUE-08 | P2 | Тяжёлый `.git` (6.0 ГБ) | closed |
+| ISSUE-09 | P2 | Нет локальной политики AI-вклада | closed |
 | ISSUE-10 | P2 | Нет smoke-теста загрузки и хранения артефактов | mitigated |
 
 ## ISSUE-01 — Нет воспроизводимой сборки и baseline (P0)
@@ -103,9 +103,21 @@ upstream.
 правкой. Задокументировать в `spec/project-spec.md`, при необходимости
 синхронизировать `Makefile` с upstream и создать baseline-тег.
 
+**Проверка (2026-10-31)**
+
+- `git log --all --grep='Linux 7\.0'` не находит коммита с bump версии.
+- В истории есть merge-коммиты подсистем с тегами 7.0, но `Makefile` остаётся
+  `6.19.0`.
+- Следовательно, артефакты этой ветки должны иметь
+  `KERNELRELEASE=6.19.0`; это не ошибка.
+- Для 7.2.6 используется `/home/talvin/linux-7.2.6` (machine build).
+
 **Критерий закрытия**
 
 Версия однозначно объяснена и зафиксирована; артефакты имеют корректный `KERNELRELEASE`.
+
+**Закрыто:** 2026-10-31, версия объяснена; machine-сборка 7.2.6 выполняется
+из отдельного дерева.
 
 ## ISSUE-05 — Топология веток и теги (P1)
 
@@ -191,6 +203,9 @@ allmodconfig job проходит на hosted runner либо обоснован
 
 Рекомендации в `runbook.md`; время fetch в CI приемлемо.
 
+**Закрыто:** 2026-10-31, добавлены partial clone/`git gc`; шаг Checkout в CI
+завершается успешно.
+
 ## ISSUE-09 — Нет локальной политики AI-вклада (P2)
 
 **Доказательства**
@@ -210,6 +225,9 @@ allmodconfig job проходит на hosted runner либо обоснован
 **Критерий закрытия**
 
 Политика закоммичена и упомянута в `spec/project-spec.md`.
+
+**Закрыто:** 2026-10-31, добавлен `AGENTS.md`; ссылка есть в
+`spec/project-spec.md` и `plans/runbook.md`.
 
 ## ISSUE-10 — Нет smoke-теста загрузки и хранения артефактов (P2)
 

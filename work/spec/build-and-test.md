@@ -110,7 +110,8 @@ JOBS=4 work/pipelines/scripts/sparse.sh
 ```
 
 `make defconfig` + `make C=2 CHECK=sparse`. Лог: `work/build/sparse/sparse.log`.
-На старте advisory: многие предупреждения — исторические.
+Baseline: 211 errors / 1252 warnings. Скрипт падает при превышении
+`SPARSE_MAX_ERRORS`/`SPARSE_MAX_WARNINGS`; это защита от новых регрессий.
 
 ### 4.3 QEMU smoke
 
@@ -129,7 +130,7 @@ JOBS=4 work/pipelines/scripts/kunit.sh
 ```
 
 UML-сборка и запуск `all_tests.config`. Результаты: `work/build/kunit/kunit.json`.
-На старте advisory до стабилизации набора тестов.
+Job blocking: локальный baseline 0 failed, CI-прогон зелёный.
 
 ## 5. Ресурсы
 
@@ -144,7 +145,7 @@ UML-сборка и запуск `all_tests.config`. Результаты: `work
 
 Фактические замеры baseline (2026-10-31): defconfig rc=0, allmodconfig rc=0,
 KUnit 8599 passed / 39 skipped / 0 failed, checkpatch 0 errors / 1 warning,
-sparse rc=0 (211 errors / 1252 warnings, advisory).
+sparse rc=0 (211 errors / 1252 warnings, baseline; blocking on increase).
 
 `sparse` из Ubuntu 0.6.4 не проходит `scripts/checker-valid.sh`
 (`__typeof_unqual__`); используйте сборку из

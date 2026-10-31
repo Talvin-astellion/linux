@@ -33,10 +33,14 @@
 ## 2. Метаданные репозитория
 
 - Upstream: mainline Linux, теги `v6.x` / `v7.x`.
-- Текущий снимок: merge window 7.0, при этом `Makefile` содержит `6.19.0`.
-  Расхождение зафиксировано в `problems/issues.md` (ISSUE-04).
-- Локальных коммитов относительно `origin/master` нет.
-- Теги в форке отсутствуют, baseline не зафиксирован.
+- Текущий снимок: ветка `dev` на базе `Linux 6.19` с merge-коммитами
+  подсистем, помеченными для 7.0 (`kbuild-7.0`, `net-next-7.0`, …). Коммита
+  `Linux 7.0` (bump `VERSION`/`PATCHLEVEL`) в истории нет, поэтому `Makefile`
+  содержит `6.19.0`; это корректная версия для данной ветки, а не ошибка
+  сборки. Для 7.2.6 используется отдельное дерево `/home/talvin/linux-7.2.6`.
+  Разбор — `problems/issues.md` (ISSUE-04, closed).
+- Локальные коммиты: `work/` и `.github/workflows/` относительно `origin/master`.
+- Теги: аннотированный `baseline-20261031` (`541c43310e85`).
 - `.git` занимает 6.0 ГБ, рабочее дерево — 7.7 ГБ.
 
 ## 3. Структура репозитория
@@ -142,12 +146,15 @@ Toolchain:
 - Установка: `work/pipelines/install.sh` копирует их в `.github/workflows/`.
 - Ограничения GitHub-hosted runner: ~14 ГБ диска, поэтому allmodconfig
   собирается с отключённым debug-info и `-j2`, плюс очистка образа раннера.
+- Branch protection для `dev`: required checks `checkpatch`, `sparse`,
+  `allmodconfig`, `kunit`, `smoke`; `sparse` ограничен baseline 211/1252.
 
 ## 8. Конвенции
 
 - Код — по `Documentation/process/coding-style.rst`.
 - Патчи — по `Documentation/process/submitting-patches.rst`, обязателен DCO.
 - AI-ассистенты — по `Documentation/process/coding-assistants.rst`.
+- Локальная политика AI-вклада — `AGENTS.md` (DCO, раскрытие, review).
 - Коммиты: атомарные, с префиксом подсистемы, `Signed-off-by`.
 - Ветки: `dev` — интеграция, `main` — зеркало upstream.
 

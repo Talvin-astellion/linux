@@ -17,10 +17,13 @@
 | allmodconfig | `JOBS=3 work/pipelines/scripts/build.sh` | rc=0, 9467 с, 12 ГБ |
 | KUnit | `JOBS=4 work/pipelines/scripts/kunit.sh` | rc=0, 303 с, 8599 passed / 39 skipped / 0 failed |
 | checkpatch | `BASE=origin/master work/pipelines/scripts/checkpatch.sh` | rc=0, 0 errors, 1 warning (FILE_PATH_CHANGES) |
-| sparse | `PATH=/tmp/opencode/sparse-src:$PATH JOBS=4 work/pipelines/scripts/sparse.sh` | rc=0, 2957 checks, 211 errors, 1252 warnings (advisory) |
+| sparse | `PATH=/tmp/opencode/sparse-src:$PATH JOBS=4 work/pipelines/scripts/sparse.sh` | rc=0, 2957 checks, 211 errors, 1252 warnings (baseline; blocking on increase) |
 | QEMU smoke | `work/pipelines/scripts/smoke-qemu.sh` | rc=0, `SMOKE_OK`, ~5 с |
 | machine 7.2.6 | `JOBS=3 work/pipelines/scripts/build-machine.sh` | rc=0, `7.2.6-machine`, 213 модулей, ~35 мин, debug off |
 | QEMU smoke (machine) | `QEMU_CPU=max KERNEL_IMAGE=work/build/machine-7.2.6/artifacts/bzImage-7.2.6-machine work/pipelines/scripts/smoke-qemu.sh` | rc=0, `SMOKE_OK`, ~5 с |
+| Push CI | `git push origin dev` | выполнен; `origin/dev` обновлён |
+| Branch protection | GitHub API PUT | `dev`: 5 required checks |
+| CI blocking | workflows | `sparse`/`kunit`/`smoke` без `continue-on-error` |
 
 Артефакты:
 
@@ -40,7 +43,7 @@
 | Блокер | Причина | Что нужно |
 |---|---|---|
 | Системный `sparse` | пакет 0.6.4 не проходит `scripts/checker-valid.sh` | собрать sparse из исходников (в CI уже так) |
-| Push CI | нет credentials для `origin`, `git push --dry-run` зависает | настроить SSH/токен и выполнить `git push origin dev` |
+| CI allmodconfig | первый прогон не завершён до нового push | дождаться нового CI-прогона |
 | ccache | пакет не установлен | `deps.sh` |
 | clang/rust/sphinx | не установлены | `deps.sh --full` |
 
@@ -56,9 +59,9 @@ work/build      17G
 
 ## Следующие шаги
 
-1. Разобрать baseline sparse (211 errors) и включить blocking для новых ошибок.
-2. Запушить `dev` и дождаться первого прогона CI.
-3. Включить branch protection после зелёного прогона.
-4. Перевести `sparse`/`kunit`/`smoke` из advisory в blocking.
+1. Дождаться нового CI-прогона и зафиксировать результат `allmodconfig`.
+2. Разобрать baseline sparse (211 errors) и при необходимости уточнить allowlist.
+3. Проверить branch protection: `dev` защищён, 5 required checks.
+4. `sparse`/`kunit`/`smoke` переведены в blocking.
 5. При необходимости установить `7.2.6-machine` в `/boot` по `plans/runbook.md`
    (сейчас не установлено).
