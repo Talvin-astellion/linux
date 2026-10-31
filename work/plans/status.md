@@ -17,6 +17,7 @@
 | allmodconfig | `JOBS=3 work/pipelines/scripts/build.sh` | rc=0, 9467 с, 12 ГБ |
 | KUnit | `JOBS=4 work/pipelines/scripts/kunit.sh` | rc=0, 303 с, 8599 passed / 39 skipped / 0 failed |
 | checkpatch | `BASE=origin/master work/pipelines/scripts/checkpatch.sh` | rc=0, 0 errors, 1 warning (FILE_PATH_CHANGES) |
+| sparse | `PATH=/tmp/opencode/sparse-src:$PATH JOBS=4 work/pipelines/scripts/sparse.sh` | rc=0, 2957 checks, 211 errors, 1252 warnings (advisory) |
 | QEMU smoke | `work/pipelines/scripts/smoke-qemu.sh` | rc=0, `SMOKE_OK`, ~5 с |
 
 Артефакты:
@@ -26,13 +27,14 @@
 - `work/build/allmodconfig/.config`, `work/build/allmodconfig/build.log`.
 - `work/build/kunit/kunit.json` — 2 109 095 байт.
 - `work/build/checkpatch.log`.
+- `work/build/sparse/sparse.log`, `work/build/sparse/summary.txt` — baseline sparse.
 - `work/build/smoke/qemu.log` — вывод загрузки ядра.
 
 ## Не выполнено / блокеры
 
 | Блокер | Причина | Что нужно |
 |---|---|---|
-| `sparse` | пакет не установлен, `sudo` требует пароль | `sudo apt-get install sparse` или `deps.sh` |
+| Системный `sparse` | пакет 0.6.4 не проходит `scripts/checker-valid.sh` | собрать sparse из исходников (в CI уже так) |
 | Push CI | нет credentials для `origin`, `git push --dry-run` зависает | настроить SSH/токен и выполнить `git push origin dev` |
 | ccache | пакет не установлен | `deps.sh` |
 | clang/rust/sphinx | не установлены | `deps.sh --full` |
@@ -46,7 +48,7 @@ work/build      13G
 
 ## Следующие шаги
 
-1. Установить `sparse` и выполнить `work/pipelines/scripts/sparse.sh`.
+1. Разобрать baseline sparse (211 errors) и включить blocking для новых ошибок.
 2. Запушить `dev` и дождаться первого прогона CI.
 3. Включить branch protection после зелёного прогона.
 4. Перевести `sparse`/`kunit`/`smoke` из advisory в blocking.

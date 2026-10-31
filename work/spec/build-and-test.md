@@ -113,10 +113,15 @@ UML-сборка и запуск `all_tests.config`. Результаты: `work
 | allmodconfig | 3 | 5.6 ГБ + swap | 12 ГБ | 9467 с (~2ч38м) |
 | KUnit (UML) | 4 | 5.6 ГБ | 260 МБ | 303 с (~5 мин) |
 | QEMU smoke | — | 512 МБ | ~1 МБ | ~5 с |
-| sparse (defconfig) | 4 | 5.6 ГБ | — | не выполнен: нет `sparse` |
+| sparse (defconfig) | 4 | 5.6 ГБ | 967 МБ | 2957 checks, 211 errors, 1252 warnings, ~5 мин (warm) |
 
 Фактические замеры baseline (2026-10-31): defconfig rc=0, allmodconfig rc=0,
-KUnit 8599 passed / 39 skipped / 0 failed, checkpatch 0 errors / 1 warning.
+KUnit 8599 passed / 39 skipped / 0 failed, checkpatch 0 errors / 1 warning,
+sparse rc=0 (211 errors / 1252 warnings, advisory).
+
+`sparse` из Ubuntu 0.6.4 не проходит `scripts/checker-valid.sh`
+(`__typeof_unqual__`); используйте сборку из
+`https://git.kernel.org/pub/scm/devel/sparse/sparse.git`.
 
 Ограничители в скриптах:
 
@@ -134,6 +139,8 @@ KUnit 8599 passed / 39 skipped / 0 failed, checkpatch 0 errors / 1 warning.
 | `work/build/kunit/kunit.json` | результаты KUnit |
 | `work/build/kunit/*.log` | логи UML |
 | `work/build/smoke/qemu.log` | вывод QEMU smoke |
+| `work/build/sparse/sparse.log` | полный лог sparse |
+| `work/build/sparse/summary.txt` | счётчики checks/errors/warnings |
 
 `vmlinux` и модули в CI не публикуются: слишком большой размер.
 

@@ -90,7 +90,7 @@ work/pipelines/install.sh
 | 0 | выполнена | baseline-тег, политика веток, toolchain проверен |
 | 1 | выполнена | defconfig 559 с / 966 МБ; allmodconfig 9467 с / 12 ГБ |
 | 2 | частично | workflows установлены, push и первый прогон на GitHub pending |
-| 3 | частично | KUnit 8599 passed; checkpatch 0 errors; sparse не запущен |
+| 3 | частично | KUnit 8599 passed; checkpatch 0 errors; sparse baseline 211/1252 (advisory) |
 | 4 | частично | QEMU smoke пройден; матрица clang и релизы не начаты |
 
 Подробности: `work/plans/status.md`.

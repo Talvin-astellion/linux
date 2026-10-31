@@ -18,10 +18,13 @@ work/pipelines/install.sh
 | Job | Файл | Скрипт | Блокирует |
 |---|---|---|---|
 | `checkpatch` | `github/checks.yml` | `scripts/checkpatch.sh` | да |
-| `sparse` | `github/checks.yml` | `scripts/sparse.sh` | нет (advisory) |
+| `sparse` | `github/checks.yml` | `scripts/sparse.sh` | нет (advisory)¹ |
 | `allmodconfig` | `github/build.yml` | `scripts/build.sh` | да |
 | `kunit` | `github/kunit.yml` | `scripts/kunit.sh` | нет (advisory) |
 | `smoke` | `github/smoke.yml` | `scripts/smoke-qemu.sh` | нет (advisory) |
+
+¹ CI собирает `sparse` из исходников: пакет Ubuntu 0.6.4 не проходит
+`scripts/checker-valid.sh`. Локально добавьте каталог со `sparse` в `PATH`.
 
 Оркестратор — `github/ci.yml`, вызывает три reusable workflow.
 

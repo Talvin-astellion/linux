@@ -12,7 +12,7 @@
 | ISSUE-03 | P1 | Нет CI и автоматических проверок | mitigated |
 | ISSUE-04 | P1 | Расхождение версии Makefile и upstream-тегов | open |
 | ISSUE-05 | P1 | Несогласованная топология веток, нет тегов | mitigated |
-| ISSUE-06 | P1 | Дыры в toolchain (sparse, clang, rust, sphinx) | open |
+| ISSUE-06 | P1 | Дыры в toolchain (sparse, clang, rust, sphinx) | mitigated |
 | ISSUE-07 | P1 | Ограничения GitHub-hosted runner | open |
 | ISSUE-08 | P2 | Тяжёлый `.git` (6.0 ГБ) | open |
 | ISSUE-09 | P2 | Нет локальной политики AI-вклада | open |
@@ -143,11 +143,14 @@ Rust и docs.
 **Мера**
 
 `work/pipelines/scripts/deps.sh` (базовый и `--full`); в CI ставится минимум,
-необходимый job-у.
+необходимый job-у. `sparse` 0.6.4 из Ubuntu не проходит
+`scripts/checker-valid.sh`; в CI он собирается из исходников. Локальный
+baseline: 211 errors, 1252 warnings.
 
 **Критерий закрытия**
 
 Базовый набор ставится одной командой; `sparse` доступен локально и в CI.
+Осталось: `clang`, `rust`, `sphinx` для полного набора.
 
 ## ISSUE-07 — Ограничения GitHub-hosted runner (P1)
 

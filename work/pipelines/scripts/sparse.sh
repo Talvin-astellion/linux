@@ -22,4 +22,13 @@ log "configuring defconfig in $BUILD_DIR"
 log "running sparse with -j$JOBS (log: $LOG_FILE)"
 "${MAKE[@]}" -j"$JOBS" C=2 CHECK=sparse 2>&1 | tee "$LOG_FILE"
 
+errors=$(grep -c 'error:' "$LOG_FILE" || true)
+warnings=$(grep -c 'warning:' "$LOG_FILE" || true)
+checks=$(grep -c 'CHECK' "$LOG_FILE" || true)
+{
+  echo "checks=$checks"
+  echo "errors=$errors"
+  echo "warnings=$warnings"
+} > "$BUILD_DIR/summary.txt"
+log "sparse summary: $checks checks, $errors errors, $warnings warnings"
 log "sparse complete: $LOG_FILE"

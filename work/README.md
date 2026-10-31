@@ -66,4 +66,4 @@ make -C work ci-install
 - Baseline: тег `baseline-20261031` (`541c433`).
 - Локально пройдены: defconfig, allmodconfig, KUnit, checkpatch, QEMU smoke — см. `plans/status.md`.
 - CI: workflows установлены в `.github/workflows/`, нужен push и первый прогон.
-- `sparse`: заблокирован отсутствием пакета (нужен sudo).
+- `sparse`: baseline 211 errors / 1252 warnings (advisory); системный пакет 0.6.4 не подходит, CI собирает sparse из исходников.
