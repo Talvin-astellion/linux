@@ -79,7 +79,10 @@ JOBS=3 work/pipelines/scripts/build-machine.sh
 ## Ограничения
 
 - GitHub-hosted runner: ~14 ГБ диска. `ci-cleanup.sh` освобождает место,
-  CI-фрагмент отключает debug-info/BTF.
+  CI-фрагмент отключает debug-info/BTF и тяжёлую инструментацию
+  (KASAN/UBSAN/KFENCE/GCOV, debug-pagealloc/VM/kmemleak).
+- `allmodconfig` в CI: `timeout-minutes: 360`, `JOBS=4`; первый прогон с
+  `JOBS=2` и timeout 180 не уложился.
 - `sparse` падает только при превышении baseline (`SPARSE_MAX_ERRORS`/`SPARSE_MAX_WARNINGS`).
 - При нехватке ресурсов используйте self-hosted runner с меткой `self-hosted`
   и замените `runs-on` в workflow.

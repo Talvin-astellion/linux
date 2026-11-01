@@ -10,7 +10,7 @@ jobs:
   allmodconfig:
     name: allmodconfig
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 360
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -35,7 +35,7 @@ jobs:
 
       - name: Build allmodconfig
         env:
-          JOBS: "2"
+          JOBS: "4"
           MIN_FREE_GB: "8"
         run: bash work/pipelines/scripts/build.sh
 
