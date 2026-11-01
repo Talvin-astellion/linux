@@ -83,15 +83,15 @@ work/pipelines/install.sh
 Первый прогон `allmodconfig` и `kunit` считать измерением baseline: зафиксировать
 время, размер, список падений.
 
-## Фактические результаты (2026-10-31)
+## Фактические результаты (2026-10-31 — 2026-11-01)
 
 | Фаза | Статус | Факт |
 |---|---|---|
 | 0 | выполнена | baseline-тег, политика веток, toolchain проверен |
 | 1 | выполнена | defconfig 559 с / 966 МБ; allmodconfig 9467 с / 12 ГБ |
-| 2 | частично | workflows установлены, push выполнен, branch protection для `dev` включён; allmodconfig в CI выполняется |
+| 2 | частично | workflows, push и branch protection готовы; allmodconfig отменён по timeout 180 мин, retry с 360 мин/`JOBS=4` выполняется |
 | 3 | выполнена | KUnit 8599 passed; checkpatch 0 errors; sparse baseline 211/1252 (blocking on increase); kselftests optional не начат |
-| 4 | частично | QEMU smoke, AGENTS.md и partial clone готовы; clang-матрица и релизы не начаты |
+| 4 | частично | QEMU smoke, AGENTS.md и partial clone готовы; clang/rust/sphinx и релизы не начаты (нужен sudo) |
 | local | выполнено | machine 7.2.6: 213 модулей, ~35 мин, debug off, QEMU smoke OK |
 
 Подробности: `work/plans/status.md`.

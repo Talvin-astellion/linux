@@ -47,7 +47,19 @@ CONFIG_DEBUG_INFO_NONE=y
 # CONFIG_DEBUG_INFO_DWARF5 is not set
 # CONFIG_DEBUG_INFO_BTF is not set
 # CONFIG_DEBUG_INFO_BTF_MODULES is not set
+
+# CONFIG_KASAN is not set
+# CONFIG_UBSAN is not set
+# CONFIG_KFENCE is not set
+# CONFIG_GCOV_KERNEL is not set
+# CONFIG_DEBUG_ATOMIC_SLEEP is not set
+# CONFIG_DEBUG_VM is not set
+# CONFIG_DEBUG_PAGEALLOC is not set
+# CONFIG_DEBUG_KMEMLEAK is not set
 ```
+
+Фрагмент уменьшает время hosted-runner сборки: debug-info и тяжёлая
+инструментация не нужны для проверки компиляции всех модулей.
 
 ## 3. Локальная сборка
 
@@ -112,6 +124,9 @@ JOBS=4 work/pipelines/scripts/sparse.sh
 `make defconfig` + `make C=2 CHECK=sparse`. Лог: `work/build/sparse/sparse.log`.
 Baseline: 211 errors / 1252 warnings. Скрипт падает при превышении
 `SPARSE_MAX_ERRORS`/`SPARSE_MAX_WARNINGS`; это защита от новых регрессий.
+Основная масса ошибок — 182 `incompatible types in comparison expression
+(different address spaces)`; далее 13 `too long token expansion` и единичные
+случаи. Это известный шум sparse, а не новые regressions.
 
 ### 4.3 QEMU smoke
 
@@ -138,6 +153,7 @@ Job blocking: локальный baseline 0 failed, CI-прогон зелёны
 |---|---|---|---|---|
 | defconfig | 4 | 5.6 ГБ | 966 МБ | 559 с (~9 мин) |
 | allmodconfig | 3 | 5.6 ГБ + swap | 12 ГБ | 9467 с (~2ч38м) |
+| allmodconfig (CI) | 4 | 16 ГБ | ~12 ГБ | timeout 360 мин; retry после 180-мин отмены |
 | machine 7.2.6 | 3 | 5.6 ГБ | 1.9 ГБ + 1.8 ГБ src | ~35 мин (cold, debug off) |
 | KUnit (UML) | 4 | 5.6 ГБ | 260 МБ | 303 с (~5 мин) |
 | QEMU smoke | — | 512 МБ | ~1 МБ | ~5 с |

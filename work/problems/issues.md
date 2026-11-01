@@ -85,6 +85,9 @@ allmodconfig стабильно собирается локально и в CI �
 
 PR запускает `checkpatch`, `sparse`, `allmodconfig`, `kunit`; статус виден в PR.
 
+**Проверка (2026-10-31):** CI run `41185886775` — `checkpatch`, `sparse`,
+`kunit`, `smoke` успешны; `allmodconfig` отменён по `timeout-minutes: 180`.
+
 ## ISSUE-04 — Расхождение версии (P1)
 
 **Доказательства**
@@ -169,16 +172,19 @@ baseline: 211 errors, 1252 warnings.
 **Доказательства**
 
 Стандартный runner: ~4 CPU, 16 ГБ RAM, ~14 ГБ свободного диска.
+Прогон `41185886775`: `allmodconfig` отменён ровно через 180 мин.
 
 **Влияние**
 
-allmodconfig не помещается по диску без очистки и отключения debug-info.
+allmodconfig не помещается по диску без очистки и отключения debug-info;
+при `JOBS=2` сборка не укладывается в 3 часа.
 
 **Мера**
 
 `ci-cleanup.sh` (удаление dotnet/android/ghc/CodeQL/boost, docker prune),
-CI-фрагмент без debug-info, `JOBS=2`, артефакты только логи/конфиг.
-При необходимости — self-hosted runner.
+CI-фрагмент без debug-info и тяжёлой инструментации (KASAN/UBSAN/KFENCE/GCOV,
+debug-pagealloc/VM/kmemleak), `JOBS=4`, timeout 360 мин, артефакты только
+логи/конфиг. При необходимости — self-hosted runner.
 
 **Критерий закрытия**
 

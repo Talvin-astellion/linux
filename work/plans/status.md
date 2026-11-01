@@ -2,7 +2,7 @@
 
 | Поле | Значение |
 |---|---|
-| Дата | 2026-10-31 |
+| Дата | 2026-11-01 |
 | Ветка | `dev` |
 | Baseline-тег | `baseline-20261031` (`541c43310e85`) |
 | Окружение | 12 CPU, 5.6 ГБ RAM + 4 ГБ swap, 32 ГБ свободно на старте |
@@ -24,6 +24,8 @@
 | Push CI | `git push origin dev` | выполнен; `origin/dev` обновлён |
 | Branch protection | GitHub API PUT | `dev`: 5 required checks |
 | CI blocking | workflows | `sparse`/`kunit`/`smoke` без `continue-on-error` |
+| CI first run | GitHub Actions `41185886775` | checkpatch/sparse/kunit/smoke success; allmodconfig отменён по timeout 180 мин |
+| CI retry config | `build.yml`, `allmodconfig-ci.config` | timeout 360 мин, `JOBS=4`, KASAN/UBSAN/KFENCE/GCOV/debug off |
 
 Артефакты:
 
@@ -43,14 +45,14 @@
 | Блокер | Причина | Что нужно |
 |---|---|---|
 | Системный `sparse` | пакет 0.6.4 не проходит `scripts/checker-valid.sh` | собрать sparse из исходников (в CI уже так) |
-| CI allmodconfig | первый прогон не завершён до нового push | дождаться нового CI-прогона |
+| CI allmodconfig | первый прогон отменён по `timeout-minutes: 180`; retry с 360 мин ещё не завершён | дождаться результата retry |
 | ccache | пакет не установлен | `deps.sh` |
 | clang/rust/sphinx | не установлены | `deps.sh --full` |
 
 ## Состояние диска после прогонов
 
 ```
-/dev/nvme0n1p4  99G  79G  15G  85% /
+/dev/nvme0n1p4  99G  73G  22G  77% /
 work/build      17G
   allmodconfig  12G
   src-7.2.6     1.8G
@@ -59,9 +61,12 @@ work/build      17G
 
 ## Следующие шаги
 
-1. Дождаться нового CI-прогона и зафиксировать результат `allmodconfig`.
-2. Разобрать baseline sparse (211 errors) и при необходимости уточнить allowlist.
-3. Проверить branch protection: `dev` защищён, 5 required checks.
+1. Дождаться retry CI-прогона (`timeout 360`, `JOBS=4`) и зафиксировать
+   результат `allmodconfig`.
+2. Разобрать baseline sparse (211 errors): основная масса — address-space
+   `__rcu` сравнения; новые regressions блокируются порогом.
+3. Включить `enforce_admins`/PR-only для `dev` и защиту `main` после финального
+   push документации.
 4. `sparse`/`kunit`/`smoke` переведены в blocking.
 5. При необходимости установить `7.2.6-machine` в `/boot` по `plans/runbook.md`
-   (сейчас не установлено).
+   (сейчас не установлено; нужен sudo).

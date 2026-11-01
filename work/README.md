@@ -71,5 +71,5 @@ make -C work ci-install
 - Локально пройдены: defconfig, allmodconfig, KUnit, checkpatch, QEMU smoke — см. `plans/status.md`.
 - Машинная сборка: `7.2.6-machine`, 213 модулей, QEMU smoke OK.
 - AI-политика: `AGENTS.md`; partial clone описан в `plans/runbook.md`.
-- CI: workflows установлены, push выполнен, branch protection для `dev` включён; прогон на GitHub выполняется.
+- CI: workflows установлены, push выполнен, branch protection для `dev` включён; первый прогон — 4/5, `allmodconfig` retry с timeout 360 и `JOBS=4`.
 - `sparse`: baseline 211 errors / 1252 warnings, blocking on increase; системный пакет 0.6.4 не подходит, CI собирает sparse из исходников.

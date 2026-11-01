@@ -126,7 +126,9 @@ git push origin dev
 1. Включить branch protection для `dev`; required checks — `checks / checkpatch`,
    `checks / sparse`, `build / allmodconfig`, `kunit / kunit`, `smoke / qemu-smoke`.
 2. `sparse` ограничен baseline 211/1252; `kunit` и `smoke` blocking.
-3. Для `main` protection включать только вместе с политикой sync с upstream.
+3. `allmodconfig` в CI: `timeout-minutes: 360`, `JOBS=4`, CI-фрагмент без
+   debug-info/KASAN/UBSAN/KFENCE/GCOV; иначе hosted runner упирается в 3 часа.
+4. Для `main` protection включать только вместе с политикой sync с upstream.
 
 ## 6. Обновление из upstream
 
@@ -166,6 +168,7 @@ CI использует `actions/checkout` с минимально нужной 
 | `source tree is not clean` | сборка `O=` из грязного дерева | использовать `work/build/src-*` |
 | workflow не запускается | YAML не в `.github/workflows` | `install.sh` |
 | reusable workflow not found | скопирован только `ci.yml` | скопировать все файлы |
+| `allmodconfig` отменён через 3 ч | timeout 180 и медленный runner | timeout 360, `JOBS=4`, облегчённый CI-фрагмент |
 
 ## 8. Очистка
 

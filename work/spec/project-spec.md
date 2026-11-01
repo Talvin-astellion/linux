@@ -144,8 +144,9 @@ Toolchain:
 - Jobs: `checkpatch`, `sparse`, `allmodconfig`, `kunit`, `smoke`.
 - Канонические workflows: `work/pipelines/github/`.
 - Установка: `work/pipelines/install.sh` копирует их в `.github/workflows/`.
-- Ограничения GitHub-hosted runner: ~14 ГБ диска, поэтому allmodconfig
-  собирается с отключённым debug-info и `-j2`, плюс очистка образа раннера.
+- Ограничения GitHub-hosted runner: ~14 ГБ диска и медленная сборка.
+  allmodconfig идёт с `timeout-minutes: 360`, `JOBS=4`, отключёнными
+  debug-info и тяжёлой инструментацией, плюс очистка образа раннера.
 - Branch protection для `dev`: required checks `checkpatch`, `sparse`,
   `allmodconfig`, `kunit`, `smoke`; `sparse` ограничен baseline 211/1252.
 
