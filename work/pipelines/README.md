@@ -72,6 +72,7 @@ JOBS=3 work/pipelines/scripts/build-machine.sh
 | `work/build/sparse/sparse.log` | sparse |
 | `work/build/kunit/kunit.json` | kunit |
 | `work/build/smoke/qemu.log` | smoke |
+| `work/build/smoke/qemu-debug.log` | smoke (только при падении) |
 | `work/build/machine-7.2.6/artifacts/` | machine |
 | `work/build/machine-7.2.6/modules/` | machine |
 | `work/build/machine-7.2.6/summary.txt` | machine |
@@ -87,6 +88,9 @@ JOBS=3 work/pipelines/scripts/build-machine.sh
   `if: always()`), поэтому частичный кэш переживает отмену job; размер ограничен
   `CCACHE_MAXSIZE=4G`.
 - `sparse` падает только при превышении baseline (`SPARSE_MAX_ERRORS`/`SPARSE_MAX_WARNINGS`).
+- `smoke` закреплён на `ubuntu-24.04`: на `ubuntu-latest` (Ubuntu 26.04,
+  QEMU 10.2.1) ядро падает до вывода консоли. См. ISSUE-11; на падении
+  выгружаются `qemu.log`, `qemu-debug.log` и `bzImage`.
 - При нехватке ресурсов используйте self-hosted runner с меткой `self-hosted`
   и замените `runs-on` в workflow.
 

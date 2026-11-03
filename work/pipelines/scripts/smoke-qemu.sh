@@ -19,6 +19,12 @@ require_tool timeout
 require_tool "$QEMU"
 require_disk "${MIN_FREE_GB:-1}"
 
+log "QEMU: $("$QEMU" --version | head -n 1)"
+log "gcc: $(gcc --version | head -n 1)"
+if have ld; then
+  log "ld: $(ld --version | head -n 1)"
+fi
+
 [[ -f "$KERNEL_IMAGE" ]] || die "kernel image not found: $KERNEL_IMAGE (build defconfig first)"
 prepare_build_root
 mkdir -p "$BUILD_DIR/root/dev" "$BUILD_DIR/root/proc" "$BUILD_DIR/root/sys"
@@ -46,19 +52,30 @@ log "booting $KERNEL_IMAGE in QEMU (timeout ${SMOKE_TIMEOUT}s)"
 QEMU_ARGS=(
   -kernel "$KERNEL_IMAGE"
   -initrd "$BUILD_DIR/initramfs.cpio.gz"
-  -append "console=ttyS0 rdinit=/init panic=-1"
+  -append "console=ttyS0 earlycon=uart8250,io,0x3f8,115200n8 earlyprintk=ttyS0,115200 rdinit=/init panic=-1"
   -nographic -no-reboot -m "$SMOKE_MEM"
 )
 if [[ -n "$QEMU_CPU" ]]; then
   QEMU_ARGS+=(-cpu "$QEMU_CPU")
 fi
 
+rc=0
 timeout "$SMOKE_TIMEOUT" "$QEMU" "${QEMU_ARGS[@]}" \
-  > "$BUILD_DIR/qemu.log" 2>&1 || true
+  > "$BUILD_DIR/qemu.log" 2>&1 || rc=$?
 
 if ! grep -q 'SMOKE_OK' "$BUILD_DIR/qemu.log"; then
+  log "QEMU exited with status $rc"
   tail -n 50 "$BUILD_DIR/qemu.log" >&2
-  die "QEMU smoke test failed (log: $BUILD_DIR/qemu.log)"
+  if (( rc != 124 )); then
+    log "capturing interrupt/reset trace in $BUILD_DIR/qemu-debug.log"
+    timeout 30 "$QEMU" "${QEMU_ARGS[@]}" \
+      -d int,cpu_reset -D "$BUILD_DIR/qemu-debug.log" \
+      > /dev/null 2>&1 || true
+    if [[ -s "$BUILD_DIR/qemu-debug.log" ]]; then
+      tail -n 80 "$BUILD_DIR/qemu-debug.log" >&2
+    fi
+  fi
+  die "QEMU smoke test failed (status $rc; log: $BUILD_DIR/qemu.log)"
 fi
 
 log "QEMU smoke OK (log: $BUILD_DIR/qemu.log)"

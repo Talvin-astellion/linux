@@ -165,6 +165,7 @@ CI использует `actions/checkout` с минимально нужной 
 | KUnit timeout | медленный runner | увеличить `KUNIT_TIMEOUT` |
 | sparse не найден | нет пакета | `sudo apt-get install sparse` |
 | QEMU smoke не стартует native-ядро | QEMU CPU не поддерживает `-march=native` | `QEMU_CPU=max` |
+| QEMU smoke: `Booting from ROM..` и мгновенный выход | Ubuntu 26.04 / QEMU 10.2.1 (ISSUE-11) | использовать `ubuntu-24.04`; смотреть `qemu-debug.log` |
 | `source tree is not clean` | сборка `O=` из грязного дерева | использовать `work/build/src-*` |
 | workflow не запускается | YAML не в `.github/workflows` | `install.sh` |
 | reusable workflow not found | скопирован только `ci.yml` | скопировать все файлы |

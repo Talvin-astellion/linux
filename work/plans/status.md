@@ -26,6 +26,8 @@
 | CI blocking | workflows | `sparse`/`kunit`/`smoke` без `continue-on-error` |
 | CI first run | GitHub Actions `41185886775` | checkpatch/sparse/kunit/smoke success; allmodconfig отменён по timeout 180 мин |
 | CI retry config | `build.yml`, `allmodconfig-ci.config` | timeout 360 мин, `JOBS=4`, KASAN/UBSAN/KFENCE/GCOV/debug off |
+| CI runner migration | `smoke.yml` | smoke закреплён на `ubuntu-24.04` (QEMU 10.2.1 ломает boot, ISSUE-11) |
+| Smoke diagnostics | `smoke-qemu.sh` | версии QEMU/gcc/ld, код возврата, `earlycon`, `qemu-debug.log` |
 
 Артефакты:
 
@@ -70,3 +72,5 @@ work/build      17G
 4. `sparse`/`kunit`/`smoke` переведены в blocking.
 5. При необходимости установить `7.2.6-machine` в `/boot` по `plans/runbook.md`
    (сейчас не установлено; нужен sudo).
+6. ISSUE-11: прогнать матрицу 24.04/26.04 × QEMU 8.2.2/10.2.1 на failing
+   `bzImage` и снять pin после выяснения причины.

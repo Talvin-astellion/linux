@@ -136,7 +136,14 @@ KERNEL_IMAGE=work/build/defconfig/arch/x86/boot/bzImage \
 ```
 
 Собирает минимальный initramfs, загружает ядро в QEMU и ждёт строку
-`SMOKE_OK`. Лог: `work/build/smoke/qemu.log`.
+`SMOKE_OK`. Лог: `work/build/smoke/qemu.log`. Скрипт печатает версии
+QEMU/gcc/ld, фиксирует код возврата QEMU, добавляет
+`earlycon`/`earlyprintk` и на падении снимает трассу
+`work/build/smoke/qemu-debug.log` (`-d int,cpu_reset`).
+
+Smoke-job закреплён на `runs-on: ubuntu-24.04`: на Ubuntu 26.04
+(QEMU 10.2.1) defconfig `bzImage` падает до вывода консоли (ISSUE-11).
+На падении CI также выгружает `arch/x86/boot/bzImage`.
 
 ### 4.4 KUnit
 
