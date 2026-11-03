@@ -26,7 +26,8 @@ jobs:
             libncurses-dev dwarves cpio kmod ccache
 
       - name: Restore ccache
-        uses: actions/cache@v4
+        id: ccache
+        uses: actions/cache/restore@v4
         with:
           path: ~/.cache/ccache
           key: ccache-allmodconfig-${{ github.sha }}
@@ -37,7 +38,15 @@ jobs:
         env:
           JOBS: "4"
           MIN_FREE_GB: "8"
+          CCACHE_MAXSIZE: "4G"
         run: bash work/pipelines/scripts/build.sh
+
+      - name: Save ccache
+        if: always() && steps.ccache.outputs.cache-primary-key != '' && steps.ccache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ~/.cache/ccache
+          key: ${{ steps.ccache.outputs.cache-primary-key }}
 
       - name: Upload config
         if: always()

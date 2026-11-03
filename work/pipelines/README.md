@@ -82,7 +82,10 @@ JOBS=3 work/pipelines/scripts/build-machine.sh
   CI-фрагмент отключает debug-info/BTF и тяжёлую инструментацию
   (KASAN/UBSAN/KFENCE/GCOV, debug-pagealloc/VM/kmemleak).
 - `allmodconfig` в CI: `timeout-minutes: 360`, `JOBS=4`; первый прогон с
-  `JOBS=2` и timeout 180 не уложился.
+  `JOBS=2` и timeout 180 не уложился. ccache восстанавливается и сохраняется
+  отдельными шагами (`actions/cache/restore` + `actions/cache/save` с
+  `if: always()`), поэтому частичный кэш переживает отмену job; размер ограничен
+  `CCACHE_MAXSIZE=4G`.
 - `sparse` падает только при превышении baseline (`SPARSE_MAX_ERRORS`/`SPARSE_MAX_WARNINGS`).
 - При нехватке ресурсов используйте self-hosted runner с меткой `self-hosted`
   и замените `runs-on` в workflow.
