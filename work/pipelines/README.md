@@ -88,6 +88,9 @@ JOBS=3 work/pipelines/scripts/build-machine.sh
   `if: always()`), поэтому частичный кэш переживает отмену job; размер ограничен
   `CCACHE_MAXSIZE=4G`.
 - `sparse` падает только при превышении baseline (`SPARSE_MAX_ERRORS`/`SPARSE_MAX_WARNINGS`).
+- `checkpatch` использует `fetch-depth: 1` и отдельно подтягивает tip базовой
+  ветки с `--depth=1`: полный history (~6 ГБ) не нужен, а на полном checkout
+  job упирался в timeout 20 мин (ISSUE-12).
 - `smoke` закреплён на `ubuntu-24.04`: на `ubuntu-latest` (Ubuntu 26.04,
   QEMU 10.2.1) ядро падает до вывода консоли. См. ISSUE-11; на падении
   выгружаются `qemu.log`, `qemu-debug.log` и `bzImage`.

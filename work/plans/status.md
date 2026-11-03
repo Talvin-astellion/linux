@@ -2,7 +2,7 @@
 
 | Поле | Значение |
 |---|---|
-| Дата | 2026-11-01 |
+| Дата | 2026-11-04 |
 | Ветка | `dev` |
 | Baseline-тег | `baseline-20261031` (`541c43310e85`) |
 | Окружение | 12 CPU, 5.6 ГБ RAM + 4 ГБ swap, 32 ГБ свободно на старте |
@@ -28,6 +28,8 @@
 | CI retry config | `build.yml`, `allmodconfig-ci.config` | timeout 360 мин, `JOBS=4`, KASAN/UBSAN/KFENCE/GCOV/debug off |
 | CI runner migration | `smoke.yml` | smoke закреплён на `ubuntu-24.04` (QEMU 10.2.1 ломает boot, ISSUE-11) |
 | Smoke diagnostics | `smoke-qemu.sh` | версии QEMU/gcc/ld, код возврата, `earlycon`, `qemu-debug.log` |
+| CI allmodconfig retry | GitHub Actions `41698069267` | success, 2 ч 04 мин |
+| CI checkpatch timeout | `checks.yml`, `checkpatch.sh` | `fetch-depth: 1` + shallow base fetch, timeout 30 (ISSUE-12) |
 
 Артефакты:
 
@@ -47,7 +49,7 @@
 | Блокер | Причина | Что нужно |
 |---|---|---|
 | Системный `sparse` | пакет 0.6.4 не проходит `scripts/checker-valid.sh` | собрать sparse из исходников (в CI уже так) |
-| CI allmodconfig | первый прогон отменён по `timeout-minutes: 180`; retry с 360 мин ещё не завершён | дождаться результата retry |
+| CI checkpatch | run `41698069267` отменён по timeout 20 мин на полном checkout | исправлено (ISSUE-12); проверить на следующем push |
 | ccache | пакет не установлен | `deps.sh` |
 | clang/rust/sphinx | не установлены | `deps.sh --full` |
 
@@ -63,8 +65,8 @@ work/build      17G
 
 ## Следующие шаги
 
-1. Дождаться retry CI-прогона (`timeout 360`, `JOBS=4`) и зафиксировать
-   результат `allmodconfig`.
+1. Проверить на следующем push, что `checks / checkpatch` проходит с
+   `--depth=1` быстрее 30 мин, и закрыть ISSUE-12.
 2. Разобрать baseline sparse (211 errors): основная масса — address-space
    `__rcu` сравнения; новые regressions блокируются порогом.
 3. Включить `enforce_admins`/PR-only для `dev` и защиту `main` после финального

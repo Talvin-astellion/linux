@@ -18,6 +18,7 @@
 | ISSUE-09 | P2 | Нет локальной политики AI-вклада | closed |
 | ISSUE-10 | P2 | Нет smoke-теста загрузки и хранения артефактов | mitigated |
 | ISSUE-11 | P1 | `ubuntu-latest` 26.04 ломает QEMU smoke | mitigated |
+| ISSUE-12 | P1 | `checkpatch` отменяется на полном checkout | mitigated |
 
 ## ISSUE-01 — Нет воспроизводимой сборки и baseline (P0)
 
@@ -298,3 +299,40 @@ pin снят или заменён документированным workaround
 
 Матрица в контейнерах: сборка 24.04 / 26.04 × QEMU 8.2.2 / 10.2.1 с
 загруженным failing `bzImage`, чтобы разделить toolchain и QEMU.
+
+## ISSUE-12 — `checkpatch` отменяется на полном checkout (P1)
+
+**Доказательства**
+
+- Прогон `41698069267` (2026-11-03): job `checks / checkpatch` стартовал в
+  18:53:25 и завершился в 19:13:29 — ровно через 20 мин, conclusion
+  `cancelled`.
+- В логе Checkout выполняется fetch без `--depth`, то есть `fetch-depth: 0`
+  (`work/pipelines/github/checks.yml`):
+
+  ```
+  git -c protocol.version=2 fetch --prune --no-recurse-submodules origin \
+    +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+  ```
+- `.git` репозитория — ~6 ГБ, 11.3 млн объектов; полный fetch не укладывается
+  в `timeout-minutes: 20`.
+- Остальные jobs того же прогона успешны, включая `allmodconfig` (2 ч 04 мин).
+
+**Влияние**
+
+Каждый push/PR в `dev` получает красный `checkpatch` из-за таймаута, хотя
+изменения корректны; CI тратит 20 мин на загрузку ненужной истории.
+
+**Мера**
+
+- `checkpatch` checkout переведён на `fetch-depth: 1`.
+- Базовая ветка подтягивается отдельно:
+  `git fetch --no-tags --depth=1 origin +refs/heads/<base>:refs/remotes/origin/<base>`.
+- `checkpatch.sh` больше не требует `HEAD^` (в shallow-клоне его нет) и падает,
+  если база недоступна в shallow-репозитории, вместо ложного «no changes».
+- `timeout-minutes` увеличен до 30 как запас.
+
+**Критерий закрытия**
+
+Очередной push в `dev` проходит `checks / checkpatch` быстрее 30 мин без
+полного fetch; в логе виден `--depth=1`.

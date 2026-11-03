@@ -151,8 +151,9 @@ git clone --filter=blob:none https://github.com/Talvin-astellion/linux
 git gc --aggressive --prune=now
 ```
 
-CI использует `actions/checkout` с минимально нужной глубиной; полный history
-нужен только для `checkpatch` (`fetch-depth: 0`).
+CI использует `actions/checkout` с `fetch-depth: 1`; `checkpatch` дополнительно
+подтягивает только tip базовой ветки (`git fetch --depth=1`), полный history не
+нужен.
 
 ## 7. Troubleshooting
 
@@ -170,6 +171,7 @@ CI использует `actions/checkout` с минимально нужной 
 | workflow не запускается | YAML не в `.github/workflows` | `install.sh` |
 | reusable workflow not found | скопирован только `ci.yml` | скопировать все файлы |
 | `allmodconfig` отменён через 3 ч | timeout 180 и медленный runner | timeout 360, `JOBS=4`, облегчённый CI-фрагмент |
+| `checkpatch` отменён на Checkout | полный fetch 6 ГБ упирается в timeout 20 мин | `fetch-depth: 1` + shallow base fetch (ISSUE-12) |
 
 ## 8. Очистка
 
