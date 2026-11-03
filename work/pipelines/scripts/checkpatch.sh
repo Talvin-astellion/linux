@@ -11,14 +11,12 @@ require_tool perl
 
 BASE="${BASE:-origin/${GITHUB_BASE_REF:-master}}"
 if ! git rev-parse --verify --quiet "$BASE^{commit}" >/dev/null; then
+  if [ "$(git rev-parse --is-shallow-repository)" = "true" ]; then
+    die "base $BASE is not available in a shallow clone; fetch it first"
+  fi
   BASE="$(git rev-list --max-parents=0 HEAD | tail -n 1)"
 fi
 RANGE="$BASE..HEAD"
-
-if ! git rev-parse --verify --quiet HEAD^ >/dev/null; then
-  log "no parent commit; nothing to check"
-  exit 0
-fi
 
 if git diff --quiet "$RANGE"; then
   log "no changes in $RANGE"

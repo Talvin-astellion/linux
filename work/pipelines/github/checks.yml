@@ -10,12 +10,12 @@ jobs:
   checkpatch:
     name: checkpatch
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Install perl
         run: |
@@ -26,12 +26,10 @@ jobs:
         env:
           GITHUB_BASE_REF: ${{ github.base_ref }}
         run: |
-          if [ -n "${GITHUB_BASE_REF}" ]; then
-            git fetch --no-tags origin "${GITHUB_BASE_REF}"
-            export BASE="origin/${GITHUB_BASE_REF}"
-          else
-            export BASE="origin/master"
-          fi
+          base_ref="${GITHUB_BASE_REF:-master}"
+          git fetch --no-tags --depth=1 origin \
+            "+refs/heads/${base_ref}:refs/remotes/origin/${base_ref}"
+          export BASE="origin/${base_ref}"
           bash work/pipelines/scripts/checkpatch.sh
 
   sparse:
