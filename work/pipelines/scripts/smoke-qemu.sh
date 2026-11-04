@@ -3,6 +3,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=lib.sh
 source "$SCRIPT_DIR/lib.sh"
 
 BUILD_DIR="${BUILD_DIR:-$BUILD_ROOT/smoke}"
@@ -10,6 +11,7 @@ KERNEL_IMAGE="${KERNEL_IMAGE:-$BUILD_ROOT/defconfig/arch/x86/boot/bzImage}"
 QEMU="${QEMU:-qemu-system-x86_64}"
 SMOKE_TIMEOUT="${SMOKE_TIMEOUT:-120}"
 SMOKE_MEM="${SMOKE_MEM:-512M}"
+SMOKE_APPEND="${SMOKE_APPEND:-}"
 QEMU_CPU="${QEMU_CPU:-}"
 
 require_tool gcc
@@ -25,7 +27,7 @@ if have ld; then
   log "ld: $(ld --version | head -n 1)"
 fi
 
-[[ -f "$KERNEL_IMAGE" ]] || die "kernel image not found: $KERNEL_IMAGE (build defconfig first)"
+require_file "$KERNEL_IMAGE"
 prepare_build_root
 mkdir -p "$BUILD_DIR/root/dev" "$BUILD_DIR/root/proc" "$BUILD_DIR/root/sys"
 
@@ -51,6 +53,9 @@ gcc -static -O2 -o "$BUILD_DIR/root/init" "$BUILD_DIR/init.c"
 log "booting $KERNEL_IMAGE in QEMU (timeout ${SMOKE_TIMEOUT}s)"
 QEMU_APPEND="console=ttyS0 earlycon=uart8250,io,0x3f8,115200n8"
 QEMU_APPEND+=" earlyprintk=ttyS0,115200 rdinit=/init panic=-1"
+if [[ -n "$SMOKE_APPEND" ]]; then
+  QEMU_APPEND+=" $SMOKE_APPEND"
+fi
 QEMU_ARGS=(
   -kernel "$KERNEL_IMAGE"
   -initrd "$BUILD_DIR/initramfs.cpio.gz"

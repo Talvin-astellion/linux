@@ -24,6 +24,14 @@ require_tool() {
   have "$1" || die "missing required tool: $1 (run work/pipelines/scripts/deps.sh)"
 }
 
+require_file() {
+  [[ -f "$1" ]] || die "missing file: $1"
+}
+
+require_dir() {
+  [[ -d "$1" ]] || die "missing directory: $1"
+}
+
 detect_jobs() {
   local cpus mem_gb by_mem
   cpus="$(nproc)"
@@ -48,6 +56,19 @@ require_disk() {
 
 prepare_build_root() {
   mkdir -p "$BUILD_ROOT"
+}
+
+run_logged() {
+  local log_file="$1"
+  shift
+  "$@" 2>&1 | tee "$log_file"
+}
+
+list_files() {
+  local file
+  while IFS= read -r file; do
+    [[ -f "$file" ]] && printf '%s\n' "$file"
+  done < <(git -C "$REPO_ROOT" ls-files --cached --others --exclude-standard -- "$@" | sort -u)
 }
 
 export REPO_ROOT WORK_DIR BUILD_ROOT JOBS

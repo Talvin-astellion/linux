@@ -1,0 +1,7 @@
+# SPDX-License-Identifier: GPL-2.0-only
+landlock_id
+landlock_fs
+landlock_audit
+landlock_domain
+apparmor_policy_unpack
+ipe-parser

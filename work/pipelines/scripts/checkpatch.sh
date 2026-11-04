@@ -3,6 +3,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=lib.sh
 source "$SCRIPT_DIR/lib.sh"
 
 cd "$REPO_ROOT"
@@ -24,8 +25,11 @@ if git diff --quiet "$RANGE"; then
 fi
 
 log "checkpatch: $RANGE"
-OUTPUT="$(git diff --no-color "$RANGE" | \
-  "$REPO_ROOT/scripts/checkpatch.pl" --no-tree --strict --show-types - || true)"
+DIFF_FILE="$(mktemp)"
+trap 'rm -f "$DIFF_FILE"' EXIT
+git diff --no-color "$RANGE" > "$DIFF_FILE"
+OUTPUT="$("$REPO_ROOT/scripts/checkpatch.pl" \
+  --no-tree --strict --show-types - < "$DIFF_FILE" || true)"
 printf '%s\n' "$OUTPUT"
 
 if printf '%s\n' "$OUTPUT" | grep -qE '^ERROR:'; then

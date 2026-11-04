@@ -3,6 +3,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=lib.sh
 source "$SCRIPT_DIR/lib.sh"
 
 BUILD_DIR="${BUILD_DIR:-$BUILD_ROOT/kunit}"
@@ -11,6 +12,11 @@ KUNIT_TIMEOUT="${KUNIT_TIMEOUT:-900}"
 
 require_tool python3
 require_tool make
+if [[ "$KUNITCONFIG" = /* ]]; then
+  require_file "$KUNITCONFIG"
+else
+  require_file "$REPO_ROOT/$KUNITCONFIG"
+fi
 require_disk "${MIN_FREE_GB:-5}"
 prepare_build_root
 mkdir -p "$BUILD_DIR"

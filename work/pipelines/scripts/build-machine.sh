@@ -3,11 +3,13 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=lib.sh
 source "$SCRIPT_DIR/lib.sh"
 
 SRC_TREE="${SRC_TREE:-/home/talvin/linux-7.2.6}"
 BASE_CONFIG="${BASE_CONFIG:-/boot/config-$(uname -r)}"
 FRAGMENT="${FRAGMENT:-$SCRIPT_DIR/../configs/machine.config}"
+SYMBOLS_FILE="${SYMBOLS_FILE:-$SCRIPT_DIR/../configs/machine-symbols.txt}"
 
 KVER="$(make -s -C "$SRC_TREE" kernelversion 2>/dev/null || true)"
 [[ -n "$KVER" ]] || die "cannot determine kernel version from $SRC_TREE/Makefile"
@@ -20,16 +22,18 @@ MODULES_DIR="$BUILD_DIR/modules"
 
 require_tool make
 require_tool gcc
-[[ -d "$SRC_TREE" ]] || die "source tree not found: $SRC_TREE"
-[[ -r "$BASE_CONFIG" ]] || die "base config not found: $BASE_CONFIG"
-[[ -r "$FRAGMENT" ]] || die "fragment not found: $FRAGMENT"
+require_tool rsync
+require_dir "$SRC_TREE"
+require_file "$BASE_CONFIG"
+require_file "$FRAGMENT"
+require_file "$SYMBOLS_FILE"
 
 prepare_build_root
 
 if [[ ! -d "$SRC_COPY" ]]; then
   require_disk "${MIN_FREE_GB:-14}"
   log "copying $SRC_TREE to $SRC_COPY"
-  cp -a "$SRC_TREE" "$SRC_COPY"
+  rsync -a "$SRC_TREE"/ "$SRC_COPY"/
 fi
 
 if [[ -e "$SRC_COPY/.config" || -e "$SRC_COPY/include/config/auto.conf" ]]; then
@@ -51,19 +55,7 @@ log "applying machine fragment $FRAGMENT"
   "$BUILD_DIR/.config" "$FRAGMENT"
 "${MAKE[@]}" olddefconfig
 
-REQUIRED_SYMS=(
-  CONFIG_X86_NATIVE_CPU
-  CONFIG_DRM_AMDGPU
-  CONFIG_RTW88
-  CONFIG_RTW88_8822CE
-  CONFIG_R8169
-  CONFIG_BLK_DEV_NVME
-  CONFIG_SND_HDA_INTEL
-  CONFIG_SND_SOC_SOF_AMD_RENOIR
-  CONFIG_USB_XHCI_HCD
-  CONFIG_BT_RTL
-  CONFIG_KVM_AMD
-)
+mapfile -t REQUIRED_SYMS < <(grep -vE '^[[:space:]]*(#|$)' "$SYMBOLS_FILE")
 missing=()
 for sym in "${REQUIRED_SYMS[@]}"; do
   grep -q "^${sym}=[ym]$" "$BUILD_DIR/.config" || missing+=("$sym")
@@ -80,8 +72,7 @@ grep -q '^CONFIG_LOCALVERSION="-machine"$' "$BUILD_DIR/.config" || \
   > "$BUILD_DIR/config.diff" || true
 
 log "building $KVER with -j$JOBS (log: $LOG_FILE)"
-set -o pipefail
-"${MAKE[@]}" -j"$JOBS" 2>&1 | tee "$LOG_FILE"
+run_logged "$LOG_FILE" "${MAKE[@]}" -j"$JOBS"
 
 KERNELRELEASE="$("${MAKE[@]}" -s kernelrelease)"
 log "kernelrelease: $KERNELRELEASE"
@@ -108,8 +99,8 @@ fi
   echo "base_config=$BASE_CONFIG"
   echo "build_dir=$BUILD_DIR"
   echo "jobs=$JOBS"
-  echo "native_cpu=$(grep -c '^CONFIG_X86_NATIVE_CPU=y$' "$BUILD_DIR/.config")"
-  echo "debug_info_none=$(grep -c '^CONFIG_DEBUG_INFO_NONE=y$' "$BUILD_DIR/.config")"
+  echo "native_cpu=$(grep -c '^CONFIG_X86_NATIVE_CPU=y$' "$BUILD_DIR/.config" || true)"
+  echo "debug_info_none=$(grep -c '^CONFIG_DEBUG_INFO_NONE=y$' "$BUILD_DIR/.config" || true)"
   echo "modules=$MODULE_COUNT"
   echo "bzImage_bytes=$(stat -c %s "$ARTIFACT_DIR/bzImage-$KERNELRELEASE")"
   echo "vmlinux_bytes=$(stat -c %s "$ARTIFACT_DIR/vmlinux-$KERNELRELEASE")"
