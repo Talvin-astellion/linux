@@ -30,7 +30,7 @@
 | # | Задача | DoD |
 |---|---|---|
 | 2.1 | Workflows `checks`, `build`, `kunit`, оркестратор `ci` | YAML валиден, job стартует |
-| 2.2 | `install.sh` и документация установки | `.github/workflows/` заполнен |
+| 2.2 | Канонические workflows в `.github/workflows/` и документация | workflows запускаются, копирования из `work/` нет |
 | 2.3 | Кэш ccache, артефакты, очистка диска | Повторный прогон быстрее |
 | 2.4 | Branch protection | PR не мержится без зелёных checks |
 
@@ -43,7 +43,9 @@
 | 3.1 | Стабилизировать checkpatch (ошибки блокируют) | Нет ложных срабатываний на baseline |
 | 3.2 | Включить sparse как blocking или allowlist | Список известных предупреждений |
 | 3.3 | Стабилизировать KUnit `all_tests` | Известные падения в allowlist |
-| 3.4 | Добавить kselftests smoke (опционально) | Отдельный job |
+| 3.4 | Security KUnit suites (Landlock/AppArmor/IPE) | Отдельный job, 0 failed/crashed/errors |
+| 3.5 | Lint и метрики (shellcheck/actionlint/metrics) | `lint.sh` и `metrics.sh --check` в CI |
+| 3.6 | Добавить kselftests smoke (опционально) | Отдельный job |
 
 **Зависимости:** Фаза 2. **Риск:** средний (шум анализаторов).
 
@@ -56,6 +58,8 @@
 | 4.3 | Публикация артефактов/релизов | Версионированные артефакты |
 | 4.4 | Периодический sync с upstream | Процедура в `runbook.md` |
 | 4.5 | Политика AI-вклада (`AGENTS.md`) | Файл закоммичен |
+| 4.6 | Action pinning + Dependabot | Все `uses:` на SHA, weekly updates |
+| 4.7 | Gitleaks и KASAN smoke | Security baseline и sanitizers jobs |
 
 **Зависимости:** Фазы 0–3. **Риск:** низкий.
 
@@ -72,12 +76,14 @@
 ## Порядок первого запуска
 
 ```bash
-work/pipelines/scripts/deps.sh
+work/pipelines/scripts/deps.sh local
 JOBS=3 work/pipelines/scripts/build.sh
 BASE=origin/master work/pipelines/scripts/checkpatch.sh
 JOBS=4 work/pipelines/scripts/sparse.sh
 JOBS=4 work/pipelines/scripts/kunit.sh
-work/pipelines/install.sh
+JOBS=4 work/pipelines/scripts/security-kunit.sh
+work/pipelines/scripts/lint.sh
+work/pipelines/scripts/metrics.sh --check
 ```
 
 Первый прогон `allmodconfig` и `kunit` считать измерением baseline: зафиксировать
@@ -89,9 +95,9 @@ work/pipelines/install.sh
 |---|---|---|
 | 0 | выполнена | baseline-тег, политика веток, toolchain проверен |
 | 1 | выполнена | defconfig 559 с / 966 МБ; allmodconfig 9467 с / 12 ГБ |
-| 2 | частично | workflows, push и branch protection готовы; allmodconfig отменён по timeout 180 мин, retry с 360 мин/`JOBS=4` выполняется |
-| 3 | выполнена | KUnit 8599 passed; checkpatch 0 errors; sparse baseline 211/1252 (blocking on increase); kselftests optional не начат |
-| 4 | частично | QEMU smoke, AGENTS.md и partial clone готовы; clang/rust/sphinx и релизы не начаты (нужен sudo) |
+| 2 | выполнена | workflows, push и branch protection готовы; allmodconfig retry success 2 ч 04 мин; checkpatch shallow fix 34 с |
+| 3 | выполнена | KUnit 8599 passed; security suites: 5 в `all_tests` (54 теста) + `ipe-parser` в security job; checkpatch 0 errors; sparse baseline 211/1252; kselftests optional не начат |
+| 4 | частично | QEMU smoke, AGENTS.md, partial clone, action pinning, Dependabot, gitleaks и KASAN smoke готовы; clang/rust/sphinx локально не установлены, релизы не начаты |
 | local | выполнено | machine 7.2.6: 213 модулей, ~35 мин, debug off, QEMU smoke OK |
 
 Подробности: `work/plans/status.md`.

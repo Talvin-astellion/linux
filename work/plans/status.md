@@ -2,7 +2,7 @@
 
 | Поле | Значение |
 |---|---|
-| Дата | 2026-11-04 |
+| Дата | 2026-11-05 |
 | Ветка | `dev` |
 | Baseline-тег | `baseline-20261031` (`541c43310e85`) |
 | Окружение | 12 CPU, 5.6 ГБ RAM + 4 ГБ swap, 32 ГБ свободно на старте |
@@ -11,11 +11,12 @@
 
 | Шаг | Команда | Результат |
 |---|---|---|
-| CI установлен | `work/pipelines/install.sh` | 5 workflow в `.github/workflows/` |
+| CI установлен | `.github/workflows/` | 7 workflow, 9 jobs; `work/pipelines/github/` и `install.sh` удалены |
 | Baseline-тег | `git tag -a baseline-20261031 541c43310e85` | создан |
 | defconfig | `make O=work/build/defconfig defconfig && make -j4` | rc=0, 559 с, 966 МБ |
 | allmodconfig | `JOBS=3 work/pipelines/scripts/build.sh` | rc=0, 9467 с, 12 ГБ |
 | KUnit | `JOBS=4 work/pipelines/scripts/kunit.sh` | rc=0, 303 с, 8599 passed / 39 skipped / 0 failed |
+| Security KUnit | `JOBS=4 work/pipelines/scripts/security-kunit.sh` | 5 suites/54 теста в `all_tests`; `ipe-parser` добавлен в security config, полный прогон в CI |
 | checkpatch | `BASE=origin/master work/pipelines/scripts/checkpatch.sh` | rc=0, 0 errors, 1 warning (FILE_PATH_CHANGES) |
 | sparse | `PATH=/tmp/opencode/sparse-src:$PATH JOBS=4 work/pipelines/scripts/sparse.sh` | rc=0, 2957 checks, 211 errors, 1252 warnings (baseline; blocking on increase) |
 | QEMU smoke | `work/pipelines/scripts/smoke-qemu.sh` | rc=0, `SMOKE_OK`, ~5 с |
@@ -29,7 +30,14 @@
 | CI runner migration | `smoke.yml` | smoke закреплён на `ubuntu-24.04` (QEMU 10.2.1 ломает boot, ISSUE-11) |
 | Smoke diagnostics | `smoke-qemu.sh` | версии QEMU/gcc/ld, код возврата, `earlycon`, `qemu-debug.log` |
 | CI allmodconfig retry | GitHub Actions `41698069267` | success, 2 ч 04 мин |
-| CI checkpatch timeout | `checks.yml`, `checkpatch.sh` | `fetch-depth: 1` + shallow base fetch, timeout 30 (ISSUE-12) |
+| CI green run | GitHub Actions `41729742211` | 5/5 jobs success |
+| CI checkpatch shallow | GitHub Actions `41779398786` | `checks / checkpatch` success за 34 с; ISSUE-12 closed |
+| QEMU append fix | `smoke-qemu.sh`, `0341fbf13974` | длинная строка разбита, checkpatch 0 errors |
+| Canonical workflows | `.github/workflows/*.yml` | actions закреплены по SHA, добавлены `meta` и `security` |
+| Dependency profiles | `deps.sh` | `local`, `ci`, `smoke`, `lint`, `check`; apt-списки убраны из workflows |
+| Hygiene tooling | `lint.sh`, `metrics.sh`, `check-actions-pinned.sh` | shellcheck/actionlint, метрики, SHA-pinning |
+| Secret scan | `check-secrets.sh`, gitleaks 8.30.1 | сканирование tracked `work/` и `.github/` |
+| Dependabot | `.github/dependabot.yml` | weekly github-actions updates |
 
 Артефакты:
 
@@ -37,6 +45,7 @@
 - `work/build/allmodconfig/arch/x86/boot/bzImage` — 43 606 016 байт.
 - `work/build/allmodconfig/.config`, `work/build/allmodconfig/build.log`.
 - `work/build/kunit/kunit.json` — 2 109 095 байт.
+- `work/build/security-kunit/kunit.json` — security suites.
 - `work/build/checkpatch.log`.
 - `work/build/sparse/sparse.log`, `work/build/sparse/summary.txt` — baseline sparse.
 - `work/build/smoke/qemu.log` — вывод загрузки ядра.
@@ -49,9 +58,10 @@
 | Блокер | Причина | Что нужно |
 |---|---|---|
 | Системный `sparse` | пакет 0.6.4 не проходит `scripts/checker-valid.sh` | собрать sparse из исходников (в CI уже так) |
-| CI checkpatch | run `41698069267` отменён по timeout 20 мин на полном checkout | исправлено (ISSUE-12); проверить на следующем push |
-| ccache | пакет не установлен | `deps.sh` |
-| clang/rust/sphinx | не установлены | `deps.sh --full` |
+| Новые CI jobs | `meta`, `security-baseline`, `security-kunit`, `security-sanitizers` ещё не прогонялись на GitHub | push и первый зелёный прогон |
+| KASAN smoke локально | не запускался после добавления скрипта | `JOBS=4 work/pipelines/scripts/smoke-kasan.sh` |
+| clang/rust/sphinx | не установлены локально | `deps.sh local` |
+| Required checks | branch protection всё ещё 5 jobs | добавить `meta` и `security` после зелёного прогона |
 
 ## Состояние диска после прогонов
 
@@ -65,13 +75,14 @@ work/build      17G
 
 ## Следующие шаги
 
-1. Проверить на следующем push, что `checks / checkpatch` проходит с
-   `--depth=1` быстрее 30 мин, и закрыть ISSUE-12.
-2. Разобрать baseline sparse (211 errors): основная масса — address-space
+1. Push и проверка новых jobs `meta`, `security-baseline`, `security-kunit`,
+   `security-sanitizers`; добавить их в required checks после зелёного прогона.
+2. Прогнать `smoke-kasan.sh` локально (или дождаться CI) и зафиксировать
+   время/размер.
+3. Разобрать baseline sparse (211 errors): основная масса — address-space
    `__rcu` сравнения; новые regressions блокируются порогом.
-3. Включить `enforce_admins`/PR-only для `dev` и защиту `main` после финального
+4. Включить `enforce_admins`/PR-only для `dev` и защиту `main` после финального
    push документации.
-4. `sparse`/`kunit`/`smoke` переведены в blocking.
 5. При необходимости установить `7.2.6-machine` в `/boot` по `plans/runbook.md`
    (сейчас не установлено; нужен sudo).
 6. ISSUE-11: прогнать матрицу 24.04/26.04 × QEMU 8.2.2/10.2.1 на failing

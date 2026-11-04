@@ -6,7 +6,7 @@
 | Upstream | mainline Linux (git.kernel.org) |
 | Remote | `https://github.com/Talvin-astellion/linux` |
 | Лицензия | GPL-2.0 (см. `COPYING`) |
-| HEAD | `541c43310e85` (2026-02-12) |
+| HEAD | `0341fbf13974` (2026-11-05) |
 | Версия в Makefile | `6.19.0` |
 | Ветки | `dev`, `main` (обе на `origin/master`) |
 | Документ | draft 1, 2026-10-31 |
@@ -39,7 +39,8 @@
   содержит `6.19.0`; это корректная версия для данной ветки, а не ошибка
   сборки. Для 7.2.6 используется отдельное дерево `/home/talvin/linux-7.2.6`.
   Разбор — `problems/issues.md` (ISSUE-04, closed).
-- Локальные коммиты: `work/` и `.github/workflows/` относительно `origin/master`.
+- Локальные коммиты: `work/`, `.github/workflows/` и `.github/dependabot.yml`
+  относительно `origin/master`.
 - Теги: аннотированный `baseline-20261031` (`541c43310e85`).
 - `.git` занимает 6.0 ГБ, рабочее дерево — 7.7 ГБ.
 
@@ -121,11 +122,13 @@ Toolchain:
 | python3 3.14 | есть | KUnit, scripts |
 | perl | есть | checkpatch |
 | openssl headers | есть | подпись/сертификаты |
-| sparse | нет | статический анализ |
-| clang/LLVM | нет | альтернативная сборка |
-| rustc/cargo/bindgen | нет | Rust for Linux |
-| sphinx | нет | `make htmldocs` |
-| ccache | нет | ускорение CI |
+| sparse | собирается из исходников | статический анализ |
+| clang/LLVM | ставится `deps.sh local` | альтернативная сборка |
+| rustc/cargo/bindgen | ставится `deps.sh local` | Rust for Linux |
+| sphinx | ставится `deps.sh local` | `make htmldocs` |
+| ccache | ставится `deps.sh` | ускорение сборки |
+| shellcheck/actionlint | ставится `deps.sh lint` | lint скриптов и workflow |
+| gitleaks | ставится в CI job | сканирование секретов |
 
 ## 6. Тестирование
 
@@ -134,21 +137,31 @@ Toolchain:
 | Стиль | checkpatch | `scripts/checkpatch.pl --no-tree --strict --git <range>` |
 | Статический анализ | sparse | `make C=2 CHECK=sparse` |
 | Юнит-тесты | KUnit (UML) | `tools/testing/kunit/kunit.py run` |
+| Security-тесты | security KUnit (UML) | `work/pipelines/scripts/security-kunit.sh` |
 | Интеграционные | kselftests | `make -C tools/testing/selftests` (позже) |
 | Smoke загрузки | QEMU | `work/pipelines/scripts/smoke-qemu.sh` |
+| Санитайзеры | KASAN/KFENCE/UBSAN + QEMU | `work/pipelines/scripts/smoke-kasan.sh` |
+| Гигиена | shellcheck/actionlint/metrics | `work/pipelines/scripts/lint.sh` |
+| Секреты | gitleaks | `work/pipelines/scripts/check-secrets.sh` |
 
 ## 7. CI/CD
 
 - Платформа: GitHub Actions.
 - Триггеры: `push` в `dev`/`main`, `pull_request`, `workflow_dispatch`.
-- Jobs: `checkpatch`, `sparse`, `allmodconfig`, `kunit`, `smoke`.
-- Канонические workflows: `work/pipelines/github/`.
-- Установка: `work/pipelines/install.sh` копирует их в `.github/workflows/`.
+- Jobs: `meta`, `checkpatch`, `sparse`, `allmodconfig`, `kunit`,
+  `security-baseline`, `security-kunit`, `security-sanitizers`, `qemu-smoke`.
+- Канонические workflows: `.github/workflows/` (7 файлов). `work/` больше не
+  хранит копию и не использует `install.sh`.
+- GitHub Actions закреплены по полному SHA; обновления — через
+  `.github/dependabot.yml`.
 - Ограничения GitHub-hosted runner: ~14 ГБ диска и медленная сборка.
   allmodconfig идёт с `timeout-minutes: 360`, `JOBS=4`, отключёнными
   debug-info и тяжёлой инструментацией, плюс очистка образа раннера.
-- Branch protection для `dev`: required checks `checkpatch`, `sparse`,
-  `allmodconfig`, `kunit`, `smoke`; `sparse` ограничен baseline 211/1252.
+- Branch protection для `dev`: текущие 5 required checks (`checks / checkpatch`,
+  `checks / sparse`, `build / allmodconfig`, `kunit / kunit`, `smoke / qemu-smoke`).
+  `meta` и `security` добавляются после первого зелёного прогона.
+- `sparse` ограничен baseline 211/1252; security baseline: action pinning,
+  gitleaks, 6 security suites, KASAN/KFENCE/UBSAN smoke.
 
 ## 8. Конвенции
 
@@ -177,5 +190,7 @@ Toolchain:
 2. Реестр проблем содержит P0–P2 с доказательствами.
 3. План работ содержит фазы с DoD и оценками.
 4. Локальные скрипты запускаются без CI.
-5. `install.sh` разворачивает workflows.
-6. Исходники ядра не изменяются, кроме `work/` и `.github/workflows/`.
+5. `.github/workflows/` содержит канонические workflows, `lint.sh` и
+   `metrics.sh --check` проходят.
+6. Исходники ядра не изменяются, кроме `work/`, `.github/workflows/` и
+   `.github/dependabot.yml`.

@@ -6,7 +6,7 @@
 
 ```bash
 cd /home/talvin/System/linux
-work/pipelines/scripts/deps.sh
+work/pipelines/scripts/deps.sh local
 git tag -a "baseline-$(date +%Y%m%d)" -m "baseline before CI work"
 ```
 
@@ -16,7 +16,7 @@ git tag -a "baseline-$(date +%Y%m%d)" -m "baseline before CI work"
 nproc
 free -h
 df -h .
-for t in gcc make bc flex bison pahole python3 perl; do
+for t in gcc make bc flex bison pahole python3 perl shellcheck actionlint; do
   command -v "$t" >/dev/null && echo "OK $t" || echo "MISSING $t"
 done
 ```
@@ -104,6 +104,18 @@ JOBS=4 work/pipelines/scripts/sparse.sh
 
 # KUnit
 JOBS=4 KUNIT_TIMEOUT=900 work/pipelines/scripts/kunit.sh
+
+# security KUnit (Landlock/AppArmor/IPE)
+JOBS=4 work/pipelines/scripts/security-kunit.sh
+
+# KASAN/KFENCE/UBSAN smoke
+JOBS=4 work/pipelines/scripts/smoke-kasan.sh
+
+# lint, метрики, security baseline
+work/pipelines/scripts/lint.sh
+work/pipelines/scripts/metrics.sh --check
+work/pipelines/scripts/check-actions-pinned.sh
+work/pipelines/scripts/check-secrets.sh
 ```
 
 Разбор результатов:
@@ -111,24 +123,32 @@ JOBS=4 KUNIT_TIMEOUT=900 work/pipelines/scripts/kunit.sh
 - checkpatch: блокируют только `ERROR:`; `WARNING:` — на ревью.
 - sparse: исторические предупреждения; новые — в отчёт.
 - KUnit: падения смотреть в `work/build/kunit/kunit.json` и логах UML.
+- security KUnit: `check-kunit-security.py` проверяет suites из
+  `configs/security-kunit-suites.txt` и нулевые failed/crashed/errors.
+- KASAN smoke: смотреть `work/build/smoke-kasan/smoke/qemu.log`.
 
-## 5. Установка CI
+## 5. CI и branch protection
+
+Канонические workflows лежат в `.github/workflows/`; `install.sh` больше нет.
+После изменения:
 
 ```bash
-work/pipelines/install.sh
-git add .github/workflows work
-git commit -m "ci: add kernel build and checks workflows"
+git add .github/workflows .github/dependabot.yml work
+git commit -m "ci: ..."
 git push origin dev
 ```
 
 После первого прогона:
 
-1. Включить branch protection для `dev`; required checks — `checks / checkpatch`,
-   `checks / sparse`, `build / allmodconfig`, `kunit / kunit`, `smoke / qemu-smoke`.
-2. `sparse` ограничен baseline 211/1252; `kunit` и `smoke` blocking.
-3. `allmodconfig` в CI: `timeout-minutes: 360`, `JOBS=4`, CI-фрагмент без
+1. Включить branch protection для `dev`; текущие required checks —
+   `checks / checkpatch`, `checks / sparse`, `build / allmodconfig`,
+   `kunit / kunit`, `smoke / qemu-smoke`.
+2. После зелёного прогона добавить `meta / meta`, `security / security-baseline`,
+   `security / security-kunit`, `security / security-sanitizers`.
+3. `sparse` ограничен baseline 211/1252; `kunit`, `smoke` и security jobs blocking.
+4. `allmodconfig` в CI: `timeout-minutes: 360`, `JOBS=4`, CI-фрагмент без
    debug-info/KASAN/UBSAN/KFENCE/GCOV; иначе hosted runner упирается в 3 часа.
-4. Для `main` protection включать только вместе с политикой sync с upstream.
+5. Для `main` protection включать только вместе с политикой sync с upstream.
 
 ## 6. Обновление из upstream
 
@@ -164,14 +184,17 @@ CI использует `actions/checkout` с `fetch-depth: 1`; `checkpatch` д�
 | `missing required tool` | нет пакета | `deps.sh` |
 | checkpatch падает на baseline | шум/ложные | сузить `BASE`, добавить allowlist |
 | KUnit timeout | медленный runner | увеличить `KUNIT_TIMEOUT` |
-| sparse не найден | нет пакета | `sudo apt-get install sparse` |
+| sparse не найден | пакет Ubuntu 0.6.4 непригоден | собрать sparse из исходников и добавить в `PATH` |
 | QEMU smoke не стартует native-ядро | QEMU CPU не поддерживает `-march=native` | `QEMU_CPU=max` |
 | QEMU smoke: `Booting from ROM..` и мгновенный выход | Ubuntu 26.04 / QEMU 10.2.1 (ISSUE-11) | использовать `ubuntu-24.04`; смотреть `qemu-debug.log` |
 | `source tree is not clean` | сборка `O=` из грязного дерева | использовать `work/build/src-*` |
-| workflow не запускается | YAML не в `.github/workflows` | `install.sh` |
-| reusable workflow not found | скопирован только `ci.yml` | скопировать все файлы |
+| workflow не запускается | YAML не в `.github/workflows` | проверить путь и имя файла |
+| reusable workflow not found | отсутствует файл в `.github/workflows` | добавить все 7 workflow |
+| `shellcheck`/`actionlint` not found | не установлен lint-профиль | `deps.sh lint` |
+| `gitleaks` not found | нет бинарника (CI ставит сам) | установить gitleaks в `PATH` |
+| metrics are stale | изменились скрипты/workflow/доки | `make -C work metrics` |
 | `allmodconfig` отменён через 3 ч | timeout 180 и медленный runner | timeout 360, `JOBS=4`, облегчённый CI-фрагмент |
-| `checkpatch` отменён на Checkout | полный fetch 6 ГБ упирается в timeout 20 мин | `fetch-depth: 1` + shallow base fetch (ISSUE-12) |
+| `checkpatch` отменён на Checkout | полный fetch 6 ГБ упирается в timeout 20 мин | `fetch-depth: 1` + shallow base fetch (ISSUE-12, closed) |
 
 ## 8. Очистка
 

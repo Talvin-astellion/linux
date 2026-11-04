@@ -7,26 +7,40 @@
 Установка:
 
 ```bash
-work/pipelines/scripts/deps.sh          # базовый набор
-work/pipelines/scripts/deps.sh --full   # + clang, rust, sphinx, qemu
+work/pipelines/scripts/deps.sh          # local: base + clang/rust/sphinx/qemu/lint
+work/pipelines/scripts/deps.sh ci       # CI: только сборочный base
+work/pipelines/scripts/deps.sh smoke    # CI + qemu
+work/pipelines/scripts/deps.sh lint     # shellcheck + actionlint
+work/pipelines/scripts/deps.sh check    # git + perl
 ```
 
 Базовый набор (Ubuntu/Debian):
 
 ```
 build-essential bc bison flex libssl-dev libelf-dev libncurses-dev
-dwarves cpio kmod rsync git perl python3 sparse ccache
+dwarves cpio kmod rsync git perl python3 ccache curl ca-certificates
 ```
 
 Полный набор дополнительно: `clang lld llvm rustc cargo python3-sphinx
-qemu-system-x86 bindgen`.
+qemu-system-x86 bindgen shellcheck`; `actionlint` ставится отдельным
+бинарником с проверкой SHA256.
+
+`sparse` в пакете Ubuntu 0.6.4 не проходит `scripts/checker-valid.sh`;
+собирайте его из исходников:
+
+```bash
+git clone --depth=1 https://git.kernel.org/pub/scm/devel/sparse/sparse.git /tmp/sparse
+make -C /tmp/sparse -j"$(nproc)"
+export PATH="/tmp/sparse:$PATH"
+```
 
 Проверка:
 
 ```bash
-for t in gcc make bc flex bison pahole python3 perl sparse ccache; do
+for t in gcc make bc flex bison pahole python3 perl ccache shellcheck actionlint; do
   command -v "$t" >/dev/null && echo "OK $t" || echo "MISSING $t"
 done
+command -v sparse >/dev/null && echo "OK sparse" || echo "MISSING sparse"
 ```
 
 ## 2. Конфигурации
@@ -37,6 +51,8 @@ done
 | `allmodconfig` | `make O=work/build/allmodconfig allmodconfig` | максимальное покрытие |
 | CI-фрагмент | `work/pipelines/configs/allmodconfig-ci.config` | отключает debug-info |
 | KUnit | `tools/testing/kunit/configs/all_tests.config` | юнит-тесты |
+| Security KUnit | `work/pipelines/configs/security-kunit.config` | LSM/KUnit suites |
+| KASAN smoke | `work/pipelines/configs/kasan.config` | KASAN/KFENCE/UBSAN |
 
 CI-фрагмент:
 
@@ -154,21 +170,67 @@ JOBS=4 work/pipelines/scripts/kunit.sh
 UML-сборка и запуск `all_tests.config`. Результаты: `work/build/kunit/kunit.json`.
 Job blocking: локальный baseline 0 failed, CI-прогон зелёный.
 
+### 4.5 Security KUnit
+
+```bash
+JOBS=4 work/pipelines/scripts/security-kunit.sh
+```
+
+Собирает UML-ядро с `configs/security-kunit.config` и проверяет обязательные
+suites из `configs/security-kunit-suites.txt`: `landlock_id`, `landlock_fs`,
+`landlock_audit`, `landlock_domain`, `apparmor_policy_unpack`, `ipe-parser`.
+`check-kunit-security.py` требует, чтобы каждая suite запустилась, а
+`failed`/`crashed`/`errors` были равны нулю. В `all_tests` проверены 5 suites,
+54 теста, все PASS; `security-kunit.config` дополнительно включает `ipe-parser`.
+
+### 4.6 KASAN smoke
+
+```bash
+JOBS=4 work/pipelines/scripts/smoke-kasan.sh
+```
+
+Собирает defconfig + `configs/kasan.config` (KASAN inline/stack, KFENCE,
+UBSAN trap), загружает ядро в QEMU с `kasan_multi_shot` и ждёт `SMOKE_OK`.
+Логи: `work/build/smoke-kasan/build.log` и
+`work/build/smoke-kasan/smoke/qemu.log`. Job тяжелее обычного smoke, поэтому
+имеет отдельный timeout 90 мин.
+
+### 4.7 Lint, метрики и security baseline
+
+```bash
+work/pipelines/scripts/lint.sh
+work/pipelines/scripts/metrics.sh --check
+work/pipelines/scripts/check-actions-pinned.sh
+work/pipelines/scripts/check-secrets.sh
+```
+
+`lint.sh` запускает `bash -n`, `shellcheck -x` и `actionlint`, а также
+`git diff --check`. `metrics.sh` генерирует `work/spec/metrics.md`;
+`--check` падает, если файл устарел. `check-actions-pinned.sh` требует
+40-символьный SHA для каждого `uses:`. `check-secrets.sh` сканирует только
+tracked-файлы `work/` и `.github/` через `git archive` и gitleaks, поэтому
+`work/build` и история репозитория не сканируются.
+
 ## 5. Ресурсы
 
 | Сценарий | JOBS | RAM | Диск (факт) | Время (факт) |
 |---|---|---|---|---|
 | defconfig | 4 | 5.6 ГБ | 966 МБ | 559 с (~9 мин) |
 | allmodconfig | 3 | 5.6 ГБ + swap | 12 ГБ | 9467 с (~2ч38м) |
-| allmodconfig (CI) | 4 | 16 ГБ | ~12 ГБ | timeout 360 мин; retry после 180-мин отмены |
+| allmodconfig (CI) | 4 | 16 ГБ | ~12 ГБ | success, 2 ч 04 мин (run `41698069267`) |
 | machine 7.2.6 | 3 | 5.6 ГБ | 1.9 ГБ + 1.8 ГБ src | ~35 мин (cold, debug off) |
 | KUnit (UML) | 4 | 5.6 ГБ | 260 МБ | 303 с (~5 мин) |
+| security KUnit (UML) | 4 | 5.6 ГБ | ~260 МБ | ~5 мин (5 suites/54 теста в `all_tests`; +`ipe-parser`) |
 | QEMU smoke | — | 512 МБ | ~1 МБ | ~5 с |
+| KASAN smoke | 4 | 16 ГБ (CI) | ~1–2 ГБ | сборка + ~5 с boot |
 | sparse (defconfig) | 4 | 5.6 ГБ | 967 МБ | 2957 checks, 211 errors, 1252 warnings, ~5 мин (warm) |
 
 Фактические замеры baseline (2026-10-31): defconfig rc=0, allmodconfig rc=0,
 KUnit 8599 passed / 39 skipped / 0 failed, checkpatch 0 errors / 1 warning,
 sparse rc=0 (211 errors / 1252 warnings, baseline; blocking on increase).
+Security baseline (2026-11-05): в `all_tests` 5 suites/54 теста, 0
+failed/crashed/errors; `security-kunit.config` добавляет `ipe-parser`.
+`lint.sh` и `metrics.sh --check` проходят локально.
 
 `sparse` из Ubuntu 0.6.4 не проходит `scripts/checker-valid.sh`
 (`__typeof_unqual__`); используйте сборку из
@@ -186,12 +248,14 @@ sparse rc=0 (211 errors / 1252 warnings, baseline; blocking on increase).
 |---|---|
 | `work/build/allmodconfig/.config` | итоговый конфиг |
 | `work/build/allmodconfig/build.log` | полный лог сборки |
-| `work/build/sparse/sparse.log` | вывод sparse |
-| `work/build/kunit/kunit.json` | результаты KUnit |
-| `work/build/kunit/*.log` | логи UML |
-| `work/build/smoke/qemu.log` | вывод QEMU smoke |
 | `work/build/sparse/sparse.log` | полный лог sparse |
 | `work/build/sparse/summary.txt` | счётчики checks/errors/warnings |
+| `work/build/kunit/kunit.json` | результаты KUnit |
+| `work/build/kunit/*.log` | логи UML |
+| `work/build/security-kunit/kunit.json` | результаты security KUnit |
+| `work/build/smoke/qemu.log` | вывод QEMU smoke |
+| `work/build/smoke-kasan/build.log` | сборка KASAN-ядра |
+| `work/build/smoke-kasan/smoke/qemu.log` | boot KASAN-ядра |
 | `work/build/machine-7.2.6/artifacts/` | bzImage/vmlinux/System.map/config |
 | `work/build/machine-7.2.6/modules/` | staging-модули 7.2.6-machine |
 | `work/build/machine-7.2.6/summary.txt` | итоги машинной сборки |
@@ -207,6 +271,8 @@ sparse rc=0 (211 errors / 1252 warnings, baseline; blocking on increase).
 - `pahole` 1.25 и отключённый BTF: не влияет на baseline.
 - KUnit `all_tests` может содержать известные падения; список ведётся в
   `problems/issues.md` после первого прогона.
+- Security KUnit не заменяет kselftests и syzkaller: это быстрый baseline
+  LSM/KUnit-проверок, а не полный аудит безопасности.
 - `make htmldocs` недоступен без `sphinx`.
 - Машинная сборка (`7.2.6-machine`) — только локально: конфиг привязан к
   железу и `-march=native`; в CI не запускается.

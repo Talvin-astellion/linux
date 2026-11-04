@@ -13,12 +13,12 @@
 | ISSUE-04 | P1 | Расхождение версии Makefile и upstream-тегов | closed |
 | ISSUE-05 | P1 | Несогласованная топология веток, нет тегов | mitigated |
 | ISSUE-06 | P1 | Дыры в toolchain (sparse, clang, rust, sphinx) | mitigated |
-| ISSUE-07 | P1 | Ограничения GitHub-hosted runner | open |
+| ISSUE-07 | P1 | Ограничения GitHub-hosted runner | mitigated |
 | ISSUE-08 | P2 | Тяжёлый `.git` (6.0 ГБ) | closed |
 | ISSUE-09 | P2 | Нет локальной политики AI-вклада | closed |
 | ISSUE-10 | P2 | Нет smoke-теста загрузки и хранения артефактов | mitigated |
 | ISSUE-11 | P1 | `ubuntu-latest` 26.04 ломает QEMU smoke | mitigated |
-| ISSUE-12 | P1 | `checkpatch` отменяется на полном checkout | mitigated |
+| ISSUE-12 | P1 | `checkpatch` отменяется на полном checkout | closed |
 
 ## ISSUE-01 — Нет воспроизводимой сборки и baseline (P0)
 
@@ -81,7 +81,7 @@ allmodconfig стабильно собирается локально и в CI �
 
 **Мера**
 
-Фаза 2–3: `work/pipelines/github/*.yml`, `install.sh`, branch protection.
+Фаза 2–3: `.github/workflows/*.yml`, branch protection, Dependabot.
 
 **Критерий закрытия**
 
@@ -149,8 +149,8 @@ upstream.
 
 **Доказательства**
 
-`command -v`: `sparse`, `clang`, `rustc`, `cargo`, `bindgen`, `sphinx`, `ccache`
-отсутствуют.
+`command -v`: `sparse`, `clang`, `rustc`, `cargo`, `bindgen`, `sphinx`, `ccache`,
+`shellcheck`, `actionlint`, `gitleaks` отсутствуют.
 
 **Влияние**
 
@@ -159,10 +159,11 @@ Rust и docs.
 
 **Мера**
 
-`work/pipelines/scripts/deps.sh` (базовый и `--full`); в CI ставится минимум,
-необходимый job-у. `sparse` 0.6.4 из Ubuntu не проходит
-`scripts/checker-valid.sh`; в CI он собирается из исходников. Локальный
-baseline: 211 errors, 1252 warnings.
+`work/pipelines/scripts/deps.sh` с профилями `local`, `ci`, `smoke`, `lint`,
+`check`; в CI ставится минимум, необходимый job-у. `sparse` 0.6.4 из Ubuntu не
+проходит `scripts/checker-valid.sh`; в CI он собирается из исходников.
+`shellcheck`/`actionlint` ставит `deps.sh lint`, `gitleaks` — CI job.
+Локальный baseline: 211 errors, 1252 warnings.
 
 **Критерий закрытия**
 
@@ -174,7 +175,8 @@ baseline: 211 errors, 1252 warnings.
 **Доказательства**
 
 Стандартный runner: ~4 CPU, 16 ГБ RAM, ~14 ГБ свободного диска.
-Прогон `41185886775`: `allmodconfig` отменён ровно через 180 мин.
+Прогон `41185886775`: `allmodconfig` отменён ровно через 180 мин; retry
+`41698069267` с `JOBS=4` и timeout 360 прошёл за 2 ч 04 мин.
 
 **Влияние**
 
@@ -283,7 +285,7 @@ Smoke-job блокирующий, поэтому каждый push в `dev`/PR �
 **Мера**
 
 - Smoke-job закреплён на `runs-on: ubuntu-24.04`
-  (`work/pipelines/github/smoke.yml`).
+  (`.github/workflows/smoke.yml`).
 - `smoke-qemu.sh` теперь пишет версии QEMU/gcc/ld, фиксирует код возврата,
   добавляет `earlycon`/`earlyprintk` и на падении снимает
   `qemu-debug.log` (`-d int,cpu_reset`).
@@ -308,7 +310,7 @@ pin снят или заменён документированным workaround
   18:53:25 и завершился в 19:13:29 — ровно через 20 мин, conclusion
   `cancelled`.
 - В логе Checkout выполняется fetch без `--depth`, то есть `fetch-depth: 0`
-  (`work/pipelines/github/checks.yml`):
+  (`.github/workflows/checks.yml`):
 
   ```
   git -c protocol.version=2 fetch --prune --no-recurse-submodules origin \
@@ -336,3 +338,7 @@ pin снят или заменён документированным workaround
 
 Очередной push в `dev` проходит `checks / checkpatch` быстрее 30 мин без
 полного fetch; в логе виден `--depth=1`.
+
+**Закрыто:** 2026-11-05, run `41779398786`: `checks / checkpatch` success
+за 34 с; в логе shallow base fetch. Дополнительно `smoke-qemu.sh` разбивает
+длинную строку `QEMU_APPEND`, чтобы checkpatch не ругался на длину.
