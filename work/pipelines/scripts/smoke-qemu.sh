@@ -49,10 +49,12 @@ gcc -static -O2 -o "$BUILD_DIR/root/init" "$BUILD_DIR/init.c"
 )
 
 log "booting $KERNEL_IMAGE in QEMU (timeout ${SMOKE_TIMEOUT}s)"
+QEMU_APPEND="console=ttyS0 earlycon=uart8250,io,0x3f8,115200n8"
+QEMU_APPEND+=" earlyprintk=ttyS0,115200 rdinit=/init panic=-1"
 QEMU_ARGS=(
   -kernel "$KERNEL_IMAGE"
   -initrd "$BUILD_DIR/initramfs.cpio.gz"
-  -append "console=ttyS0 earlycon=uart8250,io,0x3f8,115200n8 earlyprintk=ttyS0,115200 rdinit=/init panic=-1"
+  -append "$QEMU_APPEND"
   -nographic -no-reboot -m "$SMOKE_MEM"
 )
 if [[ -n "$QEMU_CPU" ]]; then
