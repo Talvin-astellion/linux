@@ -7,12 +7,12 @@
 
 - Скрипты: 15 файлов, 892 строк
 - Функции в `lib.sh`: 12
-- Workflow: 5 файлов, 263 строк, 5 job'ов
+- Workflow: 7 файлов, 373 строк, 9 job'ов
 - Конфиги: 8 файлов, 66 строк
 - Документация: 9 файлов, 1397 строк
-- Покрытие скриптов CI: 6/15
-- `apt-get install`: 6 мест
-- Actions с pinning: 0/13
+- Покрытие скриптов CI: 13/15
+- `apt-get install`: 1 мест
+- Actions с pinning: 19/19
 - SPDX в скриптах: 15/15
 
 ## Безопасность
@@ -24,5 +24,5 @@
   - `landlock_domain`
   - `apparmor_policy_unpack`
   - `ipe-parser`
-- Security jobs: 0
+- Security jobs: 3
 - Санитайзеры в KASAN smoke: 6

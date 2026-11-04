@@ -16,9 +16,17 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  meta:
+    name: meta
+    uses: ./.github/workflows/meta.yml
+
   checks:
     name: checks
     uses: ./.github/workflows/checks.yml
+
+  security:
+    name: security
+    uses: ./.github/workflows/security.yml
 
   build:
     name: build

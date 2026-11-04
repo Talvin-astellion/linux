@@ -16,14 +16,10 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
 
       - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --no-install-recommends \
-            build-essential bc bison flex libssl-dev libelf-dev \
-            libncurses-dev dwarves cpio kmod gzip qemu-system-x86
+        run: bash work/pipelines/scripts/deps.sh smoke
 
       - name: Build defconfig
         env:
@@ -37,7 +33,7 @@ jobs:
 
       - name: Upload QEMU log
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: qemu-smoke-log
           path: |
@@ -47,7 +43,7 @@ jobs:
 
       - name: Upload kernel image on failure
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: qemu-smoke-bzImage
           path: work/build/defconfig/arch/x86/boot/bzImage

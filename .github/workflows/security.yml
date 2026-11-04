@@ -1,0 +1,95 @@
+name: security
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  baseline:
+    name: security-baseline
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Install dependencies
+        run: bash work/pipelines/scripts/deps.sh check
+
+      - name: Install gitleaks
+        env:
+          GITLEAKS_VERSION: "8.30.1"
+          GITLEAKS_SHA256: "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb"
+        run: |
+          curl -fsSL \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" \
+            -o /tmp/gitleaks.tar.gz
+          echo "${GITLEAKS_SHA256}  /tmp/gitleaks.tar.gz" | sha256sum -c -
+          sudo tar -xzf /tmp/gitleaks.tar.gz -C /usr/local/bin gitleaks
+          gitleaks version
+
+      - name: Check actions are pinned
+        run: bash work/pipelines/scripts/check-actions-pinned.sh
+
+      - name: Scan for secrets
+        run: bash work/pipelines/scripts/check-secrets.sh
+
+  kunit:
+    name: security-kunit
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Install dependencies
+        run: bash work/pipelines/scripts/deps.sh ci
+
+      - name: Run security KUnit
+        env:
+          JOBS: "4"
+          KUNIT_TIMEOUT: "600"
+        run: bash work/pipelines/scripts/security-kunit.sh
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: security-kunit-results
+          path: |
+            work/build/security-kunit/kunit.json
+            work/build/security-kunit/*.log
+          if-no-files-found: ignore
+
+  sanitizers:
+    name: security-sanitizers
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Free disk space
+        run: bash work/pipelines/scripts/ci-cleanup.sh
+
+      - name: Install dependencies
+        run: bash work/pipelines/scripts/deps.sh smoke
+
+      - name: Build and boot KASAN kernel
+        env:
+          JOBS: "4"
+          MIN_FREE_GB: "8"
+        run: bash work/pipelines/scripts/smoke-kasan.sh
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: kasan-smoke-logs
+          path: |
+            work/build/smoke-kasan/build.log
+            work/build/smoke-kasan/smoke/qemu.log
+            work/build/smoke-kasan/smoke/qemu-debug.log
+          if-no-files-found: ignore
