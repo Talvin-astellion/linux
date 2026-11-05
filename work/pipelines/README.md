@@ -127,11 +127,12 @@ JOBS=3 work/pipelines/scripts/build-machine.sh
 - `checkpatch` использует `fetch-depth: 1` и отдельно подтягивает tip базовой
   ветки с `--depth=1`: полный history (~6 ГБ) не нужен, а на полном checkout
   job упирался в timeout 20 мин (ISSUE-12, closed).
-- `smoke` закреплён на `ubuntu-24.04`: на `ubuntu-latest` (Ubuntu 26.04,
-  QEMU 10.2.1) ядро падает до вывода консоли. См. ISSUE-11; на падении
-  выгружаются `qemu.log`, `qemu-debug.log` и `bzImage`.
+- `smoke` и `security-sanitizers` закреплены на `ubuntu-24.04`: на
+  `ubuntu-latest` (Ubuntu 26.04, QEMU 10.2.1) ядро падает до вывода
+  консоли. См. ISSUE-11; на падении выгружаются `qemu.log`,
+  `qemu-debug.log` и `bzImage`.
 - `security-baseline` проверяет, что все `uses:` закреплены на 40-символьный
-  SHA, и сканирует только tracked-файлы `work/` и `.github/` через `git archive`.
+  SHA, и сканирует файлы `work/` и `.github/` через `tar`, включая untracked.
 - `security-sanitizers` собирает отдельное ядро с KASAN/KFENCE/UBSAN и
   загружает его в QEMU с `kasan_multi_shot`; job тяжелее обычного smoke.
 - При нехватке ресурсов используйте self-hosted runner с меткой `self-hosted`
