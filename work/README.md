@@ -86,11 +86,12 @@ make -C work ci-check
 
 - Спецификация: draft 1.
 - Baseline: тег `baseline-20261031` (`541c433`).
-- Локально пройдены: defconfig, allmodconfig, KUnit, security KUnit, checkpatch, QEMU smoke, KASAN smoke — см. `plans/status.md`.
+- Локально пройдены: defconfig, allmodconfig, KUnit, security KUnit,
+  checkpatch, QEMU smoke — см. `plans/status.md`.
+- KASAN smoke проверен в CI: run `41941909988`, job `security-sanitizers`.
 - Машинная сборка: `7.2.6-machine`, 213 модулей, QEMU smoke OK.
 - AI-политика: `AGENTS.md`; partial clone описан в `plans/runbook.md`.
-- CI: 7 workflow, 9 jobs (новые `meta`/`security` ещё не прогонялись);
-  run `41729742211` — 5/5 green, `checks / checkpatch` проходит за ~34 с
-  (run `41779398786`).
+- CI: 7 workflow, 9 jobs; run `41941909988` — 9/9 green, включая `meta`
+  и `security`; `checks / checkpatch` проходит за ~34 с (run `41779398786`).
 - `sparse`: baseline 211 errors / 1252 warnings, blocking on increase; системный пакет 0.6.4 не подходит, CI собирает sparse из исходников.
 - Security baseline: action pinning, gitleaks, security KUnit (6 suites), KASAN/KFENCE/UBSAN smoke.

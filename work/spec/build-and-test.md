@@ -193,7 +193,9 @@ JOBS=4 work/pipelines/scripts/smoke-kasan.sh
 UBSAN trap), загружает ядро в QEMU с `kasan_multi_shot` и ждёт `SMOKE_OK`.
 Логи: `work/build/smoke-kasan/build.log` и
 `work/build/smoke-kasan/smoke/qemu.log`. Job тяжелее обычного smoke, поэтому
-имеет отдельный timeout 90 мин.
+имеет отдельный timeout 90 мин. В CI run `41941909988` job
+`security-sanitizers` прошёл на `ubuntu-24.04`; на `ubuntu-latest` ядро
+падает до вывода консоли (ISSUE-11).
 
 ### 4.7 Lint, метрики и security baseline
 

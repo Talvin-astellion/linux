@@ -31,12 +31,13 @@
 | Smoke diagnostics | `smoke-qemu.sh` | версии QEMU/gcc/ld, код возврата, `earlycon`, `qemu-debug.log` |
 | CI allmodconfig retry | GitHub Actions `41698069267` | success, 2 ч 04 мин |
 | CI green run | GitHub Actions `41729742211` | 5/5 jobs success |
+| CI canonical green | GitHub Actions `41941909988` | 9/9 jobs success, включая `meta` и `security` |
 | CI checkpatch shallow | GitHub Actions `41779398786` | `checks / checkpatch` success за 34 с; ISSUE-12 closed |
 | QEMU append fix | `smoke-qemu.sh`, `0341fbf13974` | длинная строка разбита, checkpatch 0 errors |
 | Canonical workflows | `.github/workflows/*.yml` | actions закреплены по SHA, добавлены `meta` и `security` |
 | Dependency profiles | `deps.sh` | `local`, `ci`, `smoke`, `lint`, `check`; apt-списки убраны из workflows |
 | Hygiene tooling | `lint.sh`, `metrics.sh`, `check-actions-pinned.sh` | shellcheck/actionlint, метрики, SHA-pinning |
-| Secret scan | `check-secrets.sh`, gitleaks 8.30.1 | сканирование tracked `work/` и `.github/` |
+| Secret scan | `check-secrets.sh`, gitleaks 8.30.1 | сканирование `work/` и `.github/` через `tar`, включая untracked |
 | Dependabot | `.github/dependabot.yml` | weekly github-actions updates |
 
 Артефакты:
@@ -58,10 +59,9 @@
 | Блокер | Причина | Что нужно |
 |---|---|---|
 | Системный `sparse` | пакет 0.6.4 не проходит `scripts/checker-valid.sh` | собрать sparse из исходников (в CI уже так) |
-| Новые CI jobs | `meta`, `security-baseline`, `security-kunit`, `security-sanitizers` ещё не прогонялись на GitHub | push и первый зелёный прогон |
-| KASAN smoke локально | не запускался после добавления скрипта | `JOBS=4 work/pipelines/scripts/smoke-kasan.sh` |
+| KASAN smoke локально | не запускался; CI green run `41941909988` | `JOBS=4 work/pipelines/scripts/smoke-kasan.sh` |
 | clang/rust/sphinx | не установлены локально | `deps.sh local` |
-| Required checks | branch protection всё ещё 5 jobs | добавить `meta` и `security` после зелёного прогона |
+| Required checks | branch protection всё ещё 5 jobs; токен без admin | добавить `meta` и `security` вручную после green run |
 
 ## Состояние диска после прогонов
 
