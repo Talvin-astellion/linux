@@ -61,7 +61,7 @@ QEMU_ARGS=(
   -initrd "$BUILD_DIR/initramfs.cpio.gz"
   -append "$QEMU_APPEND"
   -nographic -no-reboot -m "$SMOKE_MEM"
-  -d int,cpu_reset -D "$BUILD_DIR/qemu-debug.log"
+  -d "int,cpu_reset" -D "$BUILD_DIR/qemu-debug.log"
 )
 if [[ -n "$QEMU_CPU" ]]; then
   QEMU_ARGS+=(-cpu "$QEMU_CPU")
