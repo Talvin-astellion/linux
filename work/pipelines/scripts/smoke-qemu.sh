@@ -52,7 +52,7 @@ gcc -static -O2 -o "$BUILD_DIR/root/init" "$BUILD_DIR/init.c"
 
 log "booting $KERNEL_IMAGE in QEMU (timeout ${SMOKE_TIMEOUT}s)"
 QEMU_APPEND="console=ttyS0 earlycon=uart8250,io,0x3f8,115200n8"
-QEMU_APPEND+=" earlyprintk=ttyS0,115200 rdinit=/init panic=-1"
+QEMU_APPEND+=" earlyprintk=ttyS0,115200,keep rdinit=/init panic=-1 nokaslr"
 if [[ -n "$SMOKE_APPEND" ]]; then
   QEMU_APPEND+=" $SMOKE_APPEND"
 fi
@@ -61,6 +61,7 @@ QEMU_ARGS=(
   -initrd "$BUILD_DIR/initramfs.cpio.gz"
   -append "$QEMU_APPEND"
   -nographic -no-reboot -m "$SMOKE_MEM"
+  -d int,cpu_reset -D "$BUILD_DIR/qemu-debug.log"
 )
 if [[ -n "$QEMU_CPU" ]]; then
   QEMU_ARGS+=(-cpu "$QEMU_CPU")
@@ -74,11 +75,8 @@ if ! grep -q 'SMOKE_OK' "$BUILD_DIR/qemu.log"; then
   log "QEMU exited with status $rc"
   tail -n 50 "$BUILD_DIR/qemu.log" >&2
   if (( rc != 124 )); then
-    log "capturing interrupt/reset trace in $BUILD_DIR/qemu-debug.log"
-    timeout 30 "$QEMU" "${QEMU_ARGS[@]}" \
-      -d int,cpu_reset -D "$BUILD_DIR/qemu-debug.log" \
-      > /dev/null 2>&1 || true
     if [[ -s "$BUILD_DIR/qemu-debug.log" ]]; then
+      log "interrupt/reset trace in $BUILD_DIR/qemu-debug.log"
       tail -n 80 "$BUILD_DIR/qemu-debug.log" >&2
     fi
   fi
