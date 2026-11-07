@@ -33,6 +33,9 @@ work/pipelines/scripts/smoke-kasan.sh
 # 4. Гигиена и метрики
 work/pipelines/scripts/lint.sh
 work/pipelines/scripts/metrics.sh --check
+
+# 5. Ternary: тесты, бенчмарки и покрытие
+work/pipelines/scripts/ternary-metrics.sh --check
 ```
 
 GitHub Actions уже лежат в `.github/workflows/` и являются единственным
@@ -54,6 +57,10 @@ make -C work smoke-kasan
 make -C work lint
 make -C work metrics
 make -C work ci-check
+make -C work ternary-test
+make -C work ternary-bench
+make -C work ternary-coverage
+make -C work ternary-metrics
 ```
 
 ## Структура
@@ -70,6 +77,8 @@ make -C work ci-check
 | `pipelines/` | Скрипты и конфиги пайплайнов |
 | `pipelines/scripts/` | Локальные скрипты (те же, что в CI) |
 | `pipelines/configs/` | Фрагменты конфигурации ядра и security-конфиги |
+| `ternary/tests/` | C-тесты ternary-эмулятора (baseline и candidate) |
+| `ternary/bench/` | Бенчмарки ternary-эмулятора |
 | `.github/workflows/` | Канонические workflow-файлы |
 | `.github/dependabot.yml` | Обновление GitHub Actions |
 
@@ -91,7 +100,9 @@ make -C work ci-check
 - KASAN smoke проверен в CI: run `41941909988`, job `security-sanitizers`.
 - Машинная сборка: `7.2.6-machine`, 213 модулей, QEMU smoke OK.
 - AI-политика: `AGENTS.md`; partial clone описан в `plans/runbook.md`.
-- CI: 7 workflow, 9 jobs; run `41941909988` — 9/9 green, включая `meta`
-  и `security`; `checks / checkpatch` проходит за ~34 с (run `41779398786`).
+- CI: 8 workflow, 10 jobs; ternary-пайплайн сравнивает `dev` и
+  `feature/trit-native` по тестам, покрытию и скорости.
+- run `41941909988` — 9/9 green, включая `meta` и `security`;
+  `checks / checkpatch` проходит за ~34 с (run `41779398786`).
 - `sparse`: baseline 211 errors / 1252 warnings, blocking on increase; системный пакет 0.6.4 не подходит, CI собирает sparse из исходников.
 - Security baseline: action pinning, gitleaks, security KUnit (6 suites), KASAN/KFENCE/UBSAN smoke.

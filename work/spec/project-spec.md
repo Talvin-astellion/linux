@@ -143,14 +143,16 @@ Toolchain:
 | Санитайзеры | KASAN/KFENCE/UBSAN + QEMU | `work/pipelines/scripts/smoke-kasan.sh` |
 | Гигиена | shellcheck/actionlint/metrics | `work/pipelines/scripts/lint.sh` |
 | Секреты | gitleaks | `work/pipelines/scripts/check-secrets.sh` |
+| Ternary | C-тесты, gcov, бенчмарки | `make -C work ternary-metrics` |
 
 ## 7. CI/CD
 
 - Платформа: GitHub Actions.
 - Триггеры: `push` в `dev`/`main`, `pull_request`, `workflow_dispatch`.
 - Jobs: `meta`, `checkpatch`, `sparse`, `allmodconfig`, `kunit`,
-  `security-baseline`, `security-kunit`, `security-sanitizers`, `qemu-smoke`.
-- Канонические workflows: `.github/workflows/` (7 файлов). `work/` больше не
+  `security-baseline`, `security-kunit`, `security-sanitizers`, `qemu-smoke`,
+  `ternary`.
+- Канонические workflows: `.github/workflows/` (8 файлов). `work/` больше не
   хранит копию и не использует `install.sh`.
 - GitHub Actions закреплены по полному SHA; обновления — через
   `.github/dependabot.yml`.

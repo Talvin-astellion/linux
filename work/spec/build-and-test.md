@@ -213,6 +213,36 @@ work/pipelines/scripts/check-secrets.sh
 tracked-файлы `work/` и `.github/` через `git archive` и gitleaks, поэтому
 `work/build` и история репозитория не сканируются.
 
+### 4.8 Ternary: baseline против candidate
+
+```bash
+make -C work ternary-test
+make -C work ternary-bench
+make -C work ternary-coverage
+make -C work ternary-metrics
+```
+
+`TERNARY_REPO` по умолчанию `$HOME/System/ternary`. Baseline-ветка
+`TERNARY_BASE_REF` (по умолчанию `dev`, fallback `master`) выгружается во
+временный worktree `work/build/ternary/src/baseline`; candidate — рабочее
+дерево `TERNARY_REPO`. Пайплайн собирает C-тесты и бенчмарк с
+`-Wall -Wextra`, гоняет baseline и candidate, собирает покрытие `gcov` и
+сравнивает результаты.
+
+`ternary-metrics.sh --check` блокирует изменение при:
+
+- падении хотя бы одного candidate-теста или санитайзера;
+- уменьшении числа исполненных строк/ветвей относительно baseline (процент
+  строк может снизиться не более чем на 5 п.п. из-за нового кода);
+- отсутствии ускорения `ADD`, `ADC`, `MUL` не менее чем в 1.05 раза;
+- регрессе прочих операций более чем на 5%;
+- росте числа предупреждений компилятора.
+
+Артефакты: `work/build/ternary/metrics.md`, `tests-*.json`,
+`bench-*.json`, `coverage-*.json` и `test-*.log`. CI-workflow
+`.github/workflows/ternary.yml` вызывается из `ci.yml` и загружает их как
+artifact.
+
 ## 5. Ресурсы
 
 | Сценарий | JOBS | RAM | Диск (факт) | Время (факт) |

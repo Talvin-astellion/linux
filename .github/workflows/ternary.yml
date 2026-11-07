@@ -1,0 +1,51 @@
+name: ternary
+
+on:
+  workflow_call:
+    inputs:
+      ternary_ref:
+        description: Ternary emulator branch or commit to test
+        required: false
+        type: string
+        default: feature/trit-native
+
+permissions:
+  contents: read
+
+jobs:
+  ternary:
+    name: ternary
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Checkout ternary emulator
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          repository: Talvin-astellion/ternary
+          ref: ${{ inputs.ternary_ref }}
+          path: work/build/ternary-src
+          fetch-depth: 0
+
+      - name: Run ternary tests and metrics
+        env:
+          TERNARY_REPO: ${{ github.workspace }}/work/build/ternary-src
+          TERNARY_BASE_REF: dev
+        run: |
+          git -C "$TERNARY_REPO" fetch --no-tags origin dev:dev || true
+          bash work/pipelines/scripts/ternary-metrics.sh --check
+
+      - name: Upload ternary artifacts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ternary-metrics
+          path: |
+            work/build/ternary/metrics.md
+            work/build/ternary/coverage-*.json
+            work/build/ternary/bench-*.json
+            work/build/ternary/tests-*.json
+            work/build/ternary/test-*.log
+          if-no-files-found: ignore
