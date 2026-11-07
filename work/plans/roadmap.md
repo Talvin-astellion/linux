@@ -97,7 +97,7 @@ work/pipelines/scripts/metrics.sh --check
 | 1 | выполнена | defconfig 559 с / 966 МБ; allmodconfig 9467 с / 12 ГБ |
 | 2 | выполнена | workflows, push и branch protection готовы; allmodconfig retry success 2 ч 04 мин; checkpatch shallow fix 34 с |
 | 3 | выполнена | KUnit 8599 passed; security suites: 5 в `all_tests` (54 теста) + `ipe-parser` в security job; checkpatch 0 errors; sparse baseline 211/1252; kselftests optional не начат |
-| 4 | частично | QEMU smoke, AGENTS.md, partial clone, action pinning, Dependabot, gitleaks и KASAN smoke готовы; clang/rust/sphinx локально не установлены, релизы не начаты |
+| 4 | частично | QEMU smoke, AGENTS.md, partial clone, action pinning, Dependabot, gitleaks и KASAN smoke готовы (KASAN локально `SMOKE_OK` 40 с); clang/rust/sphinx локально не установлены, релизы не начаты |
 | local | выполнено | machine 7.2.6: 213 модулей, ~35 мин, debug off, QEMU smoke OK |
 
 Подробности: `work/plans/status.md`.

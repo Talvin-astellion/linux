@@ -197,6 +197,11 @@ UBSAN trap), загружает ядро в QEMU с `kasan_multi_shot` и ждё
 `security-sanitizers` прошёл на `ubuntu-24.04`; на `ubuntu-latest` ядро
 падает до вывода консоли (ISSUE-11).
 
+Локально 2026-11-07 существующий `bzImage` из `work/build/smoke-kasan`
+загружен в QEMU 8.2.2 с `kasan_multi_shot`: `SMOKE_OK` за 40 с. Скрипт
+`smoke-qemu.sh` теперь приводит относительный `BUILD_DIR` к абсолютному
+пути, поэтому `BUILD_DIR=work/build/...` работает и при сборке initramfs.
+
 ### 4.7 Lint, метрики и security baseline
 
 ```bash

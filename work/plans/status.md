@@ -22,6 +22,8 @@
 | QEMU smoke | `work/pipelines/scripts/smoke-qemu.sh` | rc=0, `SMOKE_OK`, ~5 с |
 | machine 7.2.6 | `JOBS=3 work/pipelines/scripts/build-machine.sh` | rc=0, `7.2.6-machine`, 213 модулей, ~35 мин, debug off |
 | QEMU smoke (machine) | `QEMU_CPU=max KERNEL_IMAGE=work/build/machine-7.2.6/artifacts/bzImage-7.2.6-machine work/pipelines/scripts/smoke-qemu.sh` | rc=0, `SMOKE_OK`, ~5 с |
+| KASAN smoke (local) | `SMOKE_APPEND=kasan_multi_shot KERNEL_IMAGE=.../smoke-kasan/arch/x86/boot/bzImage work/pipelines/scripts/smoke-qemu.sh` | rc=0, `SMOKE_OK`, 40 с, QEMU 8.2.2 |
+| smoke-qemu path fix | `BUILD_DIR=work/build/smoke-relative ... smoke-qemu.sh` | rc=0, относительный `BUILD_DIR` работает |
 | Push CI | `git push origin dev` | выполнен; `origin/dev` обновлён |
 | Branch protection | GitHub API PUT | `dev`: 5 required checks |
 | CI blocking | workflows | `sparse`/`kunit`/`smoke` без `continue-on-error` |
@@ -59,7 +61,6 @@
 | Блокер | Причина | Что нужно |
 |---|---|---|
 | Системный `sparse` | пакет 0.6.4 не проходит `scripts/checker-valid.sh` | собрать sparse из исходников (в CI уже так) |
-| KASAN smoke локально | не запускался; CI green run `41941909988` | `JOBS=4 work/pipelines/scripts/smoke-kasan.sh` |
 | clang/rust/sphinx | не установлены локально | `deps.sh local` |
 | Required checks | branch protection всё ещё 5 jobs; токен без admin | добавить `meta` и `security` вручную после green run |
 
