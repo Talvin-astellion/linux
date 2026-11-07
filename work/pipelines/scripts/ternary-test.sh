@@ -49,7 +49,8 @@ run_mode() {
 	cflags=(-std=gnu11 -O2 -g -Wall -Wextra -Wno-unused-parameter
 		-I"$src/emu" -I"$TERNARY_TESTS_DIR")
 	if [[ "$SANITIZE" == 1 ]]; then
-		cflags+=(-O1 -fsanitize=address,undefined
+		local sanitize_flags=-fsanitize=address,undefined
+		cflags+=(-O1 "$sanitize_flags"
 			-fno-omit-frame-pointer)
 	fi
 
