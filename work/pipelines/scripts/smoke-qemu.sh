@@ -30,6 +30,7 @@ fi
 require_file "$KERNEL_IMAGE"
 prepare_build_root
 mkdir -p "$BUILD_DIR/root/dev" "$BUILD_DIR/root/proc" "$BUILD_DIR/root/sys"
+BUILD_DIR="$(cd "$BUILD_DIR" && pwd)"
 
 cat > "$BUILD_DIR/init.c" <<'EOF'
 #include <unistd.h>
