@@ -25,6 +25,9 @@
 | KASAN smoke (local) | `SMOKE_APPEND=kasan_multi_shot KERNEL_IMAGE=.../smoke-kasan/arch/x86/boot/bzImage work/pipelines/scripts/smoke-qemu.sh` | rc=0, `SMOKE_OK`, 40 с, QEMU 8.2.2 |
 | smoke-qemu path fix | `BUILD_DIR=work/build/smoke-relative ... smoke-qemu.sh` | rc=0, относительный `BUILD_DIR` работает |
 | Lint (local) | `PATH=/tmp/opencode/bin:$PATH work/pipelines/scripts/lint.sh` | rc=0; shellcheck 0.11.0, actionlint 1.7.12; исправлен SC2054 в `ternary-test.sh` |
+| CI check (local) | `PATH=/tmp/opencode/bin:$PATH make -C work ci-check` | rc=0; lint + `metrics.sh --check` |
+| Action pinning | `work/pipelines/scripts/check-actions-pinned.sh` | rc=0, все `uses:` на SHA |
+| Secret scan (local) | `PATH=/tmp/opencode/bin:$PATH work/pipelines/scripts/check-secrets.sh` | rc=0, gitleaks 8.30.1, no leaks |
 | Push CI | `git push origin dev` | выполнен; `origin/dev` обновлён |
 | Push trit | `git push origin trit` | `e4a117ee2e7d`; включая KASAN, sparse и lint fixes |
 | Branch protection | GitHub API PUT | `dev`: 5 required checks |
