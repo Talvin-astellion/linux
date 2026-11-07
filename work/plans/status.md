@@ -2,8 +2,8 @@
 
 | Поле | Значение |
 |---|---|
-| Дата | 2026-11-05 |
-| Ветка | `dev` |
+| Дата | 2026-11-07 |
+| Ветка | `trit` (поверх `dev`) |
 | Baseline-тег | `baseline-20261031` (`541c43310e85`) |
 | Окружение | 12 CPU, 5.6 ГБ RAM + 4 ГБ swap, 32 ГБ свободно на старте |
 
@@ -24,7 +24,9 @@
 | QEMU smoke (machine) | `QEMU_CPU=max KERNEL_IMAGE=work/build/machine-7.2.6/artifacts/bzImage-7.2.6-machine work/pipelines/scripts/smoke-qemu.sh` | rc=0, `SMOKE_OK`, ~5 с |
 | KASAN smoke (local) | `SMOKE_APPEND=kasan_multi_shot KERNEL_IMAGE=.../smoke-kasan/arch/x86/boot/bzImage work/pipelines/scripts/smoke-qemu.sh` | rc=0, `SMOKE_OK`, 40 с, QEMU 8.2.2 |
 | smoke-qemu path fix | `BUILD_DIR=work/build/smoke-relative ... smoke-qemu.sh` | rc=0, относительный `BUILD_DIR` работает |
+| Lint (local) | `PATH=/tmp/opencode/bin:$PATH work/pipelines/scripts/lint.sh` | rc=0; shellcheck 0.11.0, actionlint 1.7.12; исправлен SC2054 в `ternary-test.sh` |
 | Push CI | `git push origin dev` | выполнен; `origin/dev` обновлён |
+| Push trit | `git push origin trit` | `e4a117ee2e7d`; включая KASAN, sparse и lint fixes |
 | Branch protection | GitHub API PUT | `dev`: 5 required checks |
 | CI blocking | workflows | `sparse`/`kunit`/`smoke` без `continue-on-error` |
 | CI first run | GitHub Actions `41185886775` | checkpatch/sparse/kunit/smoke success; allmodconfig отменён по timeout 180 мин |
@@ -62,29 +64,29 @@
 |---|---|---|
 | Системный `sparse` | пакет 0.6.4 не проходит `scripts/checker-valid.sh` | собрать sparse из исходников (в CI уже так) |
 | clang/rust/sphinx | не установлены локально | `deps.sh local` |
-| Required checks | branch protection всё ещё 5 jobs; токен без admin | добавить `meta` и `security` вручную после green run |
+| shellcheck/actionlint/gitleaks | системно не установлены; lint проверен бинарями из `/tmp/opencode/bin` | `deps.sh lint` (нужен sudo) |
+| Required checks | branch protection всё ещё 5 jobs; токен без admin | выдать admin/branch-protection и добавить `meta`/`security` |
 
 ## Состояние диска после прогонов
 
 ```
-/dev/nvme0n1p4  99G  73G  22G  77% /
-work/build      17G
+/dev/nvme0n1p4  99G  75G  19G  80% /
+work/build      19G
   allmodconfig  12G
-  src-7.2.6     1.8G
   machine-7.2.6 1.9G
+  src-7.2.6     1.8G
+  smoke-kasan   1.7G
 ```
 
 ## Следующие шаги
 
-1. Push и проверка новых jobs `meta`, `security-baseline`, `security-kunit`,
-   `security-sanitizers`; добавить их в required checks после зелёного прогона.
-2. Прогнать `smoke-kasan.sh` локально (или дождаться CI) и зафиксировать
-   время/размер.
-3. Разобрать baseline sparse (211 errors): основная масса — address-space
-   `__rcu` сравнения; новые regressions блокируются порогом.
-4. Включить `enforce_admins`/PR-only для `dev` и защиту `main` после финального
-   push документации.
-5. При необходимости установить `7.2.6-machine` в `/boot` по `plans/runbook.md`
-   (сейчас не установлено; нужен sudo).
-6. ISSUE-11: прогнать матрицу 24.04/26.04 × QEMU 8.2.2/10.2.1 на failing
+1. Выдать GitHub-токен с admin/branch-protection: добавить `meta` и `security`
+   jobs в required checks, включить `enforce_admins`/PR-only для `dev` и
+   защиту `main`.
+2. Установить `clang`, `rust`, `sphinx`, `shellcheck`, `actionlint`, `gitleaks`
+   через `deps.sh` (нужен sudo), затем прогнать clang-матрицу, `lint.sh` и
+   `check-secrets.sh` штатно.
+3. ISSUE-11: прогнать матрицу 24.04/26.04 × QEMU 8.2.2/10.2.1 на failing
    `bzImage` и снять pin после выяснения причины.
+4. При необходимости установить `7.2.6-machine` в `/boot` по `plans/runbook.md`
+   (нужен sudo) и интегрировать `trit` в `dev`.
