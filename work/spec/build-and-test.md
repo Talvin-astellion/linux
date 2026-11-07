@@ -140,9 +140,27 @@ JOBS=4 work/pipelines/scripts/sparse.sh
 `make defconfig` + `make C=2 CHECK=sparse`. Лог: `work/build/sparse/sparse.log`.
 Baseline: 211 errors / 1252 warnings. Скрипт падает при превышении
 `SPARSE_MAX_ERRORS`/`SPARSE_MAX_WARNINGS`; это защита от новых регрессий.
-Основная масса ошибок — 182 `incompatible types in comparison expression
-(different address spaces)`; далее 13 `too long token expansion` и единичные
-случаи. Это известный шум sparse, а не новые regressions.
+
+Разбор baseline (2026-11-05):
+
+| Ошибок | Категория | Основные места |
+|---:|---|---|
+| 182 | `comparison ... (different address spaces)` | `sched.h` 41, `core.c` 32, `xfrm_user.c` 13, `topology.c` 10, `rbtree.h` 9 |
+| 13 | `too long token expansion` | `include/trace/events/*` |
+| 3 | `conditional expression (different base types)` | `mm/memory.c`, `mm/pgtable-generic.c`, `arch/x86/mm/pgtable.c` |
+| 3 | `arithmetics on pointers to functions` | `kernel/bpf/core.c` |
+| 2 | `no generic selection ... __rcu user_ns` | `kernel/nsproxy.c` |
+| 2 | `multiple address spaces given` | `include/uapi/asm-generic/signal-defs.h` |
+| 4 | `symbol ... redeclared` | `lib/clz_ctz.c` |
+| 1 | `marked inline, but without a definition` | `kernel/sched/fair.c` |
+| 1 | `comparison ... (different base types)` | `kernel/exit.c` |
+
+Основные предупреждения: argument/assignment/initializer с разными address
+spaces (283/97/46), `cast removes address space '__rcu'` (104), restricted-типы
+`suspend_state_t`/`pci_power_t` (64/27), casts к `__le32`/`__le16` (48/41),
+`unreplaced symbol '<noident>'` (43), `dereference of noderef expression` (34).
+Это известный шум defconfig-дерева, а не изменения проекта; порог блокирует
+только рост относительно baseline.
 
 ### 4.3 QEMU smoke
 
