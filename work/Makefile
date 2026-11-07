@@ -2,8 +2,10 @@
 WORK := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 REPO := $(abspath $(WORK)/..)
 SCRIPTS := $(WORK)pipelines/scripts
+TERNARY_REPO ?= $(HOME)/System/ternary
+export TERNARY_REPO
 
-.PHONY: help deps build machine checkpatch sparse kunit security-kunit smoke smoke-kasan lint metrics ci-check clean
+.PHONY: help deps build machine checkpatch sparse kunit security-kunit smoke smoke-kasan lint metrics ci-check ternary-test ternary-bench ternary-coverage ternary-metrics ternary-ci clean
 
 help:
 	@echo "Targets:"
@@ -19,6 +21,11 @@ help:
 	@echo "  lint             run bash/shellcheck/actionlint checks"
 	@echo "  metrics          regenerate work/spec/metrics.md"
 	@echo "  ci-check         lint plus metrics freshness check"
+	@echo "  ternary-test     run baseline/candidate ternary C tests"
+	@echo "  ternary-bench    run baseline/candidate ternary benchmarks"
+	@echo "  ternary-coverage collect baseline/candidate line/branch coverage"
+	@echo "  ternary-metrics  run ternary tests+bench+coverage and gate"
+	@echo "  ternary-ci       alias for ternary-metrics"
 	@echo "  clean            remove $(WORK)build"
 
 deps:
@@ -58,5 +65,20 @@ ci-check:
 	$(SCRIPTS)/lint.sh
 	$(SCRIPTS)/metrics.sh --check
 
+ternary-test:
+	$(SCRIPTS)/ternary-test.sh all
+
+ternary-bench:
+	$(SCRIPTS)/ternary-bench.sh all
+
+ternary-coverage:
+	$(SCRIPTS)/ternary-coverage.sh all
+
+ternary-metrics:
+	$(SCRIPTS)/ternary-metrics.sh --check
+
+ternary-ci: ternary-metrics
+
 clean:
 	rm -rf "$(WORK)build"
+	-git -C "$(TERNARY_REPO)" worktree prune >/dev/null 2>&1
