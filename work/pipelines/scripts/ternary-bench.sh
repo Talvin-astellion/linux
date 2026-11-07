@@ -7,6 +7,11 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/ternary-lib.sh"
 
 MODE="${1:-all}"
+if [[ -z "${BENCH_CPU:-}" ]] && have taskset &&
+	taskset -c 0 true 2>/dev/null; then
+	BENCH_CPU=0
+	export BENCH_CPU
+fi
 case "$MODE" in
 	all|baseline|candidate) ;;
 	*) die "usage: $0 [all|baseline|candidate]" ;;
