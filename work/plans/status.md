@@ -46,6 +46,7 @@
 | Hygiene tooling | `lint.sh`, `metrics.sh`, `check-actions-pinned.sh` | shellcheck/actionlint, метрики, SHA-pinning |
 | Secret scan | `check-secrets.sh`, gitleaks 8.30.1 | сканирование `work/` и `.github/` через `tar`, включая untracked |
 | Dependabot | `.github/dependabot.yml` | weekly github-actions updates |
+| Ternary Linux guest | `make -C work ternary-linux-run` | rc=0, `TERNARY_LINUX_OK`; flat `/init` + `initramfs.cpio.gz` |
 
 Артефакты:
 
@@ -60,6 +61,8 @@
 - `work/build/machine-7.2.6/artifacts/bzImage-7.2.6-machine` — 14 639 616 байт.
 - `work/build/machine-7.2.6/summary.txt`, `config.diff`.
 - `work/build/machine-7.2.6/modules/lib/modules/7.2.6-machine` — staging.
+- `work/build/ternary-linux/guest/emulator.log` — boot под `tern-linux`, маркер `TERNARY_LINUX_OK`.
+- `work/build/ternary-linux/userspace/init.flat`, `initramfs.cpio.gz` — flat `/init`.
 
 ## Не выполнено / блокеры
 

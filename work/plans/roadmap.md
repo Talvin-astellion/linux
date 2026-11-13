@@ -89,6 +89,14 @@ work/pipelines/scripts/metrics.sh --check
 Первый прогон `allmodconfig` и `kunit` считать измерением baseline: зафиксировать
 время, размер, список падений.
 
+## Отдельный трек: Linux-гость на ternary-эмуляторе
+
+Порт Linux на 27-тритную машину вынесен в отдельный план:
+`plans/ternary-linux-roadmap.md` (трек A: RV32IMA-гость под интерпретатором).
+Текущий статус: Track A milestone — ядро загружается в QEMU и под
+`tern-linux`; flat `/init` печатает `TERNARY_LINUX_OK`. Дальше — Фаза 5
+(регрессионные тесты ISA/SBI, CI).
+
 ## Фактические результаты (2026-10-31 — 2026-11-01)
 
 | Фаза | Статус | Факт |

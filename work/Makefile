@@ -5,7 +5,7 @@ SCRIPTS := $(WORK)pipelines/scripts
 TERNARY_REPO ?= $(HOME)/System/ternary
 export TERNARY_REPO
 
-.PHONY: help deps build machine checkpatch sparse kunit security-kunit smoke smoke-kasan lint metrics ci-check ternary-test ternary-bench ternary-coverage ternary-metrics ternary-ci clean
+.PHONY: help deps build machine checkpatch sparse kunit security-kunit smoke smoke-kasan lint metrics ci-check ternary-test ternary-bench ternary-coverage ternary-metrics ternary-ci ternary-linux-deps ternary-linux-check ternary-linux-build ternary-linux-boot ternary-linux-userspace ternary-linux-run clean
 
 help:
 	@echo "Targets:"
@@ -26,6 +26,12 @@ help:
 	@echo "  ternary-coverage collect baseline/candidate line/branch coverage"
 	@echo "  ternary-metrics  run ternary tests+bench+coverage and gate"
 	@echo "  ternary-ci       alias for ternary-metrics"
+	@echo "  ternary-linux-deps   install RV32 toolchain, QEMU, dtc, OpenSBI"
+	@echo "  ternary-linux-check  verify RV32 Linux guest prerequisites"
+	@echo "  ternary-linux-build  build RV32 NOMMU guest kernel"
+	@echo "  ternary-linux-boot   boot guest kernel in QEMU"
+	@echo "  ternary-linux-userspace  build flat /init and initramfs"
+	@echo "  ternary-linux-run    boot guest under ternary emulator"
 	@echo "  clean            remove $(WORK)build"
 
 deps:
@@ -78,6 +84,24 @@ ternary-metrics:
 	$(SCRIPTS)/ternary-metrics.sh --check
 
 ternary-ci: ternary-metrics
+
+ternary-linux-deps:
+	$(SCRIPTS)/ternary-linux-deps.sh
+
+ternary-linux-check:
+	$(SCRIPTS)/ternary-linux-check.sh
+
+ternary-linux-build:
+	$(SCRIPTS)/ternary-linux-build.sh
+
+ternary-linux-boot:
+	$(SCRIPTS)/ternary-linux-boot.sh
+
+ternary-linux-userspace:
+	$(SCRIPTS)/ternary-linux-userspace.sh
+
+ternary-linux-run: ternary-linux-build ternary-linux-userspace
+	$(SCRIPTS)/ternary-linux-run.sh
 
 clean:
 	rm -rf "$(WORK)build"

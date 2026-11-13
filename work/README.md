@@ -36,6 +36,14 @@ work/pipelines/scripts/metrics.sh --check
 
 # 5. Ternary: тесты, бенчмарки и покрытие
 work/pipelines/scripts/ternary-metrics.sh --check
+
+# 6. Ternary Linux guest: toolchain, сборка и загрузка RV32 NOMMU
+work/pipelines/scripts/ternary-linux-deps.sh
+work/pipelines/scripts/ternary-linux-check.sh
+work/pipelines/scripts/ternary-linux-build.sh
+work/pipelines/scripts/ternary-linux-userspace.sh
+work/pipelines/scripts/ternary-linux-boot.sh
+work/pipelines/scripts/ternary-linux-run.sh
 ```
 
 GitHub Actions уже лежат в `.github/workflows/` и являются единственным
@@ -61,6 +69,12 @@ make -C work ternary-test
 make -C work ternary-bench
 make -C work ternary-coverage
 make -C work ternary-metrics
+make -C work ternary-linux-deps
+make -C work ternary-linux-check
+make -C work ternary-linux-build
+make -C work ternary-linux-userspace
+make -C work ternary-linux-boot
+make -C work ternary-linux-run
 ```
 
 ## Структура
@@ -71,12 +85,16 @@ make -C work ternary-metrics
 | `spec/architecture.md` | Обзор подсистем и структуры дерева |
 | `spec/build-and-test.md` | Сборка, тестирование, ресурсы, артефакты |
 | `spec/metrics.md` | Метрики функциональности (генерируется) |
+| `spec/ternary-linux.md` | Linux-гость на ternary-эмуляторе |
 | `problems/issues.md` | Реестр проблем P0–P2 с доказательствами |
 | `plans/roadmap.md` | Фазы работ 0–5, DoD, оценки |
 | `plans/runbook.md` | Операционные процедуры и troubleshooting |
+| `plans/ternary-linux-roadmap.md` | Фазы 0–5 для ternary Linux guest |
 | `pipelines/` | Скрипты и конфиги пайплайнов |
 | `pipelines/scripts/` | Локальные скрипты (те же, что в CI) |
 | `pipelines/configs/` | Фрагменты конфигурации ядра и security-конфиги |
+| `ternary-linux/dts/` | DTS машины: QEMU (`ternary`) и эмулятор (`ternary-emu`) |
+| `ternary-linux/userspace/` | flat `/init` и сборка `initramfs.cpio.gz` |
 | `ternary/tests/` | C-тесты ternary-эмулятора (baseline и candidate) |
 | `ternary/bench/` | Бенчмарки ternary-эмулятора |
 | `.github/workflows/` | Канонические workflow-файлы |
