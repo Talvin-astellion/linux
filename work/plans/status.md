@@ -47,6 +47,8 @@
 | Secret scan | `check-secrets.sh`, gitleaks 8.30.1 | сканирование `work/` и `.github/` через `tar`, включая untracked |
 | Dependabot | `.github/dependabot.yml` | weekly github-actions updates |
 | Ternary Linux guest | `make -C work ternary-linux-run` | rc=0, `TERNARY_LINUX_OK`; flat `/init` + `initramfs.cpio.gz` |
+| Ternary Linux ISA/SBI | `make -C work ternary-linux-isa` | rc=0, PASS `test_rv32i`, `test_rv32m`, `test_rv32a`, `test_sbi` |
+| Ternary Linux CI job | `.github/workflows/ternary-linux.yml` | reusable job `ternary-linux / isa`, эмулятор `feature/linux-guest` |
 
 Артефакты:
 
@@ -63,6 +65,7 @@
 - `work/build/machine-7.2.6/modules/lib/modules/7.2.6-machine` — staging.
 - `work/build/ternary-linux/guest/emulator.log` — boot под `tern-linux`, маркер `TERNARY_LINUX_OK`.
 - `work/build/ternary-linux/userspace/init.flat`, `initramfs.cpio.gz` — flat `/init`.
+- `work/build/ternary-linux/isa/summary.txt`, `*.log` — результаты ISA/SBI-тестов.
 
 ## Не выполнено / блокеры
 

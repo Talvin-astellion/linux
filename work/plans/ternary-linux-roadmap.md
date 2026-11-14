@@ -96,6 +96,20 @@ DTB и initrd, SBI DBCN, `--time-inst`, `--max-insn`, трассировка.
 | 5.3 | Документация | runbook и troubleshooting |
 | 5.4 | Опционально: MMU/IRQ | отдельная ветка, не блокирует baseline |
 
+Факт (2026-11-14):
+
+- 5.1 выполнена: `test_rv32i`, `test_rv32m`, `test_rv32a`, `test_sbi`
+  (`work/ternary-linux/tests/`) собираются `--march=rv32ima_zicsr_zifencei`
+  и исполняются на `tern-linux`; PASS/FAIL определяется по test-finisher
+  (`0x0010_0000`) и маркеру `test finisher PASS`.
+- 5.2 выполнена: `ternary-linux-isa.sh` + reusable workflow
+  `.github/workflows/ternary-linux.yml` (`ternary-linux / isa`); job
+  собирает `tern-linux` из ветки эмулятора `feature/linux-guest` и гоняет
+  весь набор тестов.
+- 5.3 выполнена: команды и troubleshooting добавлены в `plans/runbook.md`,
+  контракт тестов — в `spec/ternary-linux.md`.
+- 5.4 остаётся опциональной.
+
 ## Команды
 
 ```bash
@@ -105,6 +119,7 @@ make -C work ternary-linux-build
 make -C work ternary-linux-userspace
 make -C work ternary-linux-boot
 make -C work ternary-linux-run
+make -C work ternary-linux-isa
 ```
 
 ## Текущий статус
@@ -116,4 +131,4 @@ make -C work ternary-linux-run
 | 2 | выполнена функционально; unit-тесты — Фаза 5 |
 | 3 | выполнена (`TERNARY_LINUX_OK`) |
 | 4 | выполнена (flat + initramfs) |
-| 5 | не начата |
+| 5 | выполнена (ISA/SBI-тесты, CI-job, документация); 5.4 опционально |

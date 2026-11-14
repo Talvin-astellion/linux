@@ -1,0 +1,51 @@
+name: ternary-linux
+
+on:
+  workflow_call:
+    inputs:
+      ternary_ref:
+        description: Ternary emulator branch or commit to test
+        required: false
+        type: string
+        default: feature/linux-guest
+
+permissions:
+  contents: read
+
+jobs:
+  isa:
+    name: isa
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Checkout ternary emulator
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          repository: Talvin-astellion/ternary
+          ref: ${{ inputs.ternary_ref }}
+          path: work/build/ternary-src
+          fetch-depth: 1
+
+      - name: Install dependencies
+        run: bash work/pipelines/scripts/deps.sh ternary-linux
+
+      - name: Build tern-linux emulator
+        run: make -C work/build/ternary-src/emu linux
+
+      - name: Run RV32IMA/SBI regression tests
+        env:
+          TERNARY_REPO: ${{ github.workspace }}/work/build/ternary-src
+        run: bash work/pipelines/scripts/ternary-linux-isa.sh
+
+      - name: Upload ISA test artifacts
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ternary-linux-isa
+          path: |
+            work/build/ternary-linux/isa/summary.txt
+            work/build/ternary-linux/isa/*.log
+          if-no-files-found: ignore

@@ -43,3 +43,7 @@ jobs:
   ternary:
     name: ternary
     uses: ./.github/workflows/ternary.yml
+
+  ternary-linux:
+    name: ternary-linux
+    uses: ./.github/workflows/ternary-linux.yml

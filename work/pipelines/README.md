@@ -18,6 +18,8 @@ workflow обновите документацию и `make -C work metrics`.
 | `.github/workflows/build.yml` | allmodconfig |
 | `.github/workflows/kunit.yml` | KUnit `all_tests` |
 | `.github/workflows/smoke.yml` | QEMU smoke |
+| `.github/workflows/ternary.yml` | ternary tests/bench/coverage |
+| `.github/workflows/ternary-linux.yml` | RV32IMA/SBI тесты на `tern-linux` |
 
 ## Jobs
 
@@ -32,13 +34,20 @@ workflow обновите документацию и `make -C work metrics`.
 | `security-kunit` | `security.yml` | `security-kunit.sh` | да |
 | `security-sanitizers` | `security.yml` | `smoke-kasan.sh` | да |
 | `qemu-smoke` | `smoke.yml` | `smoke-qemu.sh` | да |
+| `ternary` | `ternary.yml` | `ternary-metrics.sh --check` | да |
+| `isa` | `ternary-linux.yml` | `ternary-linux-isa.sh` | да |
 
 ¹ CI собирает `sparse` из исходников: пакет Ubuntu 0.6.4 не проходит
 `scripts/checker-valid.sh`. Локально добавьте каталог со `sparse` в `PATH`.
 
-Оркестратор `ci.yml` вызывает шесть reusable workflow. Машинная сборка
+Оркестратор `ci.yml` вызывает восемь reusable workflow. Машинная сборка
 (`scripts/build-machine.sh`) в CI не запускается: она привязана к железу и
 `-march=native`.
+
+`ternary-linux.yml` собирает `tern-linux` из ветки эмулятора
+`feature/linux-guest` (input `ternary_ref`) и запускает bare-metal ISA/SBI
+тесты из `work/ternary-linux/tests/`. Локально нужен только
+`gcc-riscv64-unknown-elf` и собранный `tern-linux`.
 
 ## Локальный запуск
 
@@ -58,6 +67,9 @@ work/pipelines/scripts/metrics.sh --check
 
 # машинная сборка 7.2.6 (локально, не в CI)
 JOBS=3 work/pipelines/scripts/build-machine.sh
+
+# RV32IMA/SBI-тесты на ternary-эмуляторе
+TERNARY_REPO=~/System/ternary work/pipelines/scripts/ternary-linux-isa.sh
 ```
 
 Профили `deps.sh`:
@@ -69,6 +81,7 @@ JOBS=3 work/pipelines/scripts/build-machine.sh
 | `smoke` | `ci` + qemu-system-x86 |
 | `lint` | git, curl, shellcheck, actionlint |
 | `check` | git, perl |
+| `ternary-linux` | build-essential, gcc-riscv64-unknown-elf |
 
 Переменные окружения:
 
@@ -113,6 +126,8 @@ JOBS=3 work/pipelines/scripts/build-machine.sh
 | `work/build/machine-7.2.6/artifacts/` | machine |
 | `work/build/machine-7.2.6/modules/` | machine |
 | `work/build/machine-7.2.6/summary.txt` | machine |
+| `work/build/ternary-linux/isa/summary.txt` | ternary-linux / isa |
+| `work/build/ternary-linux/isa/*.log` | ternary-linux / isa |
 
 ## Ограничения
 

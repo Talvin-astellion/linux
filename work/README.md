@@ -44,6 +44,7 @@ work/pipelines/scripts/ternary-linux-build.sh
 work/pipelines/scripts/ternary-linux-userspace.sh
 work/pipelines/scripts/ternary-linux-boot.sh
 work/pipelines/scripts/ternary-linux-run.sh
+work/pipelines/scripts/ternary-linux-isa.sh
 ```
 
 GitHub Actions уже лежат в `.github/workflows/` и являются единственным
@@ -75,6 +76,7 @@ make -C work ternary-linux-build
 make -C work ternary-linux-userspace
 make -C work ternary-linux-boot
 make -C work ternary-linux-run
+make -C work ternary-linux-isa
 ```
 
 ## Структура
@@ -94,6 +96,7 @@ make -C work ternary-linux-run
 | `pipelines/scripts/` | Локальные скрипты (те же, что в CI) |
 | `pipelines/configs/` | Фрагменты конфигурации ядра и security-конфиги |
 | `ternary-linux/dts/` | DTS машины: QEMU (`ternary`) и эмулятор (`ternary-emu`) |
+| `ternary-linux/tests/` | bare-metal RV32IMA/SBI регрессионные тесты |
 | `ternary-linux/userspace/` | flat `/init` и сборка `initramfs.cpio.gz` |
 | `ternary/tests/` | C-тесты ternary-эмулятора (baseline и candidate) |
 | `ternary/bench/` | Бенчмарки ternary-эмулятора |
@@ -117,6 +120,9 @@ make -C work ternary-linux-run
   checkpatch, QEMU smoke — см. `plans/status.md`.
 - KASAN smoke проверен в CI: run `41941909988`, job `security-sanitizers`.
 - Машинная сборка: `7.2.6-machine`, 213 модулей, QEMU smoke OK.
+- Ternary Linux guest: `TERNARY_LINUX_OK` под `tern-linux`; ISA/SBI-тесты
+  (`test_rv32i`, `test_rv32m`, `test_rv32a`, `test_sbi`) проходят, CI job
+  `ternary-linux / isa`.
 - AI-политика: `AGENTS.md`; partial clone описан в `plans/runbook.md`.
 - CI: 8 workflow, 10 jobs; ternary-пайплайн сравнивает `dev` и
   `feature/trit-native` по тестам, покрытию и скорости.

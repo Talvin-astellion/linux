@@ -144,6 +144,7 @@ Toolchain:
 | Гигиена | shellcheck/actionlint/metrics | `work/pipelines/scripts/lint.sh` |
 | Секреты | gitleaks | `work/pipelines/scripts/check-secrets.sh` |
 | Ternary | C-тесты, gcov, бенчмарки | `make -C work ternary-metrics` |
+| Ternary Linux ISA/SBI | bare-metal тесты на `tern-linux` | `make -C work ternary-linux-isa` |
 
 ## 7. CI/CD
 
@@ -151,8 +152,8 @@ Toolchain:
 - Триггеры: `push` в `dev`/`main`, `pull_request`, `workflow_dispatch`.
 - Jobs: `meta`, `checkpatch`, `sparse`, `allmodconfig`, `kunit`,
   `security-baseline`, `security-kunit`, `security-sanitizers`, `qemu-smoke`,
-  `ternary`.
-- Канонические workflows: `.github/workflows/` (8 файлов). `work/` больше не
+  `ternary`, `ternary-linux`.
+- Канонические workflows: `.github/workflows/` (9 файлов). `work/` больше не
   хранит копию и не использует `install.sh`.
 - GitHub Actions закреплены по полному SHA; обновления — через
   `.github/dependabot.yml`.

@@ -8,9 +8,9 @@ source "$SCRIPT_DIR/lib.sh"
 
 PROFILE="${1:-local}"
 case "$PROFILE" in
-  local|ci|smoke|lint|check) ;;
+  local|ci|smoke|lint|check|ternary-linux) ;;
   --full) PROFILE=local ;;
-  *) die "unknown profile: $PROFILE (use local, ci, smoke, lint, or check)" ;;
+  *) die "unknown profile: $PROFILE (use local, ci, smoke, lint, check, or ternary-linux)" ;;
 esac
 
 if ! have apt-get; then
@@ -72,6 +72,11 @@ CHECK_PACKAGES=(
   gzip
 )
 
+TERNARY_LINUX_PACKAGES=(
+  build-essential
+  gcc-riscv64-unknown-elf
+)
+
 install_apt() {
   log "installing: $*"
   "${SUDO[@]}" apt-get install -y --no-install-recommends "$@"
@@ -122,6 +127,9 @@ case "$PROFILE" in
     ;;
   check)
     install_apt "${CHECK_PACKAGES[@]}"
+    ;;
+  ternary-linux)
+    install_apt "${TERNARY_LINUX_PACKAGES[@]}"
     ;;
 esac
 

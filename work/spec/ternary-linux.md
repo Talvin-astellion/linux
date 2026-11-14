@@ -7,7 +7,7 @@
 | Ветка эмулятора | `feature/linux-guest` |
 | Upstream-гость | mainline Linux, RISC-V NOMMU |
 | Лицензии | GPL-2.0-only (ядро и `work/`), LGPL (эмулятор) |
-| Документ | draft 2, 2026-11-13 |
+| Документ | draft 3, 2026-11-14 |
 
 ## 1. Назначение
 
@@ -124,6 +124,34 @@ System.map,config}`. DTB: `work/build/ternary-linux/dtb/{ternary,ternary-emu}.dt
 Userspace: `work/build/ternary-linux/userspace/{init.flat,initramfs.cpio.gz}`.
 Логи: `guest/boot.log` (QEMU), `guest/emulator.log` (`tern-linux`).
 
+### 5.1 Регрессионные тесты ISA/SBI
+
+Набор `work/ternary-linux/tests/` исполняется как bare-metal S-mode гость
+`tern-linux` (загрузка по `0x8040_0000`, test-finisher по `0x0010_0000`):
+
+| Тест | Покрытие |
+|---|---|
+| `test_rv32i` | ALU, сдвиги, сравнения, ветвления, JAL/JALR, AUIPC, load/store, невыровненные доступы, `fence`/`fence.i` |
+| `test_rv32m` | `mul*`, `div*`, `rem*`, включая деление на ноль и `INT32_MIN / -1` |
+| `test_rv32a` | `lr.w`/`sc.w`, AMO-операции, reservation-семантика |
+| `test_sbi` | SBI base/time/DBCN, CSR (`misa`, `time`, `cycle`, `instret`, `sscratch`, `sstatus`), таймерное прерывание, `ecall` из U-mode (scause 8) |
+
+Запуск:
+
+```bash
+make -C work ternary-linux-isa
+# или
+TERNARY_REPO=~/System/ternary work/pipelines/scripts/ternary-linux-isa.sh
+```
+
+Скрипт собирает тесты `riscv64-unknown-elf-gcc -march=rv32ima_zicsr_zifencei
+-mabi=ilp32 -nostdlib`, конвертирует в `.bin` и прогоняет под `tern-linux`
+(`--max-insn`, `--time-inst`). PASS — код возврата 0 и строка
+`test finisher PASS`; иначе `FAIL <test>` и хвост лога в
+`work/build/ternary-linux/isa/`. В CI это job `ternary-linux / isa`
+(`.github/workflows/ternary-linux.yml`), эмулятор берётся из ветки
+`feature/linux-guest`.
+
 ## 6. Критерии приёмки
 
 Фаза 0:
@@ -141,6 +169,8 @@ Userspace: `work/build/ternary-linux/userspace/{init.flat,initramfs.cpio.gz}`.
 - QEMU с `-initrd` также печатает `TERNARY_LINUX_OK` (проверено).
 - Паника `Attempted to kill init` после `exit(0)` — ожидаемое завершение
   тестового `/init`, а не сбой загрузки.
+- `ternary-linux-isa.sh` проходит все четыре набора (`test_rv32i`,
+  `test_rv32m`, `test_rv32a`, `test_sbi`); job `ternary-linux / isa` зелёный.
 
 ## 7. Риски
 

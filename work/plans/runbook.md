@@ -116,6 +116,10 @@ work/pipelines/scripts/lint.sh
 work/pipelines/scripts/metrics.sh --check
 work/pipelines/scripts/check-actions-pinned.sh
 work/pipelines/scripts/check-secrets.sh
+
+# Linux-гость и RV32IMA/SBI-тесты на ternary-эмуляторе
+make -C work ternary-linux-run
+make -C work ternary-linux-isa
 ```
 
 Разбор результатов:
@@ -126,6 +130,24 @@ work/pipelines/scripts/check-secrets.sh
 - security KUnit: `check-kunit-security.py` проверяет suites из
   `configs/security-kunit-suites.txt` и нулевые failed/crashed/errors.
 - KASAN smoke: смотреть `work/build/smoke-kasan/smoke/qemu.log`.
+- Ternary ISA/SBI: PASS/FAIL в `work/build/ternary-linux/isa/summary.txt`,
+  подробности — в `isa/<test>.log`; успех подтверждается строкой
+  `test finisher PASS`.
+
+### Ternary Linux guest
+
+```bash
+work/pipelines/scripts/ternary-linux-deps.sh     # toolchain/QEMU/OpenSBI
+work/pipelines/scripts/ternary-linux-check.sh
+work/pipelines/scripts/ternary-linux-build.sh
+work/pipelines/scripts/ternary-linux-userspace.sh
+work/pipelines/scripts/ternary-linux-run.sh     # tern-linux, TERNARY_LINUX_OK
+work/pipelines/scripts/ternary-linux-isa.sh     # bare-metal ISA/SBI-тесты
+```
+
+`ternary-linux-run.sh` требует собранный `~/System/ternary/emu/tern-linux`
+(или `TL_EMU`). Для ISA-тестов достаточно `gcc-riscv64-unknown-elf` и
+`tern-linux`; в CI это делает `deps.sh ternary-linux`.
 
 ## 5. CI и branch protection
 
@@ -189,9 +211,13 @@ CI использует `actions/checkout` с `fetch-depth: 1`; `checkpatch` д�
 | QEMU smoke: `Booting from ROM..` и мгновенный выход | Ubuntu 26.04 / QEMU 10.2.1 (ISSUE-11) | использовать `ubuntu-24.04`; смотреть `qemu-debug.log` |
 | `source tree is not clean` | сборка `O=` из грязного дерева | использовать `work/build/src-*` |
 | workflow не запускается | YAML не в `.github/workflows` | проверить путь и имя файла |
-| reusable workflow not found | отсутствует файл в `.github/workflows` | добавить все 7 workflow |
+| reusable workflow not found | отсутствует файл в `.github/workflows` | добавить все 9 workflow |
 | `shellcheck`/`actionlint` not found | не установлен lint-профиль | `deps.sh lint` |
 | `gitleaks` not found | нет бинарника (CI ставит сам) | установить gitleaks в `PATH` |
+| `missing ternary emulator` | не собран `tern-linux` | `make -C ~/System/ternary/emu linux` или задать `TL_EMU` |
+| `unsupported ISA extension` при сборке теста | нет `zicsr` | `-march=rv32ima_zicsr_zifencei` (уже в скрипте) |
+| ISA-тест дошёл до лимита инструкций | тест не вызвал finisher | смотреть `isa/<test>.log`, увеличить `MAX_INSN`, проверить `test finisher PASS` |
+| `extension 'zicsr' required` | старый binutils/`-march` | `deps.sh ternary-linux` (GCC 13+) |
 | metrics are stale | изменились скрипты/workflow/доки | `make -C work metrics` |
 | `allmodconfig` отменён через 3 ч | timeout 180 и медленный runner | timeout 360, `JOBS=4`, облегчённый CI-фрагмент |
 | `checkpatch` отменён на Checkout | полный fetch 6 ГБ упирается в timeout 20 мин | `fetch-depth: 1` + shallow base fetch (ISSUE-12, closed) |

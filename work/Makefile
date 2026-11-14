@@ -5,7 +5,7 @@ SCRIPTS := $(WORK)pipelines/scripts
 TERNARY_REPO ?= $(HOME)/System/ternary
 export TERNARY_REPO
 
-.PHONY: help deps build machine checkpatch sparse kunit security-kunit smoke smoke-kasan lint metrics ci-check ternary-test ternary-bench ternary-coverage ternary-metrics ternary-ci ternary-linux-deps ternary-linux-check ternary-linux-build ternary-linux-boot ternary-linux-userspace ternary-linux-run clean
+.PHONY: help deps build machine checkpatch sparse kunit security-kunit smoke smoke-kasan lint metrics ci-check ternary-test ternary-bench ternary-coverage ternary-metrics ternary-ci ternary-linux-deps ternary-linux-check ternary-linux-build ternary-linux-boot ternary-linux-userspace ternary-linux-run ternary-linux-isa clean
 
 help:
 	@echo "Targets:"
@@ -32,6 +32,7 @@ help:
 	@echo "  ternary-linux-boot   boot guest kernel in QEMU"
 	@echo "  ternary-linux-userspace  build flat /init and initramfs"
 	@echo "  ternary-linux-run    boot guest under ternary emulator"
+	@echo "  ternary-linux-isa    run RV32IMA/SBI emulator regression tests"
 	@echo "  clean            remove $(WORK)build"
 
 deps:
@@ -102,6 +103,9 @@ ternary-linux-userspace:
 
 ternary-linux-run: ternary-linux-build ternary-linux-userspace
 	$(SCRIPTS)/ternary-linux-run.sh
+
+ternary-linux-isa:
+	$(SCRIPTS)/ternary-linux-isa.sh
 
 clean:
 	rm -rf "$(WORK)build"
