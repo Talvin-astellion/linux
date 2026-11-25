@@ -44,6 +44,7 @@ timer_trap_entry:
 	la	t0, timer_trap_seen
 	li	t1, 1
 	sw	t1, 0(t0)
+	csrw	sie, zero
 	sret
 
 	.section .bss, "aw", @nobits
