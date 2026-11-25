@@ -1,0 +1,47 @@
+// SPDX-License-Identifier: GPL-2.0-only
+/dts-v1/;
+
+/ {
+	#address-cells = <1>;
+	#size-cells = <1>;
+	model = "ternary,rv32ima-mmu";
+	compatible = "ternary,rv32ima";
+
+	chosen {
+		bootargs = "console=hvc0 earlycon=sbi";
+		linux,initrd-start = <0x00000000>;
+		linux,initrd-end = <0x00000000>;
+	};
+
+	memory@80000000 {
+		device_type = "memory";
+		reg = <0x80000000 0x08000000>;
+	};
+
+	cpus {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		timebase-frequency = <10000000>;
+
+		cpu@0 {
+			device_type = "cpu";
+			reg = <0>;
+			status = "okay";
+			compatible = "riscv";
+			mmu-type = "riscv,sv32";
+			riscv,isa = "rv32ima";
+
+			cpu0_intc: interrupt-controller {
+				#interrupt-cells = <1>;
+				interrupt-controller;
+				compatible = "riscv,cpu-intc";
+			};
+		};
+	};
+
+	timer {
+		compatible = "riscv,timer";
+		interrupts-extended = <&cpu0_intc 5>;
+	};
+
+};

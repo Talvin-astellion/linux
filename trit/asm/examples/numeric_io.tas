@@ -1,0 +1,8 @@
+--: @(start);
+10-:
+#include "lib/io.tas"
+start:
+IO_INIT
+CALL( IO_GET_WORD );
+CALL( IO_PUT_WORD );
+HALT;

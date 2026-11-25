@@ -1,0 +1,29 @@
+# 0 "<stdin>"
+# 0 "<built-in>"
+# 0 "<command-line>"
+# 1 "/usr/include/stdc-predef.h" 1 3 4
+# 0 "<command-line>" 2
+# 1 "./assembler.inc" 1
+# 0 "<command-line>" 2
+# 1 "./aliases.ymp" 1
+# 0 "<command-line>" 2
+# 1 "<stdin>"
+# 1 "examples/labels.tas"
+
+
+
+
+
+
+
+
+00+ ---000;nn 000 0+ 0-;1 n;
+00- ---000;nn 00- 0+ 0-;10 n;
+00+ ---000;nn 000 0+ 0-;1n n;
+
+
+0+- ---000;nn 000 0+ 0-;11 n;
+0+0 ---000;nn 000 0+ 0-;1n0 n;
+0++ ---000;nn 000 0+ 0-;1nn n;
++-- ---000;nn 000 0+ 0-;100 n;
+00- ---000;00 00- 0+ 0-;0 0;

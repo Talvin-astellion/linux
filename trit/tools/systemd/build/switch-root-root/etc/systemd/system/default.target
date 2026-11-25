@@ -1,0 +1,6 @@
+[Unit]
+Description=Ternary switch-root smoke target
+DefaultDependencies=no
+Requires=ternary-switch-root-smoke.service
+After=ternary-switch-root-smoke.service
+AllowIsolate=yes

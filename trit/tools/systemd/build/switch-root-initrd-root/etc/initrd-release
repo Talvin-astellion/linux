@@ -1,0 +1,4 @@
+NAME=Ternary systemd initrd
+ID=ternary-systemd-initrd
+PRETTY_NAME="Ternary systemd initrd"
+VERSION_ID=1

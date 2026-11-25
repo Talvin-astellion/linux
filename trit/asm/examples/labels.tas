@@ -1,0 +1,18 @@
+// Demonstrates labels, .equ constants, @(expr) operands and BRANCH(label).
+// Values are balanced ternary: 10 = 3, 1n = 2, 1nn = 5.
+
+.equ COUNT, 0t10
+.equ LIMIT, COUNT + 1
+.equ FIVE, 1nn
+
+start:
+ADDI( P01, ZERO, _NOP, 1);
+BRANCH(done);
+ADDI( P01, ZERO, _NOP, 1n);
+
+done:
+ADDI( P02, ZERO, _NOP, @(LIMIT));
+ADDI( P03, ZERO, _NOP, @(COUNT * 1n));
+ADDI( P04, ZERO, _NOP, @(FIVE));
+ADDI( P05, ZERO, _NOP, @(done - start));
+ADDI( PC, PC, _NOP, 0);

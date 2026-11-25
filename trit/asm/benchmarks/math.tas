@@ -1,0 +1,20 @@
+// Exercise library calls, the stack and conditional branches.
+// Sum 243 evaluations of 7^13 mod 11 = 2; expected P01: 486.
+--: @(start);
+10-:
+#include "lib/math.tas"
+start:
+IO_INIT
+ADDI( P09, ZERO, _NOP, 100000 );
+ADDI( P10, ZERO, _NOP, 0 );
+loop:
+ADDI( P01, ZERO, _NOP, 1n1 );
+ADDI( P02, ZERO, _NOP, 111 );
+ADDI( P03, ZERO, _NOP, 11n );
+CALL( MATH_MODPOW );
+ADD( P10, P10, _NOP, P01, _NOP );
+ADDI( P09, P09, _NOP, n );
+loop_check:
+ADSI( PC, @(loop - loop_check - 10), 0 );
+ADDI( P01, P10, _NOP, 0 );
+HALT;

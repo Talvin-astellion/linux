@@ -1,0 +1,4 @@
+NAME=Ternary systemd switch-root
+ID=ternary-switch-root
+PRETTY_NAME="Ternary systemd switch-root"
+VERSION_ID=1

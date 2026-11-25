@@ -1,0 +1,9 @@
+[Unit]
+Description=Ternary switch-root transition
+DefaultDependencies=no
+After=systemd-initrd-smoke.service
+Requires=systemd-initrd-smoke.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/systemctl --no-block switch-root /newroot /init

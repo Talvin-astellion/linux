@@ -1,0 +1,18 @@
+- Verified:
+- make -C work ternary-linux-check
+- make -C work ternary-linux-build
+- make -C work ternary-linux-userspace
+- make -C work ternary-linux-run → TERNARY_LINUX_OK
+- QEMU boot with -initrd → TERNARY_LINUX_OK
+- make -C emu test
+- make -C emu test-rv32
+- make -C emu test-rv32-guest → Sv32 guest PASS
+- make -C emu sanitize
+- make -C work ternary-linux-isa → ISA/SBI PASS
+- make -C tools/systemd check → prerequisites report
+- make -C tools/systemd initrd → SYSTEMD_OK smoke payload
+- make -C tools/systemd run → SYSTEMD_OK + clean poweroff, emulator rc=0
+- make -C tools/systemd run-switch-root → INITRD_OK + SWITCH_ROOT_OK + clean poweroff
+- make -C tools/systemd verify-manifest → MANIFEST_OK
+- make -C tools/systemd verify-manifest-switch-root → MANIFEST_OK
+- git diff --check clean

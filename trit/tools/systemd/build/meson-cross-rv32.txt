@@ -1,0 +1,19 @@
+[binaries]
+c = '/tmp/opencode/bootlin/riscv32-ilp32d--glibc--stable-2026.08-1/bin/riscv32-buildroot-linux-gnu-gcc'
+ar = '/tmp/opencode/bootlin/riscv32-ilp32d--glibc--stable-2026.08-1/bin/riscv32-buildroot-linux-gnu-ar'
+strip = '/tmp/opencode/bootlin/riscv32-ilp32d--glibc--stable-2026.08-1/bin/riscv32-buildroot-linux-gnu-strip'
+objcopy = '/tmp/opencode/bootlin/riscv32-ilp32d--glibc--stable-2026.08-1/bin/riscv32-buildroot-linux-gnu-objcopy'
+pkg-config = '/tmp/opencode/bootlin/riscv32-ilp32d--glibc--stable-2026.08-1/bin/riscv32-buildroot-linux-gnu-pkg-config'
+
+[properties]
+needs_exe_wrapper = true
+
+[host_machine]
+system = 'linux'
+cpu_family = 'riscv32'
+cpu = 'riscv32'
+endian = 'little'
+
+[built-in options]
+c_args = ['-march=rv32ima', '-mabi=ilp32', '-D_TIME_BITS=64', '-D_FILE_OFFSET_BITS=64', '--sysroot=/tmp/opencode/rv32-sysroot']
+c_link_args = ['-march=rv32ima', '-mabi=ilp32', '-D_TIME_BITS=64', '-D_FILE_OFFSET_BITS=64', '--sysroot=/tmp/opencode/rv32-sysroot']

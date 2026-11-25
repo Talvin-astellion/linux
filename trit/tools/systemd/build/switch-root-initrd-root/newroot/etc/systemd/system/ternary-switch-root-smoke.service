@@ -1,0 +1,8 @@
+[Unit]
+Description=Ternary systemd switch-root smoke test
+DefaultDependencies=no
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/systemd-ok SWITCH_ROOT_OK
+RemainAfterExit=yes

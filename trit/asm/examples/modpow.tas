@@ -1,0 +1,10 @@
+--: @(start);
+10-:
+#include "lib/math.tas"
+start:
+IO_INIT
+ADDI( P01, ZERO, _NOP, 1n1 );
+ADDI( P02, ZERO, _NOP, 111 );
+ADDI( P03, ZERO, _NOP, 11n );
+CALL( MATH_MODPOW );
+HALT;

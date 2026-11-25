@@ -1,0 +1,31 @@
+// Fill 2187 triwords in negative RAM, then sum them through a positive alias.
+// Expected P01: 2187 * 2188 / 2 = 2392578.
+.equ COUNT, 10000000
+.equ BASE, n000000000
+.equ ADDRESS_WRAP, 100000000000
+
+--: @(start);
+10-:
+start:
+ADDI( P02, ZERO, _NOP, @(COUNT) );
+POP( P03, PC, _NOP, 10 );
+.triword BASE
+fill:
+ST3( P03, P02, _NOP, 0 );
+ADDI( P03, P03, _NOP, 10 );
+ADDI( P02, P02, _NOP, n );
+fill_check:
+ADSI( PC, @(fill - fill_check - 10), 0 );
+
+ADDI( P01, ZERO, _NOP, 0 );
+ADDI( P02, ZERO, _NOP, @(COUNT) );
+POP( P03, PC, _NOP, 10 );
+.triword BASE + ADDRESS_WRAP
+sum:
+LD3( P04, P03, _NOP, 0 );
+ADD( P01, P01, _NOP, P04, _NOP );
+ADDI( P03, P03, _NOP, 10 );
+ADDI( P02, P02, _NOP, n );
+sum_check:
+ADSI( PC, @(sum - sum_check - 10), 0 );
+HALT;

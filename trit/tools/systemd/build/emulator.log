@@ -1,0 +1,903 @@
+[    0.000000] Linux version 6.19.0-gb59cb56a39cf-dirty (talvin@Lenovo) (riscv32-buildroot-linux-gnu-gcc.br_real (toolchains.bootlin.com 2026.08-1) 15.3.0, GNU ld (GNU Binutils) 2.45.1) #24 PREEMPT Mon Nov 23 11:24:46 +04 2026
+[    0.000000] Machine model: ternary,rv32ima-mmu
+[    0.000000] SBI specification v2.0 detected
+[    0.000000] SBI implementation ID=0x0 Version=0x0
+[    0.000000] SBI TIME extension detected
+[    0.000000] SBI IPI extension detected
+[    0.000000] SBI RFENCE extension detected
+[    0.000000] SBI SRST extension detected
+[    0.000000] SBI DBCN extension detected
+[    0.000000] earlycon: sbi0 at I/O port 0x0 (options '')
+[    0.000000] printk: legacy bootconsole [sbi0] enabled
+[    0.000000] OF: reserved mem: Reserved memory: No reserved-memory node in the DT
+[    0.000000] Zone ranges:
+[    0.000000]   Normal   [mem 0x0000000080000000-0x0000000087ffffff]
+[    0.000000] Movable zone start for each node
+[    0.000000] Early memory node ranges
+[    0.000000]   node   0: [mem 0x0000000080000000-0x0000000087ffffff]
+[    0.000000] Initmem setup node 0 [mem 0x0000000080000000-0x0000000087ffffff]
+[    0.000000] Falling back to deprecated "riscv,isa"
+[    0.000000] riscv: base ISA extensions aim
+[    0.000000] riscv: ELF capabilities aim
+[    0.000000] Ticket spinlock: enabled
+[    0.000000] Kernel command line: console=hvc0 earlycon=sbi
+[    0.000000] printk: log buffer data + meta data: 131072 + 409600 = 540672 bytes
+[    0.000000] Dentry cache hash table entries: 16384 (order: 4, 65536 bytes, linear)
+[    0.000000] Inode-cache hash table entries: 8192 (order: 3, 32768 bytes, linear)
+[    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 32768
+[    0.000000] mem auto-init: stack:all(zero), heap alloc:off, heap free:off
+[    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=1, Nodes=1
+[    0.000000] RCU Tasks: Setting shift to 0 and lim to 1 rcu_task_cb_adjust=1 rcu_task_cpu_ids=1.
+[    0.000000] NR_IRQS: 64, nr_irqs: 64, preallocated irqs: 0
+[    0.000000] riscv-intc: 32 local interrupts mapped
+[    0.000000] clocksource: riscv_clocksource: mask: 0xffffffffffffffff max_cycles: 0x24e6a1710, max_idle_ns: 440795202120 ns
+[    0.000042] sched_clock: 64 bits at 10MHz, resolution 100ns, wraps every 4398046511100ns
+[    0.009670] Console: colour dummy device 80x25
+[    0.011574] Calibrating delay loop (skipped), value calculated using timer frequency.. 20.00 BogoMIPS (lpj=40000)
+[    0.012798] pid_max: default: 32768 minimum: 301
+[    0.024199] Mount-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+[    0.025341] Mountpoint-cache hash table entries: 1024 (order: 0, 4096 bytes, linear)
+[    0.044537] VFS: Finished mounting rootfs on nullfs
+[    0.126360] ASID allocator disabled (0 bits)
+[    0.142980] Memory: 79796K/131072K available (14547K kernel code, 9713K rwdata, 4096K rodata, 4209K init, 289K bss, 49824K reserved, 0K cma-reserved)
+[    0.161669] devtmpfs: initialized
+[    0.228041] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 7645041785100000 ns
+[    0.230983] posixtimers hash table entries: 512 (order: 0, 2048 bytes, linear)
+[    0.232279] futex hash table entries: 256 (4096 bytes on 1 NUMA nodes, total 4 KiB, linear).
+[    0.338617] NET: Registered PF_NETLINK/PF_ROUTE protocol family
+[    0.346306] DMA: preallocated 128 KiB GFP_KERNEL pool for atomic allocations
+[    0.348064] audit: initializing netlink subsys (disabled)
+[    0.359226] audit: type=2000 audit(0.316:1): state=initialized audit_enabled=0 res=1
+[    0.382015] thermal_sys: Registered thermal governor 'step_wise'
+[    0.383065] cpuidle: using governor menu
+[    0.482114] HugeTLB: registered 4.00 MiB page size, pre-allocated 0 pages
+[    0.483229] HugeTLB: 0 KiB vmemmap can be freed for a 4.00 MiB page
+[    0.569101] iommu: Default domain type: Translated
+[    0.569793] iommu: DMA domain TLB invalidation policy: strict mode
+[    0.619699] SCSI subsystem initialized
+[    0.657925] usbcore: registered new interface driver usbfs
+[    0.670002] usbcore: registered new interface driver hub
+[    0.672483] usbcore: registered new device driver usb
+[    0.750467] Advanced Linux Sound Architecture Driver Initialized.
+[    0.910986] vgaarb: loaded
+[    0.928970] clocksource: Switched to clocksource riscv_clocksource
+[    1.956020] NET: Registered PF_INET protocol family
+[    1.986121] IP idents hash table entries: 2048 (order: 2, 16384 bytes, linear)
+[    2.099225] tcp_listen_portaddr_hash hash table entries: 1024 (order: 0, 4096 bytes, linear)
+[    2.101812] Table-perturb hash table entries: 65536 (order: 6, 262144 bytes, linear)
+[    2.102964] TCP established hash table entries: 1024 (order: 0, 4096 bytes, linear)
+[    2.113687] TCP bind hash table entries: 1024 (order: 1, 8192 bytes, linear)
+[    2.115768] TCP: Hash tables configured (established 1024 bind 1024)
+[    2.118836] UDP hash table entries: 256 (order: 1, 8192 bytes, linear)
+[    2.129570] UDP-Lite hash table entries: 256 (order: 1, 8192 bytes, linear)
+[    2.146482] NET: Registered PF_UNIX/PF_LOCAL protocol family
+[    2.189340] RPC: Registered named UNIX socket transport module.
+[    2.190038] RPC: Registered udp transport module.
+[    2.190697] RPC: Registered tcp transport module.
+[    2.191356] RPC: Registered tcp-with-tls transport module.
+[    2.192041] RPC: Registered tcp NFSv4.1 backchannel transport module.
+[    2.202364] PCI: CLS 0 bytes, default 64
+[    2.235742] Unpacking initramfs...
+[    2.327070] workingset: timestamp_bits=14 max_order=15 bucket_order=1
+[    2.430207] NFS: Registering the id_resolver key type
+[    2.432539] Key type id_resolver registered
+[    2.449586] Key type id_legacy registered
+[    2.451401] nfs4filelayout_init: NFSv4 File Layout Driver Registering...
+[    2.452147] nfs4flexfilelayout_init: NFSv4 Flexfile Layout Driver Registering...
+[    2.492358] 9p: Installing v9fs 9p2000 file system support
+[    2.533782] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 246)
+[    2.551346] io scheduler mq-deadline registered
+[    2.552055] io scheduler kyber registered
+[    2.566965] io scheduler bfq registered
+[   11.702322] printk: legacy console [hvc0] enabled
+[   11.702322] printk: legacy console [hvc0] enabled
+[   11.703527] printk: legacy bootconsole [sbi0] disabled
+[   11.703527] printk: legacy bootconsole [sbi0] disabled
+[   11.724157] Serial: 8250/16550 driver, 4 ports, IRQ sharing disabled
+[   13.046316] loop: module loaded
+[   13.578444] e1000e: Intel(R) PRO/1000 Network Driver
+[   13.579192] e1000e: Copyright(c) 1999 - 2015 Intel Corporation.
+[   13.665740] usbcore: registered new interface driver uas
+[   13.686045] usbcore: registered new interface driver usb-storage
+[   13.726339] mousedev: PS/2 mouse device common for all mice
+[   13.816428] sdhci: Secure Digital Host Controller Interface driver
+[   13.833565] sdhci: Copyright(c) Pierre Ossman
+[   13.835606] Synopsys Designware Multimedia Card Interface Driver
+[   13.858300] sdhci-pltfm: SDHCI platform and OF driver helper
+[   14.004528] usbcore: registered new interface driver usbhid
+[   14.005810] usbhid: USB HID core driver
+[   14.149873] NET: Registered PF_INET6 protocol family
+[   14.347204] Segment Routing with IPv6
+[   14.369817] In-situ OAM (IOAM) with IPv6
+[   14.375570] sit: IPv6, IPv4 and MPLS over IPv4 tunneling driver
+[   14.499823] NET: Registered PF_PACKET protocol family
+[   14.521821] 9pnet: Installing 9P2000 support
+[   14.526005] Key type dns_resolver registered
+[   18.620579] Legacy PMU implementation is available
+[  163.300006] Freeing initrd memory: 13576K
+[  217.783811] clk: Disabling unused clocks
+[  217.784562] PM: genpd: Disabling unused power domains
+[  217.785903] ALSA device list:
+[  217.786590]   No soundcards found.
+[  218.011807] Freeing unused kernel image (initmem) memory: 4208K
+[  218.024798] Run /init as init process
+[  218.031650] KDBGPFNPTE pfn=0x8141b prot=0x53 out=0x20506c53
+[  218.044591] KDBGHMF addr=0x685af468 prot=0x53 flags=0x215 vmflags=0x100073
+[  218.047341] KDBGPFNPTE pfn=0x8141a prot=0x53 out=0x20506853
+[  218.048362] KDBGSTEP1 addr=0x685af000 entry=0x20506853
+[  218.050023] KDBGSTEP2 addr=0x685af000 entry=0x20506853
+[  218.050967] KDBGMKDIRTY in=0x20506853 out=0x205068d3
+[  218.051887] KDBGMKWRITE in=0x205068d3 out=0x205068d7
+[  218.053235] KDBGRANGE addr=0x685af000 entry=0x205068d7 prot=0x53
+[  218.054280] KDBGSETPTES addr=0x685af000 pte=0x205068d7
+[  218.059293] KDBGPFNPTE pfn=0x81419 prot=0x53 out=0x20506453
+[  218.066427] KDBGPFNPTE pfn=0x81418 prot=0x53 out=0x20506053
+[  218.068681] KDBGPFNPTE pfn=0x85c9d prot=0x53 out=0x21727453
+[  218.071404] KDBGPFNPTE pfn=0x81417 prot=0x53 out=0x20505c53
+[  218.074044] KDBGPFNPTE pfn=0x81416 prot=0x53 out=0x20505853
+[  218.075618] KDBGHMF addr=0x68572034 prot=0x5b flags=0x254 vmflags=0x75
+[  218.077222] KDBGSTEP1 addr=0x68572000 entry=0x20f6ac5b
+[  218.078165] KDBGSTEP2 addr=0x68572000 entry=0x20f6ac5b
+[  218.079128] KDBGRANGE addr=0x68572000 entry=0x20f6ac5b prot=0x5b
+[  218.080173] KDBGSETPTES addr=0x68572000 pte=0x20f6ac5b
+[  218.082014] KDBGSTEP1 addr=0x68573000 entry=0x20f6b05b
+[  218.082957] KDBGSTEP2 addr=0x68573000 entry=0x20f6b05b
+[  218.083920] KDBGRANGE addr=0x68573000 entry=0x20f6b05b prot=0x5b
+[  218.085364] KDBGSETPTES addr=0x68573000 pte=0x20f6b05b
+[  218.086338] KDBGSTEP1 addr=0x68574000 entry=0x20f6b45b
+[  218.087281] KDBGSTEP2 addr=0x68574000 entry=0x20f6b45b
+[  218.088244] KDBGRANGE addr=0x68574000 entry=0x20f6b45b prot=0x5b
+[  218.089703] KDBGSETPTES addr=0x68574000 pte=0x20f6b45b
+[  218.090676] KDBGSTEP1 addr=0x68575000 entry=0x20f6b85b
+[  218.091619] KDBGSTEP2 addr=0x68575000 entry=0x20f6b85b
+[  218.092582] KDBGRANGE addr=0x68575000 entry=0x20f6b85b prot=0x5b
+[  218.094026] KDBGSETPTES addr=0x68575000 pte=0x20f6b85b
+[  218.095000] KDBGSTEP1 addr=0x68576000 entry=0x20f6bc5b
+[  218.095943] KDBGSTEP2 addr=0x68576000 entry=0x20f6bc5b
+[  218.097305] KDBGRANGE addr=0x68576000 entry=0x20f6bc5b prot=0x5b
+[  218.098350] KDBGSETPTES addr=0x68576000 pte=0x20f6bc5b
+[  218.099324] KDBGSTEP1 addr=0x68577000 entry=0x20f6c05b
+[  218.100266] KDBGSTEP2 addr=0x68577000 entry=0x20f6c05b
+[  218.101629] KDBGRANGE addr=0x68577000 entry=0x20f6c05b prot=0x5b
+[  218.102674] KDBGSETPTES addr=0x68577000 pte=0x20f6c05b
+[  218.103647] KDBGSTEP1 addr=0x68578000 entry=0x20f6c45b
+[  218.104590] KDBGSTEP2 addr=0x68578000 entry=0x20f6c45b
+[  218.106052] KDBGRANGE addr=0x68578000 entry=0x20f6c45b prot=0x5b
+[  218.107097] KDBGSETPTES addr=0x68578000 pte=0x20f6c45b
+[  218.108070] KDBGSTEP1 addr=0x68579000 entry=0x20f6c85b
+[  218.109412] KDBGSTEP2 addr=0x68579000 entry=0x20f6c85b
+[  218.110375] KDBGRANGE addr=0x68579000 entry=0x20f6c85b prot=0x5b
+[  218.111420] KDBGSETPTES addr=0x68579000 pte=0x20f6c85b
+[  218.112393] KDBGSTEP1 addr=0x6857a000 entry=0x20f6cc5b
+[  218.113735] KDBGSTEP2 addr=0x6857a000 entry=0x20f6cc5b
+[  218.114699] KDBGRANGE addr=0x6857a000 entry=0x20f6cc5b prot=0x5b
+[  218.115743] KDBGSETPTES addr=0x6857a000 pte=0x20f6cc5b
+[  218.116717] KDBGSTEP1 addr=0x6857b000 entry=0x20f6d05b
+[  218.118059] KDBGSTEP2 addr=0x6857b000 entry=0x20f6d05b
+[  218.119053] KDBGSTEP1 addr=0x6857c000 entry=0x20f6d45b
+[  218.119996] KDBGSTEP2 addr=0x6857c000 entry=0x20f6d45b
+[  218.121390] KDBGSTEP1 addr=0x6857d000 entry=0x20f6d85b
+[  218.122333] KDBGSTEP2 addr=0x6857d000 entry=0x20f6d85b
+[  218.123327] KDBGSTEP1 addr=0x6857e000 entry=0x20f6dc5b
+[  218.124270] KDBGSTEP2 addr=0x6857e000 entry=0x20f6dc5b
+[  218.125664] KDBGSTEP1 addr=0x6857f000 entry=0x20f6e05b
+[  218.126607] KDBGSTEP2 addr=0x6857f000 entry=0x20f6e05b
+[  218.127602] KDBGSTEP1 addr=0x68580000 entry=0x20f6e45b
+[  218.128544] KDBGSTEP2 addr=0x68580000 entry=0x20f6e45b
+[  218.129938] KDBGSTEP1 addr=0x68581000 entry=0x20f6e85b
+[  218.130881] KDBGSTEP2 addr=0x68581000 entry=0x20f6e85b
+[  218.133973] KDBGHMF addr=0x685ae860 prot=0x53 flags=0x254 vmflags=0x100073
+[  218.135210] KDBGPFNPTE pfn=0x83de7 prot=0x53 out=0x20f79c53
+[  218.136231] KDBGSTEP1 addr=0x685ae000 entry=0x20f79c53
+[  218.137889] KDBGSTEP2 addr=0x685ae000 entry=0x20f79c53
+[  218.140368] KDBGPFNPTE pfn=0x81415 prot=0x53 out=0x20505453
+[  218.143162] KDBGHMF addr=0x685ae8ec prot=0x53 flags=0x255 vmflags=0x100073
+[  218.144644] KDBGPFNPTE pfn=0x81414 prot=0x53 out=0x20505053
+[  218.150701] KDBGPFNPTE pfn=0x81413 prot=0x53 out=0x20504c53
+[  218.152558] KDBGPFNPTE pfn=0x8221f prot=0x53 out=0x20887c53
+[  218.154021] KDBGPFNPTE pfn=0x82220 prot=0x53 out=0x20888053
+[  218.155088] KDBGPFNPTE pfn=0x82221 prot=0x53 out=0x20888453
+[  218.156155] KDBGPFNPTE pfn=0x82222 prot=0x53 out=0x20888853
+[  218.157618] KDBGPFNPTE pfn=0x82223 prot=0x53 out=0x20888c53
+[  218.158685] KDBGPFNPTE pfn=0x82224 prot=0x53 out=0x20889053
+[  218.159752] KDBGPFNPTE pfn=0x82225 prot=0x53 out=0x20889453
+[  218.160819] KDBGPFNPTE pfn=0x82226 prot=0x53 out=0x20889853
+[  218.162810] KDBGPFNPTE pfn=0x82227 prot=0x53 out=0x20889c53
+[  218.163877] KDBGPFNPTE pfn=0x82228 prot=0x53 out=0x2088a053
+[  218.174296] KDBGPFNPTE pfn=0x81412 prot=0x53 out=0x20504853
+[  218.176004] KDBGPFNPTE pfn=0x84a3a prot=0x53 out=0x2128e853
+[  218.177465] KDBGPFNPTE pfn=0x84a3b prot=0x53 out=0x2128ec53
+[  218.178531] KDBGPFNPTE pfn=0x84a3c prot=0x53 out=0x2128f053
+[  218.179598] KDBGPFNPTE pfn=0x84a3d prot=0x53 out=0x2128f453
+[  218.180664] KDBGPFNPTE pfn=0x84a3e prot=0x53 out=0x2128f853
+[  218.182126] KDBGPFNPTE pfn=0x84a3f prot=0x53 out=0x2128fc53
+[  218.183192] KDBGPFNPTE pfn=0x84a40 prot=0x53 out=0x21290053
+[  218.184258] KDBGPFNPTE pfn=0x84a41 prot=0x53 out=0x21290453
+[  218.185720] KDBGPFNPTE pfn=0x84a42 prot=0x53 out=0x21290853
+[  218.186786] KDBGPFNPTE pfn=0x84a43 prot=0x53 out=0x21290c53
+[  218.187853] KDBGPFNPTE pfn=0x84a44 prot=0x53 out=0x21291053
+[  218.189314] KDBGPFNPTE pfn=0x84a45 prot=0x53 out=0x21291453
+[  218.190380] KDBGPFNPTE pfn=0x84a46 prot=0x53 out=0x21291853
+[  218.191447] KDBGPFNPTE pfn=0x84a47 prot=0x53 out=0x21291c53
+[  218.192513] KDBGPFNPTE pfn=0x84a48 prot=0x53 out=0x21292053
+[  218.193975] KDBGPFNPTE pfn=0x84a49 prot=0x53 out=0x21292453
+[  218.202979] KDBGPFNPTE pfn=0x81411 prot=0x53 out=0x20504453
+[  218.204675] KDBGPFNPTE pfn=0x84013 prot=0x53 out=0x21004c53
+[  218.206137] KDBGPFNPTE pfn=0x84014 prot=0x53 out=0x21005053
+[  218.214870] KDBGPFNPTE pfn=0x81410 prot=0x53 out=0x20504053
+[  218.216076] KDBGPFNPTE pfn=0x841b1 prot=0x53 out=0x2106c453
+[  218.219429] KDBGPFNPTE pfn=0x8140f prot=0x53 out=0x20503c53
+[  218.224044] KDBGPFNPTE pfn=0x8140e prot=0x53 out=0x20503853
+[  218.226998] KDBGPFNPTE pfn=0x8140d prot=0x53 out=0x20503453
+[  218.228471] KDBGPFNPTE pfn=0x8140c prot=0x53 out=0x20503053
+[  218.240509] KDBGPFNPTE pfn=0x82003 prot=0x53 out=0x20800c53
+[  218.246096] KDBGPFNPTE pfn=0x849f9 prot=0x53 out=0x2127e453
+[  218.247163] KDBGPFNPTE pfn=0x849fa prot=0x53 out=0x2127e853
+[  218.248229] KDBGPFNPTE pfn=0x849fb prot=0x53 out=0x2127ec53
+[  218.249691] KDBGPFNPTE pfn=0x849fc prot=0x53 out=0x2127f053
+[  218.250757] KDBGPFNPTE pfn=0x849fd prot=0x53 out=0x2127f453
+[  218.251823] KDBGPFNPTE pfn=0x849fe prot=0x53 out=0x2127f853
+[  218.253285] KDBGPFNPTE pfn=0x849ff prot=0x53 out=0x2127fc53
+[  218.254351] KDBGPFNPTE pfn=0x84a00 prot=0x53 out=0x21280053
+[  218.255418] KDBGPFNPTE pfn=0x84a01 prot=0x53 out=0x21280453
+[  218.256484] KDBGPFNPTE pfn=0x84a02 prot=0x53 out=0x21280853
+[  218.257945] KDBGPFNPTE pfn=0x84a03 prot=0x53 out=0x21280c53
+[  218.259012] KDBGPFNPTE pfn=0x84a04 prot=0x53 out=0x21281053
+[  218.260078] KDBGPFNPTE pfn=0x84a05 prot=0x53 out=0x21281453
+[  218.262091] KDBGPFNPTE pfn=0x84a06 prot=0x53 out=0x21281853
+[  218.263158] KDBGPFNPTE pfn=0x84a07 prot=0x53 out=0x21281c53
+[  218.264224] KDBGPFNPTE pfn=0x84a08 prot=0x53 out=0x21282053
+[  218.266824] KDBGPFNPTE pfn=0x8140b prot=0x53 out=0x20502c53
+[  218.269847] KDBGPFNPTE pfn=0x8140a prot=0x53 out=0x20502853
+[  218.271324] KDBGPFNPTE pfn=0x81409 prot=0x53 out=0x20502453
+[  218.273943] KDBGPFNPTE pfn=0x81408 prot=0x53 out=0x20502053
+[  218.277729] KDBGPFNPTE pfn=0x81407 prot=0x53 out=0x20501c53
+[  218.279718] KDBGPFNPTE pfn=0x81406 prot=0x53 out=0x20501853
+[  218.281886] KDBGPFNPTE pfn=0x81405 prot=0x53 out=0x20501453
+[  218.283587] KDBGPFNPTE pfn=0x81404 prot=0x53 out=0x20501053
+[  218.286291] KDBGPFNPTE pfn=0x81403 prot=0x53 out=0x20500c53
+[  218.287901] KDBGPFNPTE pfn=0x81402 prot=0x53 out=0x20500853
+[  218.289937] KDBGPFNPTE pfn=0x81401 prot=0x53 out=0x20500453
+[  218.291569] KDBGPFNPTE pfn=0x81400 prot=0x53 out=0x20500053
+[  218.293640] KDBGPFNPTE pfn=0x813ff prot=0x53 out=0x204ffc53
+[  218.295306] KDBGPFNPTE pfn=0x813fe prot=0x53 out=0x204ff853
+[  218.297334] KDBGPFNPTE pfn=0x813fd prot=0x53 out=0x204ff453
+[  218.299906] KDBGPFNPTE pfn=0x813fc prot=0x53 out=0x204ff053
+[  218.303234] KDBGPFNPTE pfn=0x813fb prot=0x53 out=0x204fec53
+[  218.305291] KDBGPFNPTE pfn=0x813fa prot=0x53 out=0x204fe853
+[  218.306953] KDBGPFNPTE pfn=0x813f9 prot=0x53 out=0x204fe453
+[  218.308594] KDBGPFNPTE pfn=0x813f8 prot=0x53 out=0x204fe053
+[  218.310636] KDBGPFNPTE pfn=0x813f7 prot=0x53 out=0x204fdc53
+[  218.312300] KDBGPFNPTE pfn=0x813f6 prot=0x53 out=0x204fd853
+[  218.314480] KDBGPFNPTE pfn=0x813f5 prot=0x53 out=0x204fd453
+[  218.316137] KDBGPFNPTE pfn=0x813f4 prot=0x53 out=0x204fd053
+[  218.318172] KDBGPFNPTE pfn=0x813f3 prot=0x53 out=0x204fcc53
+[  218.319851] KDBGPFNPTE pfn=0x813f2 prot=0x53 out=0x204fc853
+[  218.321882] KDBGPFNPTE pfn=0x813f1 prot=0x53 out=0x204fc453
+[  218.323512] KDBGPFNPTE pfn=0x813f0 prot=0x53 out=0x204fc053
+[  218.325538] KDBGPFNPTE pfn=0x813ef prot=0x53 out=0x204fbc53
+[  218.327165] KDBGPFNPTE pfn=0x813ee prot=0x53 out=0x204fb853
+[  218.329227] KDBGPFNPTE pfn=0x813ed prot=0x53 out=0x204fb453
+[  218.330887] KDBGPFNPTE pfn=0x813ec prot=0x53 out=0x204fb053
+[  218.332551] KDBGPFNPTE pfn=0x813eb prot=0x53 out=0x204fac53
+[  218.334612] KDBGPFNPTE pfn=0x813ea prot=0x53 out=0x204fa853
+[  218.336249] KDBGPFNPTE pfn=0x813e9 prot=0x53 out=0x204fa453
+[  218.340461] KDBGPFNPTE pfn=0x813e8 prot=0x53 out=0x204fa053
+[  218.342537] KDBGPFNPTE pfn=0x813e7 prot=0x53 out=0x204f9c53
+[  218.344204] KDBGPFNPTE pfn=0x813e6 prot=0x53 out=0x204f9853
+[  218.346286] KDBGPFNPTE pfn=0x813e5 prot=0x53 out=0x204f9453
+[  218.347940] KDBGPFNPTE pfn=0x813e4 prot=0x53 out=0x204f9053
+[  218.349985] KDBGPFNPTE pfn=0x813e3 prot=0x53 out=0x204f8c53
+[  218.351674] KDBGPFNPTE pfn=0x813e2 prot=0x53 out=0x204f8853
+[  218.353687] KDBGPFNPTE pfn=0x813e1 prot=0x53 out=0x204f8453
+[  218.355309] KDBGPFNPTE pfn=0x813e0 prot=0x53 out=0x204f8053
+[  218.357339] KDBGPFNPTE pfn=0x813df prot=0x53 out=0x204f7c53
+[  218.358960] KDBGPFNPTE pfn=0x813de prot=0x53 out=0x204f7853
+[  218.360589] KDBGPFNPTE pfn=0x813dd prot=0x53 out=0x204f7453
+[  218.362609] KDBGPFNPTE pfn=0x813dc prot=0x53 out=0x204f7053
+[  218.364254] KDBGPFNPTE pfn=0x813db prot=0x53 out=0x204f6c53
+[  218.366460] KDBGPFNPTE pfn=0x813da prot=0x53 out=0x204f6853
+[  218.369352] KDBGPFNPTE pfn=0x813d9 prot=0x53 out=0x204f6453
+[  218.371680] KDBGPFNPTE pfn=0x813d8 prot=0x53 out=0x204f6053
+[  218.376478] KDBGPFNPTE pfn=0x813d7 prot=0x53 out=0x204f5c53
+[  218.378662] KDBGPFNPTE pfn=0x813d6 prot=0x53 out=0x204f5853
+[  218.380440] KDBGPFNPTE pfn=0x813d5 prot=0x53 out=0x204f5453
+[  218.382764] KDBGPFNPTE pfn=0x813d4 prot=0x53 out=0x204f5053
+[  218.384485] KDBGPFNPTE pfn=0x813d3 prot=0x53 out=0x204f4c53
+[  218.386577] KDBGPFNPTE pfn=0x813d2 prot=0x53 out=0x204f4853
+[  218.388292] KDBGPFNPTE pfn=0x813d1 prot=0x53 out=0x204f4453
+[  218.390389] KDBGPFNPTE pfn=0x813d0 prot=0x53 out=0x204f4053
+[  218.392110] KDBGPFNPTE pfn=0x813cf prot=0x53 out=0x204f3c53
+[  218.394157] KDBGPFNPTE pfn=0x813ce prot=0x53 out=0x204f3853
+[  218.395883] KDBGPFNPTE pfn=0x813cd prot=0x53 out=0x204f3453
+[  218.397933] KDBGPFNPTE pfn=0x813cc prot=0x53 out=0x204f3053
+[  218.399663] KDBGPFNPTE pfn=0x813cb prot=0x53 out=0x204f2c53
+[  218.401734] KDBGPFNPTE pfn=0x813ca prot=0x53 out=0x204f2853
+[  218.404369] KDBGPFNPTE pfn=0x813c9 prot=0x53 out=0x204f2453
+[  218.406390] KDBGPFNPTE pfn=0x813c8 prot=0x53 out=0x204f2053
+[  218.408109] KDBGPFNPTE pfn=0x813c7 prot=0x53 out=0x204f1c53
+[  218.411409] KDBGPFNPTE pfn=0x813c6 prot=0x53 out=0x204f1853
+[  218.413581] KDBGPFNPTE pfn=0x813c5 prot=0x53 out=0x204f1453
+[  218.415299] KDBGPFNPTE pfn=0x813c4 prot=0x53 out=0x204f1053
+[  218.417452] KDBGPFNPTE pfn=0x813c3 prot=0x53 out=0x204f0c53
+[  218.419107] KDBGPFNPTE pfn=0x813c2 prot=0x53 out=0x204f0853
+[  218.420777] KDBGPFNPTE pfn=0x813c1 prot=0x53 out=0x204f0453
+[  218.422830] KDBGPFNPTE pfn=0x813c0 prot=0x53 out=0x204f0053
+[  218.424477] KDBGPFNPTE pfn=0x813bf prot=0x53 out=0x204efc53
+[  218.427785] KDBGPFNPTE pfn=0x813be prot=0x53 out=0x204ef853
+[  218.429823] KDBGPFNPTE pfn=0x813bd prot=0x53 out=0x204ef453
+[  218.431493] KDBGPFNPTE pfn=0x813bc prot=0x53 out=0x204ef053
+[  218.433522] KDBGPFNPTE pfn=0x813bb prot=0x53 out=0x204eec53
+[  218.435194] KDBGPFNPTE pfn=0x813ba prot=0x53 out=0x204ee853
+[  218.437636] KDBGPFNPTE pfn=0x813b9 prot=0x53 out=0x204ee453
+[  218.439125] KDBGPFNPTE pfn=0x813b8 prot=0x53 out=0x204ee053
+[  218.486062] KDBGPFNPTE pfn=0x813b7 prot=0x53 out=0x204edc53
+[  218.566524] KDBGPFNPTE pfn=0x813b6 prot=0x53 out=0x204ed853
+[  218.647573] KDBGPFNPTE pfn=0x813b5 prot=0x53 out=0x204ed453
+[  218.799435] KDBGPFNPTE pfn=0x813b4 prot=0x53 out=0x204ed053
+[  218.802199] KDBGPFNPTE pfn=0x813b3 prot=0x53 out=0x204ecc53
+[  218.803761] KDBGPFNPTE pfn=0x813b2 prot=0x53 out=0x204ec853
+[  218.806180] KDBGPFNPTE pfn=0x813b1 prot=0x53 out=0x204ec453
+[  218.807898] KDBGPFNPTE pfn=0x813b0 prot=0x53 out=0x204ec053
+[  218.810528] KDBGPFNPTE pfn=0x813af prot=0x53 out=0x204ebc53
+[  218.812397] KDBGPFNPTE pfn=0x813ae prot=0x53 out=0x204eb853
+[  218.814662] KDBGPFNPTE pfn=0x813ad prot=0x53 out=0x204eb453
+[  218.816532] KDBGPFNPTE pfn=0x813ac prot=0x53 out=0x204eb053
+[  218.818797] KDBGPFNPTE pfn=0x813ab prot=0x53 out=0x204eac53
+[  218.821987] KDBGPFNPTE pfn=0x813aa prot=0x53 out=0x204ea853
+[  218.823882] KDBGPFNPTE pfn=0x813a9 prot=0x53 out=0x204ea453
+[  218.827127] KDBGPFNPTE pfn=0x813a8 prot=0x53 out=0x204ea053
+[  218.829442] KDBGPFNPTE pfn=0x813a7 prot=0x53 out=0x204e9c53
+[  218.831335] KDBGPFNPTE pfn=0x813a6 prot=0x53 out=0x204e9853
+[  218.834017] KDBGPFNPTE pfn=0x813a5 prot=0x53 out=0x204e9453
+[  218.835890] KDBGPFNPTE pfn=0x813a4 prot=0x53 out=0x204e9053
+[  218.838174] KDBGPFNPTE pfn=0x813a3 prot=0x53 out=0x204e8c53
+[  218.840156] KDBGPFNPTE pfn=0x813a2 prot=0x53 out=0x204e8853
+[  218.843742] KDBGPFNPTE pfn=0x813a1 prot=0x53 out=0x204e8453
+[  218.850416] KDBGPFNPTE pfn=0x813a0 prot=0x53 out=0x204e8053
+[  218.921652] KDBGPFNPTE pfn=0x8139f prot=0x53 out=0x204e7c53
+[  219.129814] KDBGSETPTES addr=0x685ae000 pte=0x205050d3
+[  219.135331] KDBGPFNPTE pfn=0x8139e prot=0x53 out=0x204e7853
+[  219.136649] KDBGPFNPTE pfn=0x8139d prot=0x53 out=0x204e7453
+[  219.148581] KDBGHMF addr=0x685b000c prot=0x53 flags=0x255 vmflags=0x100073
+[  219.150973] KDBGPFNPTE pfn=0x8139c prot=0x53 out=0x204e7053
+[  219.152033] KDBGANON addr=0x685b0000 entry=0x204e70d7 prot=0x53
+[  219.159341] KDBGPFNPTE pfn=0x821a0 prot=0x53 out=0x20868053
+[  219.160647] KDBGPFNPTE pfn=0x8139b prot=0x53 out=0x204e6c53
+[  219.163470] KDBGHMF addr=0x6859dc8c prot=0x5b flags=0x354 vmflags=0x75
+[  219.164678] KDBGSTEP1 addr=0x68590000 entry=0x20f7245b
+[  219.166016] KDBGSTEP2 addr=0x68590000 entry=0x20f7245b
+[  219.167010] KDBGSTEP1 addr=0x68591000 entry=0x20f7285b
+[  219.167952] KDBGSTEP2 addr=0x68591000 entry=0x20f7285b
+[  219.169341] KDBGSTEP1 addr=0x68592000 entry=0x20f72c5b
+[  219.170284] KDBGSTEP2 addr=0x68592000 entry=0x20f72c5b
+[  219.171278] KDBGSTEP1 addr=0x68593000 entry=0x20f7305b
+[  219.172221] KDBGSTEP2 addr=0x68593000 entry=0x20f7305b
+[  219.173609] KDBGSTEP1 addr=0x68594000 entry=0x20f7345b
+[  219.174552] KDBGSTEP2 addr=0x68594000 entry=0x20f7345b
+[  219.175546] KDBGSTEP1 addr=0x68595000 entry=0x20f7385b
+[  219.176489] KDBGSTEP2 addr=0x68595000 entry=0x20f7385b
+[  219.177878] KDBGSTEP1 addr=0x68596000 entry=0x20f73c5b
+[  219.178820] KDBGSTEP2 addr=0x68596000 entry=0x20f73c5b
+[  219.179814] KDBGSTEP1 addr=0x68597000 entry=0x20f7405b
+[  219.180757] KDBGSTEP2 addr=0x68597000 entry=0x20f7405b
+[  219.182146] KDBGSTEP1 addr=0x68598000 entry=0x20f7445b
+[  219.183089] KDBGSTEP2 addr=0x68598000 entry=0x20f7445b
+[  219.184082] KDBGSTEP1 addr=0x68599000 entry=0x20f7485b
+[  219.185420] KDBGSTEP2 addr=0x68599000 entry=0x20f7485b
+[  219.186414] KDBGSTEP1 addr=0x6859a000 entry=0x20f74c5b
+[  219.187357] KDBGSTEP2 addr=0x6859a000 entry=0x20f74c5b
+[  219.188351] KDBGSTEP1 addr=0x6859b000 entry=0x20f7505b
+[  219.189688] KDBGSTEP2 addr=0x6859b000 entry=0x20f7505b
+[  219.190682] KDBGSTEP1 addr=0x6859c000 entry=0x20f7545b
+[  219.191625] KDBGSTEP2 addr=0x6859c000 entry=0x20f7545b
+[  219.192619] KDBGSTEP1 addr=0x6859d000 entry=0x20f7585b
+[  219.193957] KDBGSTEP2 addr=0x6859d000 entry=0x20f7585b
+[  219.194950] KDBGSTEP1 addr=0x6859e000 entry=0x20f75c5b
+[  219.195893] KDBGSTEP2 addr=0x6859e000 entry=0x20f75c5b
+[  219.197282] KDBGSTEP1 addr=0x6859f000 entry=0x20f7605b
+[  219.198225] KDBGSTEP2 addr=0x6859f000 entry=0x20f7605b
+[  219.199286] KDBGHMF addr=0x685a6fb0 prot=0x5b flags=0x254 vmflags=0x75
+[  219.200494] KDBGSTEP1 addr=0x685a0000 entry=0x20f7645b
+[  219.202393] KDBGSTEP2 addr=0x685a0000 entry=0x20f7645b
+[  219.203386] KDBGSTEP1 addr=0x685a1000 entry=0x20f7685b
+[  219.204329] KDBGSTEP2 addr=0x685a1000 entry=0x20f7685b
+[  219.205726] KDBGSTEP1 addr=0x685a2000 entry=0x20f76c5b
+[  219.206668] KDBGSTEP2 addr=0x685a2000 entry=0x20f76c5b
+[  219.207662] KDBGSTEP1 addr=0x685a3000 entry=0x20f7705b
+[  219.208605] KDBGSTEP2 addr=0x685a3000 entry=0x20f7705b
+[  219.210001] KDBGSTEP1 addr=0x685a4000 entry=0x20f7745b
+[  219.210943] KDBGSTEP2 addr=0x685a4000 entry=0x20f7745b
+[  219.211937] KDBGSTEP1 addr=0x685a5000 entry=0x20f7785b
+[  219.213282] KDBGSTEP2 addr=0x685a5000 entry=0x20f7785b
+[  219.214276] KDBGSTEP1 addr=0x685a6000 entry=0x20f77c5b
+[  219.215218] KDBGSTEP2 addr=0x685a6000 entry=0x20f77c5b
+[  219.216212] KDBGSTEP1 addr=0x685a7000 entry=0x20f7805b
+[  219.217557] KDBGSTEP2 addr=0x685a7000 entry=0x20f7805b
+[  219.218551] KDBGSTEP1 addr=0x685a8000 entry=0x20f7845b
+[  219.219493] KDBGSTEP2 addr=0x685a8000 entry=0x20f7845b
+[  219.220487] KDBGSTEP1 addr=0x685a9000 entry=0x20f7885b
+[  219.221832] KDBGSTEP2 addr=0x685a9000 entry=0x20f7885b
+[  219.222826] KDBGSTEP1 addr=0x685aa000 entry=0x20f78c5b
+[  219.223768] KDBGSTEP2 addr=0x685aa000 entry=0x20f78c5b
+[  219.224762] KDBGSTEP1 addr=0x685ab000 entry=0x20f7905b
+[  219.226107] KDBGSTEP2 addr=0x685ab000 entry=0x20f7905b
+[  219.227101] KDBGSTEP1 addr=0x685ac000 entry=0x20f7945b
+[  219.228043] KDBGSTEP2 addr=0x685ac000 entry=0x20f7945b
+[  219.229439] KDBGSTEP1 addr=0x685ad000 entry=0x20f7985b
+[  219.230382] KDBGSTEP2 addr=0x685ad000 entry=0x20f7985b
+[  219.232250] KDBGHMF addr=0x68585a80 prot=0x5b flags=0x354 vmflags=0x75
+[  219.233889] KDBGSTEP1 addr=0x68582000 entry=0x20f6ec5b
+[  219.234832] KDBGSTEP2 addr=0x68582000 entry=0x20f6ec5b
+[  219.235826] KDBGSTEP1 addr=0x68583000 entry=0x20f6f05b
+[  219.236769] KDBGSTEP2 addr=0x68583000 entry=0x20f6f05b
+[  219.238158] KDBGSTEP1 addr=0x68584000 entry=0x20f6f45b
+[  219.239100] KDBGSTEP2 addr=0x68584000 entry=0x20f6f45b
+[  219.240094] KDBGSTEP1 addr=0x68585000 entry=0x20f6f85b
+[  219.241432] KDBGSTEP2 addr=0x68585000 entry=0x20f6f85b
+[  219.242426] KDBGSTEP1 addr=0x68586000 entry=0x20f6fc5b
+[  219.243369] KDBGSTEP2 addr=0x68586000 entry=0x20f6fc5b
+[  219.244362] KDBGSTEP1 addr=0x68587000 entry=0x20f7005b
+[  219.245700] KDBGSTEP2 addr=0x68587000 entry=0x20f7005b
+[  219.246694] KDBGSTEP1 addr=0x68588000 entry=0x20f7045b
+[  219.247637] KDBGSTEP2 addr=0x68588000 entry=0x20f7045b
+[  219.248631] KDBGSTEP1 addr=0x68589000 entry=0x20f7085b
+[  219.250098] KDBGSTEP2 addr=0x68589000 entry=0x20f7085b
+[  219.251092] KDBGSTEP1 addr=0x6858a000 entry=0x20f70c5b
+[  219.252034] KDBGSTEP2 addr=0x6858a000 entry=0x20f70c5b
+[  219.253423] KDBGSTEP1 addr=0x6858b000 entry=0x20f7105b
+[  219.254366] KDBGSTEP2 addr=0x6858b000 entry=0x20f7105b
+[  219.255360] KDBGSTEP1 addr=0x6858c000 entry=0x20f7145b
+[  219.256303] KDBGSTEP2 addr=0x6858c000 entry=0x20f7145b
+[  219.257691] KDBGSTEP1 addr=0x6858d000 entry=0x20f7185b
+[  219.258634] KDBGSTEP2 addr=0x6858d000 entry=0x20f7185b
+[  219.259628] KDBGSTEP1 addr=0x6858e000 entry=0x20f71c5b
+[  219.260571] KDBGSTEP2 addr=0x6858e000 entry=0x20f71c5b
+[  219.261960] KDBGSTEP1 addr=0x6858f000 entry=0x20f7205b
+[  219.262902] KDBGSTEP2 addr=0x6858f000 entry=0x20f7205b
+[  219.273395] KDBGPFNPTE pfn=0x8139a prot=0x53 out=0x204e6853
+[  219.318831] KDBGPFNPTE pfn=0x81399 prot=0x53 out=0x204e6453
+[  219.320040] KDBGPFNPTE pfn=0x8423b prot=0x53 out=0x2108ec53
+[  219.321502] KDBGPFNPTE pfn=0x8423c prot=0x53 out=0x2108f053
+[  219.329798] KDBGPFNPTE pfn=0x81398 prot=0x53 out=0x204e6053
+[  219.331009] KDBGPFNPTE pfn=0x84b8f prot=0x53 out=0x212e3c53
+[  219.332075] KDBGPFNPTE pfn=0x84b90 prot=0x53 out=0x212e4053
+[  219.333537] KDBGPFNPTE pfn=0x84b91 prot=0x53 out=0x212e4453
+[  219.334603] KDBGPFNPTE pfn=0x84b92 prot=0x53 out=0x212e4853
+[  219.339032] KDBGPFNPTE pfn=0x81397 prot=0x53 out=0x204e5c53
+[  219.340507] KDBGPFNPTE pfn=0x81396 prot=0x53 out=0x204e5853
+[  219.342537] KDBGPFNPTE pfn=0x81395 prot=0x53 out=0x204e5453
+[  219.344206] KDBGPFNPTE pfn=0x81394 prot=0x53 out=0x204e5053
+[  219.370107] KDBGPFNPTE pfn=0x81393 prot=0x53 out=0x204e4c53
+[  219.371583] KDBGPFNPTE pfn=0x81392 prot=0x53 out=0x204e4853
+[  219.415221] KDBGHMF addr=0x685b128c prot=0x53 flags=0x255 vmflags=0x100073
+[  219.416568] KDBGPFNPTE pfn=0x81391 prot=0x53 out=0x204e4453
+[  219.418896] KDBGANON addr=0x685b1000 entry=0x204e44d7 prot=0x53
+[  219.428422] KDBGHMF addr=0x685b2000 prot=0x53 flags=0x214 vmflags=0x100073
+[  219.430002] KDBGPFNPTE pfn=0x821a0 prot=0x53 out=0x20868053
+[  219.431035] KDBGANON addr=0x685b2000 entry=0x20868153 prot=0x53
+[  219.469563] systemd[1]: System time advanced to built-in epoch: Tue 2026-09-22 07:49:34 UTC
+[  219.485931] KDBGHMF addr=0x685b256c prot=0x53 flags=0x255 vmflags=0x100073
+[  219.487293] KDBGPFNPTE pfn=0x81390 prot=0x53 out=0x204e4053
+P+q6E616D65\[  220.003912] systemd[1]: Successfully made /usr/ read-only.
+[  220.007841] KDBGHMF addr=0x685b9aac prot=0x53 flags=0x255 vmflags=0x100073
+[  220.009592] KDBGPFNPTE pfn=0x8138f prot=0x53 out=0x204e3c53
+[  220.010653] KDBGANON addr=0x685b9000 entry=0x204e3cd7 prot=0x53
+[  220.012818] KDBGHMF addr=0x685baabc prot=0x53 flags=0x255 vmflags=0x100073
+[  220.014571] KDBGPFNPTE pfn=0x8138e prot=0x53 out=0x204e3853
+[  220.015631] KDBGANON addr=0x685ba000 entry=0x204e38d7 prot=0x53
+[18t7[32766;32766H[6n8[!p]104\[0m[?7h[1G[0J[  220.730782] systemd[1]: systemd 263~devel-gc50b9f5 running in system mode (-PAM -AUDIT -SELINUX -APPARMOR +IMA +IPE +SMACK -SECCOMP -GNUTLS -OPENSSL -ACL -BLKID -CURL -ELFUTILS -FIDO2 -IDN2 -KMOD -LIBCRYPTSETUP -LIBCRYPTSETUP_PLUGINS -LIBFDISK -PCRE2 -PWQUALITY -P11KIT -QRENCODE -TPM2 -BZIP2 -LZ4 -XZ -ZLIB -ZSTD -BPF_FRAMEWORK -BTF -XKBCOMMON +UTMP -LIBARCHIVE +EXPERIMENTAL)
+[  220.752690] KDBGHMF addr=0x685c2afc prot=0x53 flags=0x255 vmflags=0x100073
+[  220.754443] KDBGPFNPTE pfn=0x8138d prot=0x53 out=0x204e3453
+[  220.755504] KDBGANON addr=0x685c2000 entry=0x204e34d7 prot=0x53
+[  220.762076] systemd[1]: Detected architecture riscv32.
+[  220.763479] systemd[1]: Running in initrd.
+[  220.797972] systemd[1]: Initializing machine ID from random generator.
+[  220.807810] systemd[1]: No hostname configured, using default hostname.
+[  220.816775] systemd[1]: Hostname set to <localhost>.
+[  220.871039] KDBGHMF addr=0x685b3fa0 prot=0x53 flags=0x255 vmflags=0x100073
+[  220.872386] KDBGPFNPTE pfn=0x8138a prot=0x53 out=0x204e2853
+[  220.873852] KDBGANON addr=0x685b3000 entry=0x204e28d7 prot=0x53
+]3008;start=2daa6fd317ac4a25bf31589987b80d2c;user=root;hostname=localhost;machineid=4dc7c76ccf59432c8bec0c3f79ae3fbe;bootid=b341f3a1a13f4d6abefe9a01dd33a59a;pid=1;pidfdid=2;comm=systemd;type=boot\[  220.928067] systemd[1]: Failed to copy os-release for propagation, ignoring: No such file or directory
+[  220.933350] KDBGHMF addr=0x685b40d0 prot=0x53 flags=0x255 vmflags=0x100073
+[  220.934696] KDBGPFNPTE pfn=0x81389 prot=0x53 out=0x204e2453
+[  220.935757] KDBGANON addr=0x685b4000 entry=0x204e24d7 prot=0x53
+[  220.996228] KDBGHMF addr=0x685b50b0 prot=0x53 flags=0x255 vmflags=0x100073
+[  220.997995] KDBGPFNPTE pfn=0x81388 prot=0x53 out=0x204e2053
+[  220.999056] KDBGANON addr=0x685b5000 entry=0x204e20d7 prot=0x53
+[  221.175464] KDBGHMF addr=0x685b6050 prot=0x53 flags=0x255 vmflags=0x100073
+[  221.176811] KDBGPFNPTE pfn=0x81387 prot=0x53 out=0x204e1c53
+[  221.178292] KDBGANON addr=0x685b6000 entry=0x204e1cd7 prot=0x53
+[  221.319000] KDBGHMF addr=0x685b74c0 prot=0x53 flags=0x255 vmflags=0x100073
+[  221.320347] KDBGPFNPTE pfn=0x81386 prot=0x53 out=0x204e1853
+[  221.384762] KDBGHMF addr=0x685b8160 prot=0x53 flags=0x255 vmflags=0x100073
+[  221.386536] KDBGPFNPTE pfn=0x81385 prot=0x53 out=0x204e1453
+[  221.559835] KDBGPFNPTE pfn=0x81384 prot=0x53 out=0x204e1053
+[  221.722996] KDBGPFNPTE pfn=0x81383 prot=0x53 out=0x204e0c53
+[  222.710761] KDBGPFNPTE pfn=0x81382 prot=0x53 out=0x204e0853
+[  222.822603] KDBGPFNPTE pfn=0x81381 prot=0x53 out=0x204e0453
+[  222.962596] KDBGPFNPTE pfn=0x81380 prot=0x53 out=0x204e0053
+[  223.062430] KDBGPFNPTE pfn=0x8137f prot=0x53 out=0x204dfc53
+[  223.090331] KDBGPFNPTE pfn=0x8137e prot=0x53 out=0x204df853
+[  223.131727] KDBGPFNPTE pfn=0x8137d prot=0x53 out=0x204df453
+[  223.201436] KDBGPFNPTE pfn=0x8137c prot=0x53 out=0x204df053
+[  223.370146] KDBGPFNPTE pfn=0x8137b prot=0x53 out=0x204dec53
+[  223.590217] KDBGPFNPTE pfn=0x8137a prot=0x53 out=0x204de853
+[  223.613431] KDBGPFNPTE pfn=0x81379 prot=0x53 out=0x204de453
+[  223.798753] KDBGPFNPTE pfn=0x81378 prot=0x53 out=0x204de053
+[  224.654032] KDBGPFNPTE pfn=0x81377 prot=0x53 out=0x204ddc53
+[  224.810412] KDBGPFNPTE pfn=0x81376 prot=0x53 out=0x204dd853
+[  226.676047] KDBGPFNPTE pfn=0x81375 prot=0x53 out=0x204dd453
+[  226.976257] KDBGPFNPTE pfn=0x81374 prot=0x53 out=0x204dd053
+[  228.195962] KDBGPFNPTE pfn=0x81373 prot=0x53 out=0x204dcc53
+[  228.202462] KDBGPFNPTE pfn=0x81372 prot=0x53 out=0x204dc853
+[  228.442430] systemd[1]: Queued start job for default target initrd.target.
+[  228.536203] KDBGPFNPTE pfn=0x81371 prot=0x53 out=0x204dc453
+[  228.639911] systemd[1]: Reached target initrd-root-fs.target.
+[  228.647799] KDBGPFNPTE pfn=0x81370 prot=0x53 out=0x204dc053
+[[0;32m  OK  [0m] Reached target [0;1;39minitrd-root-fs.target[0m.
+[  228.680085] systemd[1]: Reached target initrd-usr-fs.target.
+[[0;32m  OK  [0m] Reached target [0;1;39minitrd-usr-fs.target[0m.
+[  228.715400] systemd[1]: Reached target local-fs.target.
+[[0;32m  OK  [0m] Reached target [0;1;39mlocal-fs.target[0m.
+[  228.745904] systemd[1]: Reached target paths.target.
+[[0;32m  OK  [0m] Reached target [0;1;39mpaths.target[0m.
+[  228.777346] systemd[1]: Reached target slices.target.
+[[0;32m  OK  [0m] Reached target [0;1;39mslices.target[0m.
+[  228.808300] systemd[1]: Reached target sockets.target.
+[[0;32m  OK  [0m] Reached target [0;1;39msockets.target[0m.
+[  228.839608] systemd[1]: Reached target swap.target.
+[[0;32m  OK  [0m] Reached target [0;1;39mswap.target[0m.
+[  228.869914] systemd[1]: Reached target sysinit.target.
+[[0;32m  OK  [0m] Reached target [0;1;39msysinit.target[0m.
+[  228.902008] systemd[1]: Reached target basic.target.
+[[0;32m  OK  [0m] Reached target [0;1;39mbasic.target[0m.
+[  228.942681] systemd[1]: System is tainted: unmerged-usr
+[  228.955670] systemd[1]: Reached target initrd.target.
+[[0;32m  OK  [0m] Reached target [0;1;39minitrd.target[0m.
+[  228.997501] systemd[1]: Reached target timers.target.
+[[0;32m  OK  [0m] Reached target [0;1;39mtimers.target[0m.
+[  229.271850] KDBGPFNPTE pfn=0x8136e prot=0x53 out=0x204db853
+[  229.278101] KDBGPFNPTE pfn=0x8136d prot=0x53 out=0x204db453
+[  229.303670] KDBGPFNPTE pfn=0x8136c prot=0x53 out=0x204db053
+[  229.304691] KDBGSTEP1 addr=0x6867f000 entry=0x204db053
+[  229.306065] KDBGSTEP2 addr=0x6867f000 entry=0x204db053
+[  229.308787] systemd[1]: Starting systemd-initrd-smoke.service...
+[  229.320193] KDBGPFNPTE pfn=0x8136b prot=0x53 out=0x204dac53
+         Starting [0;1;39msystemd-initrd-smoke.service[0m...
+[  229.335673] KDBGPFNPTE pfn=0x85c9d prot=0x53 out=0x21727453
+[  229.339746] KDBGPFNPTE pfn=0x8136a prot=0x53 out=0x204da853
+[  229.346597] KDBGPFNPTE pfn=0x81369 prot=0x53 out=0x204da453
+[  229.348547] KDBGPFNPTE pfn=0x81368 prot=0x53 out=0x204da053
+[  229.354294] KDBGSTEP1 addr=0x6863e000 entry=0x20f7cc5b
+[  229.355237] KDBGSTEP2 addr=0x6863e000 entry=0x20f7cc5b
+[  229.356230] KDBGSTEP1 addr=0x6863f000 entry=0x20f7d05b
+[  229.357605] KDBGSTEP2 addr=0x6863f000 entry=0x20f7d05b
+[  229.358599] KDBGSTEP1 addr=0x68640000 entry=0x20f7d45b
+[  229.359542] KDBGSTEP2 addr=0x68640000 entry=0x20f7d45b
+[  229.360535] KDBGSTEP1 addr=0x68641000 entry=0x20f7d85b
+[  229.361913] KDBGSTEP2 addr=0x68641000 entry=0x20f7d85b
+[  229.362907] KDBGSTEP1 addr=0x68642000 entry=0x20f7dc5b
+[  229.363849] KDBGSTEP2 addr=0x68642000 entry=0x20f7dc5b
+[  229.365277] KDBGSTEP1 addr=0x68643000 entry=0x20f7e05b
+[  229.366220] KDBGSTEP2 addr=0x68643000 entry=0x20f7e05b
+[  229.367214] KDBGSTEP1 addr=0x68644000 entry=0x20f7e45b
+[  229.368157] KDBGSTEP2 addr=0x68644000 entry=0x20f7e45b
+[  229.369585] KDBGSTEP1 addr=0x68645000 entry=0x20f7e85b
+[  229.370527] KDBGSTEP2 addr=0x68645000 entry=0x20f7e85b
+[  229.371521] KDBGSTEP1 addr=0x68646000 entry=0x20f7ec5b
+[  229.372464] KDBGSTEP2 addr=0x68646000 entry=0x20f7ec5b
+[  229.373892] KDBGSTEP1 addr=0x68647000 entry=0x20f7f05b
+[  229.374834] KDBGSTEP2 addr=0x68647000 entry=0x20f7f05b
+[  229.375828] KDBGSTEP1 addr=0x68648000 entry=0x20f7f45b
+[  229.376771] KDBGSTEP2 addr=0x68648000 entry=0x20f7f45b
+[  229.378256] KDBGSTEP1 addr=0x68649000 entry=0x20f7f85b
+[  229.379199] KDBGSTEP2 addr=0x68649000 entry=0x20f7f85b
+[  229.380193] KDBGSTEP1 addr=0x6864a000 entry=0x20f7fc5b
+[  229.381570] KDBGSTEP2 addr=0x6864a000 entry=0x20f7fc5b
+[  229.382564] KDBGSTEP1 addr=0x6864b000 entry=0x20fa005b
+[  229.383506] KDBGSTEP2 addr=0x6864b000 entry=0x20fa005b
+[  229.384500] KDBGSTEP1 addr=0x6864c000 entry=0x20fa045b
+[  229.385877] KDBGSTEP2 addr=0x6864c000 entry=0x20fa045b
+[  229.386871] KDBGSTEP1 addr=0x6864d000 entry=0x20fa085b
+[  229.387813] KDBGSTEP2 addr=0x6864d000 entry=0x20fa085b
+[  229.425754] KDBGPFNPTE pfn=0x83eb3 prot=0x53 out=0x20facc53
+[  229.426775] KDBGSTEP1 addr=0x6867e000 entry=0x20facc53
+[  229.427718] KDBGSTEP2 addr=0x6867e000 entry=0x20facc53
+[  229.438168] KDBGPFNPTE pfn=0x81367 prot=0x53 out=0x204d9c53
+[  229.440134] KDBGPFNPTE pfn=0x81366 prot=0x53 out=0x204d9853
+[  229.454206] KDBGPFNPTE pfn=0x81365 prot=0x53 out=0x204d9453
+[  229.456090] KDBGPFNPTE pfn=0x8221c prot=0x53 out=0x20887053
+[  229.457587] KDBGPFNPTE pfn=0x8221d prot=0x53 out=0x20887453
+[  229.458654] KDBGPFNPTE pfn=0x8221e prot=0x53 out=0x20887853
+[  229.459720] KDBGPFNPTE pfn=0x8221f prot=0x53 out=0x20887c53
+[  229.460787] KDBGPFNPTE pfn=0x82220 prot=0x53 out=0x20888053
+[  229.462285] KDBGPFNPTE pfn=0x82221 prot=0x53 out=0x20888453
+[  229.463351] KDBGPFNPTE pfn=0x82222 prot=0x53 out=0x20888853
+[  229.464417] KDBGPFNPTE pfn=0x82223 prot=0x53 out=0x20888c53
+[  229.465928] KDBGPFNPTE pfn=0x82224 prot=0x53 out=0x20889053
+[  229.466994] KDBGPFNPTE pfn=0x82225 prot=0x53 out=0x20889453
+[  229.468060] KDBGPFNPTE pfn=0x82226 prot=0x53 out=0x20889853
+[  229.469558] KDBGPFNPTE pfn=0x82227 prot=0x53 out=0x20889c53
+[  229.470625] KDBGPFNPTE pfn=0x82228 prot=0x53 out=0x2088a053
+[  229.502945] KDBGPFNPTE pfn=0x81364 prot=0x53 out=0x204d9053
+[  229.504703] KDBGPFNPTE pfn=0x84a47 prot=0x53 out=0x21291c53
+[  229.506201] KDBGPFNPTE pfn=0x84a48 prot=0x53 out=0x21292053
+[  229.507268] KDBGPFNPTE pfn=0x84a49 prot=0x53 out=0x21292453
+[  229.508341] KDBGPFNPTE pfn=0x84a4a prot=0x53 out=0x21292853
+[  229.509839] KDBGPFNPTE pfn=0x84a4b prot=0x53 out=0x21292c53
+[  229.510905] KDBGPFNPTE pfn=0x84a4c prot=0x53 out=0x21293053
+[  229.511972] KDBGPFNPTE pfn=0x84a4d prot=0x53 out=0x21293453
+[  229.513469] KDBGPFNPTE pfn=0x84a4e prot=0x53 out=0x21293853
+[  229.539493] KDBGPFNPTE pfn=0x81363 prot=0x53 out=0x204d8c53
+[  229.545986] KDBGPFNPTE pfn=0x84013 prot=0x53 out=0x21004c53
+[  229.547052] KDBGPFNPTE pfn=0x84014 prot=0x53 out=0x21005053
+[  229.562255] KDBGPFNPTE pfn=0x81362 prot=0x53 out=0x204d8853
+[  229.563466] KDBGPFNPTE pfn=0x841b1 prot=0x53 out=0x2106c453
+[  229.570464] KDBGPFNPTE pfn=0x81361 prot=0x53 out=0x204d8453
+[  229.579109] KDBGPFNPTE pfn=0x81360 prot=0x53 out=0x204d8053
+[  229.580751] KDBGPFNPTE pfn=0x8135f prot=0x53 out=0x204d7c53
+[  229.589719] KDBGPFNPTE pfn=0x8135e prot=0x53 out=0x204d7853
+[  229.600594] KDBGPFNPTE pfn=0x82003 prot=0x53 out=0x20800c53
+[  229.603705] KDBGPFNPTE pfn=0x849f9 prot=0x53 out=0x2127e453
+[  229.604771] KDBGPFNPTE pfn=0x849fa prot=0x53 out=0x2127e853
+[  229.606266] KDBGPFNPTE pfn=0x849fb prot=0x53 out=0x2127ec53
+[  229.607332] KDBGPFNPTE pfn=0x849fc prot=0x53 out=0x2127f053
+[  229.608399] KDBGPFNPTE pfn=0x849fd prot=0x53 out=0x2127f453
+[  229.609893] KDBGPFNPTE pfn=0x849fe prot=0x53 out=0x2127f853
+[  229.610960] KDBGPFNPTE pfn=0x849ff prot=0x53 out=0x2127fc53
+[  229.612026] KDBGPFNPTE pfn=0x84a00 prot=0x53 out=0x21280053
+[  229.613521] KDBGPFNPTE pfn=0x84a01 prot=0x53 out=0x21280453
+[  229.614587] KDBGPFNPTE pfn=0x84a02 prot=0x53 out=0x21280853
+[  229.615654] KDBGPFNPTE pfn=0x84a03 prot=0x53 out=0x21280c53
+[  229.616720] KDBGPFNPTE pfn=0x84a04 prot=0x53 out=0x21281053
+[  229.618215] KDBGPFNPTE pfn=0x84a05 prot=0x53 out=0x21281453
+[  229.619281] KDBGPFNPTE pfn=0x84a06 prot=0x53 out=0x21281853
+[  229.620348] KDBGPFNPTE pfn=0x84a07 prot=0x53 out=0x21281c53
+[  229.621843] KDBGPFNPTE pfn=0x84a08 prot=0x53 out=0x21282053
+[  229.624200] KDBGPFNPTE pfn=0x8135d prot=0x53 out=0x204d7453
+[  229.627311] KDBGPFNPTE pfn=0x8135c prot=0x53 out=0x204d7053
+[  229.628810] KDBGPFNPTE pfn=0x8135b prot=0x53 out=0x204d6c53
+[  229.632278] KDBGPFNPTE pfn=0x8135a prot=0x53 out=0x204d6853
+[  229.635191] KDBGPFNPTE pfn=0x81359 prot=0x53 out=0x204d6453
+[  229.637690] KDBGPFNPTE pfn=0x81358 prot=0x53 out=0x204d6053
+[  229.639488] KDBGPFNPTE pfn=0x81357 prot=0x53 out=0x204d5c53
+[  229.641728] KDBGPFNPTE pfn=0x81356 prot=0x53 out=0x204d5853
+[  229.644749] KDBGPFNPTE pfn=0x81355 prot=0x53 out=0x204d5453
+[  229.646810] KDBGPFNPTE pfn=0x81354 prot=0x53 out=0x204d5053
+[  229.648474] KDBGPFNPTE pfn=0x81353 prot=0x53 out=0x204d4c53
+[  229.650557] KDBGPFNPTE pfn=0x81352 prot=0x53 out=0x204d4853
+[  229.652257] KDBGPFNPTE pfn=0x81351 prot=0x53 out=0x204d4453
+[  229.654375] KDBGPFNPTE pfn=0x81350 prot=0x53 out=0x204d4053
+[  229.657477] KDBGPFNPTE pfn=0x8136e prot=0x53 out=0x204db853
+[  229.659139] KDBGPFNPTE pfn=0x8134f prot=0x53 out=0x204d3c53
+[  229.661259] KDBGPFNPTE pfn=0x8134e prot=0x53 out=0x204d3853
+[  229.662938] KDBGPFNPTE pfn=0x8134d prot=0x53 out=0x204d3453
+[  229.664619] KDBGPFNPTE pfn=0x8134c prot=0x53 out=0x204d3053
+[  229.666705] KDBGPFNPTE pfn=0x8134b prot=0x53 out=0x204d2c53
+[  229.668370] KDBGPFNPTE pfn=0x8134a prot=0x53 out=0x204d2853
+[  229.670480] KDBGPFNPTE pfn=0x81349 prot=0x53 out=0x204d2453
+[  229.672194] KDBGPFNPTE pfn=0x81348 prot=0x53 out=0x204d2053
+[  229.674297] KDBGPFNPTE pfn=0x81347 prot=0x53 out=0x204d1c53
+[  229.675955] KDBGPFNPTE pfn=0x81346 prot=0x53 out=0x204d1853
+[  229.678080] KDBGPFNPTE pfn=0x81345 prot=0x53 out=0x204d1453
+[  229.679733] KDBGPFNPTE pfn=0x81344 prot=0x53 out=0x204d1053
+[  229.681806] KDBGPFNPTE pfn=0x81343 prot=0x53 out=0x204d0c53
+[  229.683456] KDBGPFNPTE pfn=0x81342 prot=0x53 out=0x204d0853
+[  229.685528] KDBGPFNPTE pfn=0x81341 prot=0x53 out=0x204d0453
+[  229.687214] KDBGPFNPTE pfn=0x81340 prot=0x53 out=0x204d0053
+[  229.689900] KDBGPFNPTE pfn=0x8133f prot=0x53 out=0x204cfc53
+[  229.692230] KDBGPFNPTE pfn=0x8133e prot=0x53 out=0x204cf853
+[  229.694342] KDBGPFNPTE pfn=0x8133d prot=0x53 out=0x204cf453
+[  229.695997] KDBGPFNPTE pfn=0x8133c prot=0x53 out=0x204cf053
+[  229.698071] KDBGPFNPTE pfn=0x8133b prot=0x53 out=0x204cec53
+[  229.699769] KDBGPFNPTE pfn=0x8133a prot=0x53 out=0x204ce853
+[  229.701882] KDBGPFNPTE pfn=0x81339 prot=0x53 out=0x204ce453
+[  229.703587] KDBGPFNPTE pfn=0x81338 prot=0x53 out=0x204ce053
+[  229.705713] KDBGPFNPTE pfn=0x81337 prot=0x53 out=0x204cdc53
+[  229.707381] KDBGPFNPTE pfn=0x81336 prot=0x53 out=0x204cd853
+[  229.709516] KDBGPFNPTE pfn=0x81335 prot=0x53 out=0x204cd453
+[  229.711154] KDBGPFNPTE pfn=0x81334 prot=0x53 out=0x204cd053
+[  229.712794] KDBGPFNPTE pfn=0x81333 prot=0x53 out=0x204ccc53
+[  229.714874] KDBGPFNPTE pfn=0x81332 prot=0x53 out=0x204cc853
+[  229.717868] KDBGPFNPTE pfn=0x81331 prot=0x53 out=0x204cc453
+[  229.719516] KDBGPFNPTE pfn=0x81330 prot=0x53 out=0x204cc053
+[  229.721587] KDBGPFNPTE pfn=0x8132f prot=0x53 out=0x204cbc53
+[  229.723250] KDBGPFNPTE pfn=0x8132e prot=0x53 out=0x204cb853
+[  229.725507] KDBGPFNPTE pfn=0x8132d prot=0x53 out=0x204cb453
+[  229.728708] KDBGPFNPTE pfn=0x8132c prot=0x53 out=0x204cb053
+[  229.731481] KDBGPFNPTE pfn=0x8132b prot=0x53 out=0x204cac53
+[  229.734154] KDBGPFNPTE pfn=0x8132a prot=0x53 out=0x204ca853
+[  229.735960] KDBGPFNPTE pfn=0x81329 prot=0x53 out=0x204ca453
+[  229.738184] KDBGPFNPTE pfn=0x81328 prot=0x53 out=0x204ca053
+[  229.740131] KDBGPFNPTE pfn=0x81327 prot=0x53 out=0x204c9c53
+[  229.742357] KDBGPFNPTE pfn=0x81326 prot=0x53 out=0x204c9853
+[  229.744072] KDBGPFNPTE pfn=0x81325 prot=0x53 out=0x204c9453
+[  229.746362] KDBGPFNPTE pfn=0x81324 prot=0x53 out=0x204c9053
+[  229.748082] KDBGPFNPTE pfn=0x81323 prot=0x53 out=0x204c8c53
+[  229.750249] KDBGPFNPTE pfn=0x81322 prot=0x53 out=0x204c8853
+[  229.751919] KDBGPFNPTE pfn=0x81321 prot=0x53 out=0x204c8453
+[  229.754091] KDBGPFNPTE pfn=0x81320 prot=0x53 out=0x204c8053
+[  229.755764] KDBGPFNPTE pfn=0x8131f prot=0x53 out=0x204c7c53
+[  229.757938] KDBGPFNPTE pfn=0x8131e prot=0x53 out=0x204c7853
+[  229.759633] KDBGPFNPTE pfn=0x8131d prot=0x53 out=0x204c7453
+[  229.761784] KDBGPFNPTE pfn=0x8131c prot=0x53 out=0x204c7053
+[  229.763462] KDBGPFNPTE pfn=0x8131b prot=0x53 out=0x204c6c53
+[  229.765643] KDBGPFNPTE pfn=0x8131a prot=0x53 out=0x204c6853
+[  229.767319] KDBGPFNPTE pfn=0x81319 prot=0x53 out=0x204c6453
+[  229.769557] KDBGPFNPTE pfn=0x81318 prot=0x53 out=0x204c6053
+[  229.771308] KDBGPFNPTE pfn=0x81317 prot=0x53 out=0x204c5c53
+[  229.773439] KDBGPFNPTE pfn=0x81316 prot=0x53 out=0x204c5853
+[  229.775127] KDBGPFNPTE pfn=0x81315 prot=0x53 out=0x204c5453
+[  229.777258] KDBGPFNPTE pfn=0x81314 prot=0x53 out=0x204c5053
+[  229.778950] KDBGPFNPTE pfn=0x81313 prot=0x53 out=0x204c4c53
+[  229.781985] KDBGPFNPTE pfn=0x81312 prot=0x53 out=0x204c4853
+[  229.783649] KDBGPFNPTE pfn=0x81311 prot=0x53 out=0x204c4453
+[  229.785751] KDBGPFNPTE pfn=0x81310 prot=0x53 out=0x204c4053
+[  229.787454] KDBGPFNPTE pfn=0x8130f prot=0x53 out=0x204c3c53
+[  229.790209] KDBGPFNPTE pfn=0x8130e prot=0x53 out=0x204c3853
+[  229.791898] KDBGPFNPTE pfn=0x8130d prot=0x53 out=0x204c3453
+[  229.794420] KDBGPFNPTE pfn=0x8130c prot=0x53 out=0x204c3053
+[  229.795911] KDBGPFNPTE pfn=0x8130b prot=0x53 out=0x204c2c53
+[  229.840004] KDBGPFNPTE pfn=0x8130a prot=0x53 out=0x204c2853
+[  229.920398] KDBGPFNPTE pfn=0x81309 prot=0x53 out=0x204c2453
+[  229.999974] KDBGPFNPTE pfn=0x81308 prot=0x53 out=0x204c2053
+[  230.150888] KDBGPFNPTE pfn=0x81307 prot=0x53 out=0x204c1c53
+[  230.152428] KDBGPFNPTE pfn=0x81306 prot=0x53 out=0x204c1853
+[  230.154439] KDBGPFNPTE pfn=0x81305 prot=0x53 out=0x204c1453
+[  230.156489] KDBGPFNPTE pfn=0x81304 prot=0x53 out=0x204c1053
+[  230.158719] KDBGPFNPTE pfn=0x81303 prot=0x53 out=0x204c0c53
+[  230.161538] KDBGPFNPTE pfn=0x81302 prot=0x53 out=0x204c0853
+[  230.163432] KDBGPFNPTE pfn=0x81301 prot=0x53 out=0x204c0453
+[  230.165752] KDBGPFNPTE pfn=0x81300 prot=0x53 out=0x204c0053
+[  230.168338] KDBGPFNPTE pfn=0x812ff prot=0x53 out=0x204bfc53
+[  230.170661] KDBGPFNPTE pfn=0x812fe prot=0x53 out=0x204bf853
+[  230.172521] KDBGPFNPTE pfn=0x812fd prot=0x53 out=0x204bf453
+[  230.174855] KDBGPFNPTE pfn=0x812fc prot=0x53 out=0x204bf053
+[  230.176784] KDBGPFNPTE pfn=0x812fb prot=0x53 out=0x204bec53
+[  230.179174] KDBGPFNPTE pfn=0x812fa prot=0x53 out=0x204be853
+[  230.181521] KDBGPFNPTE pfn=0x812f9 prot=0x53 out=0x204be453
+[  230.183747] KDBGPFNPTE pfn=0x812f8 prot=0x53 out=0x204be053
+[  230.186099] KDBGPFNPTE pfn=0x812f7 prot=0x53 out=0x204bdc53
+[  230.188013] KDBGPFNPTE pfn=0x812f6 prot=0x53 out=0x204bd853
+[  230.190449] KDBGPFNPTE pfn=0x812f5 prot=0x53 out=0x204bd453
+[  230.192399] KDBGPFNPTE pfn=0x812f4 prot=0x53 out=0x204bd053
+[  230.200015] KDBGPFNPTE pfn=0x812f3 prot=0x53 out=0x204bcc53
+[  230.271751] KDBGPFNPTE pfn=0x812f2 prot=0x53 out=0x204bc853
+[  230.474376] KDBGSETPTES addr=0x6867e000 pte=0x204d98d3
+[  230.479617] KDBGPFNPTE pfn=0x812f1 prot=0x53 out=0x204bc453
+[  230.481388] KDBGPFNPTE pfn=0x812f0 prot=0x53 out=0x204bc053
+[  230.490315] KDBGPFNPTE pfn=0x812ef prot=0x53 out=0x204bbc53
+[  230.497489] KDBGPFNPTE pfn=0x821a0 prot=0x53 out=0x20868053
+[  230.498817] KDBGPFNPTE pfn=0x812ee prot=0x53 out=0x204bb853
+[  230.504386] KDBGPFNPTE pfn=0x812ed prot=0x53 out=0x204bb453
+[  230.510877] KDBGSTEP1 addr=0x68670000 entry=0x20fa945b
+[  230.511820] KDBGSTEP2 addr=0x68670000 entry=0x20fa945b
+[  230.512814] KDBGSTEP1 addr=0x68671000 entry=0x20fa985b
+[  230.514185] KDBGSTEP2 addr=0x68671000 entry=0x20fa985b
+[  230.515179] KDBGSTEP1 addr=0x68672000 entry=0x20fa9c5b
+[  230.516121] KDBGSTEP2 addr=0x68672000 entry=0x20fa9c5b
+[  230.517543] KDBGSTEP1 addr=0x68673000 entry=0x20faa05b
+[  230.518486] KDBGSTEP2 addr=0x68673000 entry=0x20faa05b
+[  230.519480] KDBGSTEP1 addr=0x68674000 entry=0x20faa45b
+[  230.520423] KDBGSTEP2 addr=0x68674000 entry=0x20faa45b
+[  230.521904] KDBGSTEP1 addr=0x68675000 entry=0x20faa85b
+[  230.522847] KDBGSTEP2 addr=0x68675000 entry=0x20faa85b
+[  230.523841] KDBGSTEP1 addr=0x68676000 entry=0x20faac5b
+[  230.524783] KDBGSTEP2 addr=0x68676000 entry=0x20faac5b
+[  230.526205] KDBGSTEP1 addr=0x68677000 entry=0x20fab05b
+[  230.527148] KDBGSTEP2 addr=0x68677000 entry=0x20fab05b
+[  230.528142] KDBGSTEP1 addr=0x68678000 entry=0x20fab45b
+[  230.529512] KDBGSTEP2 addr=0x68678000 entry=0x20fab45b
+[  230.530506] KDBGSTEP1 addr=0x68679000 entry=0x20fab85b
+[  230.531449] KDBGSTEP2 addr=0x68679000 entry=0x20fab85b
+[  230.532443] KDBGSTEP1 addr=0x6867a000 entry=0x20fabc5b
+[  230.533814] KDBGSTEP2 addr=0x6867a000 entry=0x20fabc5b
+[  230.534808] KDBGSTEP1 addr=0x6867b000 entry=0x20fac05b
+[  230.535750] KDBGSTEP2 addr=0x6867b000 entry=0x20fac05b
+[  230.536744] KDBGSTEP1 addr=0x6867c000 entry=0x20fac45b
+[  230.538115] KDBGSTEP2 addr=0x6867c000 entry=0x20fac45b
+[  230.539109] KDBGSTEP1 addr=0x6867d000 entry=0x20fac85b
+[  230.540051] KDBGSTEP2 addr=0x6867d000 entry=0x20fac85b
+[  230.552726] KDBGPFNPTE pfn=0x812ec prot=0x53 out=0x204bb053
+[  230.561392] KDBGPFNPTE pfn=0x812eb prot=0x53 out=0x204bac53
+[  230.563510] KDBGPFNPTE pfn=0x812ea prot=0x53 out=0x204ba853
+[  230.703062] KDBGPFNPTE pfn=0x812e9 prot=0x53 out=0x204ba453
+[  230.815801] KDBGSTEP1 addr=0x68660000 entry=0x20fa545b
+[  230.816744] KDBGSTEP2 addr=0x68660000 entry=0x20fa545b
+[  230.818166] KDBGSTEP1 addr=0x68661000 entry=0x20fa585b
+[  230.819109] KDBGSTEP2 addr=0x68661000 entry=0x20fa585b
+[  230.820103] KDBGSTEP1 addr=0x68662000 entry=0x20fa5c5b
+[  230.821474] KDBGSTEP2 addr=0x68662000 entry=0x20fa5c5b
+[  230.822468] KDBGSTEP1 addr=0x68663000 entry=0x20fa605b
+[  230.823410] KDBGSTEP2 addr=0x68663000 entry=0x20fa605b
+[  230.824404] KDBGSTEP1 addr=0x68664000 entry=0x20fa645b
+[  230.825775] KDBGSTEP2 addr=0x68664000 entry=0x20fa645b
+[  230.826769] KDBGSTEP1 addr=0x68665000 entry=0x20fa685b
+[  230.827712] KDBGSTEP2 addr=0x68665000 entry=0x20fa685b
+[  230.828706] KDBGSTEP1 addr=0x68666000 entry=0x20fa6c5b
+[  230.830077] KDBGSTEP2 addr=0x68666000 entry=0x20fa6c5b
+[  230.831071] KDBGSTEP1 addr=0x68667000 entry=0x20fa705b
+[  230.832014] KDBGSTEP2 addr=0x68667000 entry=0x20fa705b
+[  230.833495] KDBGSTEP1 addr=0x68668000 entry=0x20fa745b
+[  230.834437] KDBGSTEP2 addr=0x68668000 entry=0x20fa745b
+[  230.835431] KDBGSTEP1 addr=0x68669000 entry=0x20fa785b
+[  230.836374] KDBGSTEP2 addr=0x68669000 entry=0x20fa785b
+[  230.837796] KDBGSTEP1 addr=0x6866a000 entry=0x20fa7c5b
+[  230.838739] KDBGSTEP2 addr=0x6866a000 entry=0x20fa7c5b
+[  230.839733] KDBGSTEP1 addr=0x6866b000 entry=0x20fa805b
+[  230.840676] KDBGSTEP2 addr=0x6866b000 entry=0x20fa805b
+[  230.842098] KDBGSTEP1 addr=0x6866c000 entry=0x20fa845b
+[  230.843041] KDBGSTEP2 addr=0x6866c000 entry=0x20fa845b
+[  230.844035] KDBGSTEP1 addr=0x6866d000 entry=0x20fa885b
+[  230.845406] KDBGSTEP2 addr=0x6866d000 entry=0x20fa885b
+[  230.846400] KDBGSTEP1 addr=0x6866e000 entry=0x20fa8c5b
+[  230.847342] KDBGSTEP2 addr=0x6866e000 entry=0x20fa8c5b
+[  230.848336] KDBGSTEP1 addr=0x6866f000 entry=0x20fa905b
+[  230.849707] KDBGSTEP2 addr=0x6866f000 entry=0x20fa905b
+[  230.852541] KDBGSTEP1 addr=0x6864e000 entry=0x20fa0c5b
+[  230.853916] KDBGSTEP2 addr=0x6864e000 entry=0x20fa0c5b
+[  230.854910] KDBGSTEP1 addr=0x6864f000 entry=0x20fa105b
+[  230.855853] KDBGSTEP2 addr=0x6864f000 entry=0x20fa105b
+[  230.858670] KDBGPFNPTE pfn=0x8136f prot=0x53 out=0x204dbc53
+[  230.861545] KDBGSTEP1 addr=0x68650000 entry=0x20fa145b
+[  230.862488] KDBGSTEP2 addr=0x68650000 entry=0x20fa145b
+[  230.863482] KDBGSTEP1 addr=0x68651000 entry=0x20fa185b
+[  230.864424] KDBGSTEP2 addr=0x68651000 entry=0x20fa185b
+[  230.865846] KDBGSTEP1 addr=0x68652000 entry=0x20fa1c5b
+[  230.866789] KDBGSTEP2 addr=0x68652000 entry=0x20fa1c5b
+[  230.867783] KDBGSTEP1 addr=0x68653000 entry=0x20fa205b
+[  230.868725] KDBGSTEP2 addr=0x68653000 entry=0x20fa205b
+[  230.870147] KDBGSTEP1 addr=0x68654000 entry=0x20fa245b
+[  230.871090] KDBGSTEP2 addr=0x68654000 entry=0x20fa245b
+[  230.872084] KDBGSTEP1 addr=0x68655000 entry=0x20fa285b
+[  230.873455] KDBGSTEP2 addr=0x68655000 entry=0x20fa285b
+[  230.874449] KDBGSTEP1 addr=0x68656000 entry=0x20fa2c5b
+[  230.875391] KDBGSTEP2 addr=0x68656000 entry=0x20fa2c5b
+[  230.876385] KDBGSTEP1 addr=0x68657000 entry=0x20fa305b
+[  230.877756] KDBGSTEP2 addr=0x68657000 entry=0x20fa305b
+[  230.878750] KDBGSTEP1 addr=0x68658000 entry=0x20fa345b
+[  230.879692] KDBGSTEP2 addr=0x68658000 entry=0x20fa345b
+[  230.880686] KDBGSTEP1 addr=0x68659000 entry=0x20fa385b
+[  230.882057] KDBGSTEP2 addr=0x68659000 entry=0x20fa385b
+[  230.883051] KDBGSTEP1 addr=0x6865a000 entry=0x20fa3c5b
+[  230.883994] KDBGSTEP2 addr=0x6865a000 entry=0x20fa3c5b
+[  230.885474] KDBGSTEP1 addr=0x6865b000 entry=0x20fa405b
+[  230.886417] KDBGSTEP2 addr=0x6865b000 entry=0x20fa405b
+[  230.887411] KDBGSTEP1 addr=0x6865c000 entry=0x20fa445b
+[  230.888354] KDBGSTEP2 addr=0x6865c000 entry=0x20fa445b
+[  230.889864] KDBGSTEP1 addr=0x6865d000 entry=0x20fa485b
+[  230.890807] KDBGSTEP2 addr=0x6865d000 entry=0x20fa485b
+[  230.891801] KDBGSTEP1 addr=0x6865e000 entry=0x20fa4c5b
+[  230.892744] KDBGSTEP2 addr=0x6865e000 entry=0x20fa4c5b
+[  230.894165] KDBGSTEP1 addr=0x6865f000 entry=0x20fa505b
+[  230.895108] KDBGSTEP2 addr=0x6865f000 entry=0x20fa505b
+[  230.907684] KDBGPFNPTE pfn=0x812e8 prot=0x53 out=0x204ba053
+[  230.911249] (systemd-ok)[38]: systemd-initrd-smoke.service: Failed to connect stdout to the journal socket, ignoring: No such file or directory
+[  230.942834] KDBGPFNPTE pfn=0x812e7 prot=0x53 out=0x204b9c53
+[  230.944043] KDBGPFNPTE pfn=0x8423b prot=0x53 out=0x2108ec53
+[  230.945538] KDBGPFNPTE pfn=0x8423c prot=0x53 out=0x2108f053
+[  230.955084] KDBGPFNPTE pfn=0x812e6 prot=0x53 out=0x204b9853
+[  230.956295] KDBGPFNPTE pfn=0x84b8f prot=0x53 out=0x212e3c53
+[  230.957789] KDBGPFNPTE pfn=0x84b90 prot=0x53 out=0x212e4053
+[  230.958856] KDBGPFNPTE pfn=0x84b91 prot=0x53 out=0x212e4453
+[  230.959922] KDBGPFNPTE pfn=0x84b92 prot=0x53 out=0x212e4853
+[  230.965438] KDBGPFNPTE pfn=0x812e5 prot=0x53 out=0x204b9453
+[  230.967143] KDBGPFNPTE pfn=0x812e4 prot=0x53 out=0x204b9053
+[  230.968753] KDBGPFNPTE pfn=0x812e3 prot=0x53 out=0x204b8c53
+[  230.970868] KDBGPFNPTE pfn=0x812e2 prot=0x53 out=0x204b8853
+[  230.995401] KDBGPFNPTE pfn=0x812e1 prot=0x53 out=0x204b8453
+[  230.997729] KDBGPFNPTE pfn=0x812e0 prot=0x53 out=0x204b8053
+[  231.054988] KDBGPFNPTE pfn=0x812df prot=0x53 out=0x204b7c53
+[  231.227973] KDBGPFNPTE pfn=0x8136d prot=0x53 out=0x204db453
+[  231.238574] KDBGPFNPTE pfn=0x81368 prot=0x53 out=0x204da053
+[  231.240105] KDBGPFNPTE pfn=0x81369 prot=0x53 out=0x204da453
+[  231.242708] KDBGPFNPTE pfn=0x83d67 prot=0x53 out=0x20f59c53
+[  231.243774] KDBGPFNPTE pfn=0x83d68 prot=0x53 out=0x20f5a053
+[  231.245690] KDBGPFNPTE pfn=0x8136b prot=0x53 out=0x204dac53
+[  231.247411] KDBGPFNPTE pfn=0x8136a prot=0x53 out=0x204da853
+[  231.251234] KDBGPFNPTE pfn=0x81361 prot=0x53 out=0x204d8453
+[  231.258100] KDBGPFNPTE pfn=0x81367 prot=0x53 out=0x204d9c53
+SYSTEMD_OK
+[  231.299903] reboot: Power down
+tern-linux: stats instret=2347523654 mmu_walks=2524722 mmu_faults=622 tlb_hits=3019026047 tlb_misses=2524722 wall_ms=57643 guest_time=2347523654

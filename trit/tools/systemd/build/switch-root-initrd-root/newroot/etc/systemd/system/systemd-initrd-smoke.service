@@ -1,0 +1,12 @@
+[Unit]
+Description=Ternary systemd initrd smoke test
+DefaultDependencies=no
+After=initrd.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/systemd-ok
+RemainAfterExit=yes
+
+[Install]
+WantedBy=initrd.target

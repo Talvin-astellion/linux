@@ -1,0 +1,25 @@
+// Optional pseudo-instructions layered on top of assembler.inc.
+//
+// Include this file with yamp or gcc -E only after assembler.inc; the Makefile
+// adds both to the preprocessor command line.
+
+#ifndef PC
+#define PC    N01
+#endif
+
+// MV Rd, Rs    -> ADDI Rd, Rs, 0
+// MV Rd, imm   -> ADDI Rd, Z, imm
+#define MV( dest, src )  ADDI( dest, src, _NOP, 0 )
+#define MVI( dest, imm ) ADDI( dest, ZERO, _NOP, imm )
+
+#define JMP( reg )    MV( PC, reg )
+#define JMPI( addr )  MVI( PC, addr )
+
+// NEG Rd, Rs   -> ADDI Rd, Rs, _NEG, 0
+#define NEG( dest, src ) ADDI( dest, src, _NEG, 0 )
+
+// SWP R1, R2   -> RTLI R1, R2, #27
+#define SWP( R1, R2 ) RTLI( R1, R2, _NOP, 1000 )
+
+// BRA rel      -> ADDI PC, PC, rel
+#define BRA( rel ) ADDI( PC, PC, _NOP, rel )

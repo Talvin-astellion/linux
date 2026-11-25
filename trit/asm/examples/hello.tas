@@ -1,0 +1,10 @@
+--: @(start);
+10-:
+#include "lib/io.tas"
+start:
+IO_INIT
+ADDI( P01, ZERO, _NOP, @(message) );
+CALL(IO_PUTS);
+HALT;
+message:
+.string "Hello, ternary!\n"
